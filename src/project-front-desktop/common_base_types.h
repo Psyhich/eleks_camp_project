@@ -1,0 +1,1 @@
+/mnt/Projects/Learning Projects/EleksC++LearningCamp/eleks_camp_project/src/common_base_types.h
