@@ -3,6 +3,7 @@
 
 #include <set>
 #include <string>
+#include <utility>
 
 namespace server {
 namespace initializer {
@@ -21,13 +22,21 @@ public:
         const CourseSet& fullCourseSet,
         const CuisineSet& fullCuisineSet,
         const IngredientSet& fullIngredientSet
-    );
+    ) :
+        fullCourseSet{fullCourseSet},
+        fullCuisineSet{fullCuisineSet},
+        fullIngredientSet{fullIngredientSet}
+        {}
     
     DataContainers(
         CourseSet&& fullCourseSet,
         CuisineSet&& fullCuisineSet,
         IngredientSet&& fullIngredientSet
-    ) noexcept;
+    ) noexcept :
+        fullCourseSet{std::move(fullCourseSet)},
+        fullCuisineSet{std::move(fullCuisineSet)},
+        fullIngredientSet{std::move(fullIngredientSet)}
+        {}
 
     explicit DataContainers(const DataContainers&) = default;
     explicit DataContainers(DataContainers&&) noexcept = default;

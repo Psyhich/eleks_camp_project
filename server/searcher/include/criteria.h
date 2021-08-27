@@ -48,8 +48,8 @@ public:
         exclusiveIngredients {exclusiveIngredients}
         {}
 
-        explicit Criteria(const Criteria& otherCriteria) = default;
-        explicit Criteria(Criteria&& otherCriteria) noexcept = default;
+        explicit Criteria(const Criteria&) = default;
+        explicit Criteria(Criteria&&) noexcept = default;
 
         auto getFavoriteIDs() const noexcept {return favoriteIDs;}
         auto getNameSubstring() const noexcept {return nameSubstring;}

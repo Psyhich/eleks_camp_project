@@ -81,8 +81,8 @@ public:
         remarks {std::move(remarks)}
         {}    
 
-    explicit Recipe (const Recipe& otherRecipe) = default;     
-    explicit Recipe (Recipe&& otherRecipe) noexcept = default;
+    explicit Recipe (const Recipe&) = default;     
+    explicit Recipe (Recipe&&) noexcept = default;
 
     auto getId() const noexcept {return id;}
     auto getName() const noexcept {return name;}
