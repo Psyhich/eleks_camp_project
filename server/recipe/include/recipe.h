@@ -3,6 +3,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <utility>
 
 namespace server {
 namespace recipe {
@@ -17,12 +18,12 @@ using IngredientsList = std::unordered_map<std::string, IngredientAmount>;
 class Recipe {
     unsigned int id;              // 0 value should be reserved to indicate a new recipe to be added
     std::string name;
-    std::string course;           // appetizer, main course, drink etc., decided not to make it enum after all
+    std::string course;           // appetizer, main course, drink etc.
     std::string cuisine;          // nationality of the cuisine
     IngredientsList ingredients;
     double outCalories;
     double outWeight;
-    double outPortions;           // type double provides for the case of fractional portions
+    unsigned int outPortions;    
     std::string preparation;
     std::string presentation;
     std::string remarks;
@@ -36,11 +37,23 @@ public:
         const IngredientsList& ingredients,
         double outCalories,
         double outWeight,
-        double outPortions,
+        unsigned int outPortions,
         const std::string& preparation,
         const std::string& presentation = "",
         const std::string& remarks = ""
-    );
+    ) :
+        id {id},
+        name {name},
+        course {course},
+        cuisine {cuisine},
+        ingredients {ingredients},
+        outCalories {outCalories},
+        outWeight {outWeight},
+        outPortions {outPortions},
+        preparation {preparation},
+        presentation {presentation},
+        remarks {remarks}
+        {}
 
     Recipe(
         unsigned int id,
@@ -50,15 +63,26 @@ public:
         IngredientsList&& ingredients,
         double outCalories,
         double outWeight,
-        double outPortions,
+        unsigned int outPortions,
         std::string&& preparation,
         std::string&& presentation = "",
         std::string&& remarks = ""
-    ) noexcept;    
+    ) noexcept :
+        id {id},
+        name {std::move(name)},
+        course {std::move(course)},
+        cuisine {std::move(cuisine)},
+        ingredients {std::move(ingredients)},
+        outCalories {outCalories},
+        outWeight {outWeight},
+        outPortions {outPortions},
+        preparation {std::move(preparation)},
+        presentation {std::move(presentation)},
+        remarks {std::move(remarks)}
+        {}    
 
     explicit Recipe (const Recipe& otherRecipe) = default;     
     explicit Recipe (Recipe&& otherRecipe) noexcept = default;
-
 
     auto getId() const noexcept {return id;}
     auto getName() const noexcept {return name;}
@@ -73,8 +97,6 @@ public:
     auto getRemarks() const noexcept {return remarks;}
 
     bool operator<(const Recipe& other) const noexcept {return id < other.id;}
-
-    void setOutPortions (double newOutPortions);
 };
 
 } // namespace recipe
