@@ -21,7 +21,6 @@ class Modifier {
 public:
     static bool add(const recipe::Recipe& newRecipe);
     static bool edit(const recipe::Recipe& changedRecipe);
-    static bool makeFavorite(unsigned int id);
     static bool remove(unsigned int id);
 };
 

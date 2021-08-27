@@ -26,7 +26,6 @@ class Recipe {
     std::string preparation;
     std::string presentation;
     std::string remarks;
-    bool favorite;                // we must be able to mark some recipes as favorite
 
 public:
     Recipe(
@@ -40,8 +39,7 @@ public:
         double outPortions,
         const std::string& preparation,
         const std::string& presentation = "",
-        const std::string& remarks = "",
-        bool favorite = false
+        const std::string& remarks = ""
     );
 
     Recipe(
@@ -55,8 +53,7 @@ public:
         double outPortions,
         std::string&& preparation,
         std::string&& presentation = "",
-        std::string&& remarks = "",
-        bool favorite = false
+        std::string&& remarks = ""
     ) noexcept;    
 
     explicit Recipe (const Recipe& otherRecipe) = default;     
@@ -74,7 +71,6 @@ public:
     auto getPreparation() const noexcept {return preparation;}
     auto getPresentation() const noexcept {return presentation;}
     auto getRemarks() const noexcept {return remarks;}
-    auto getFavorite() const noexcept {return favorite;}
 
     bool operator<(const Recipe& other) const noexcept {return id < other.id;}
 

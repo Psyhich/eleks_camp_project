@@ -21,10 +21,6 @@ bool Modifier::edit(const recipe::Recipe& changedRecipe) {
     // to be implemented; returns true if success, false if error
 }
 
-bool Modifier::makeFavorite(unsigned int id) {
-    // to be implemented; returns true if success, false if error
-}
-
 bool Modifier::remove(unsigned int id) {
     // to be implemented; returns true if success, false if error    
 }

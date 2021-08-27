@@ -17,8 +17,7 @@ Recipe::Recipe (
         double outPortions,
         const std::string& preparation,
         const std::string& presentation,
-        const std::string& remarks,
-        bool favorite
+        const std::string& remarks
     ) :
         id {id},
         name {name},
@@ -30,8 +29,7 @@ Recipe::Recipe (
         outPortions {outPortions},
         preparation {preparation},
         presentation {presentation},
-        remarks {remarks},
-        favorite {favorite}
+        remarks {remarks}
         {}
 
 Recipe::Recipe (
@@ -45,8 +43,7 @@ Recipe::Recipe (
         double outPortions,
         const std::string& preparation,
         const std::string& presentation,
-        const std::string& remarks,
-        bool favorite
+        const std::string& remarks
     ) :
         id {id},
         name {std::move(name)},
@@ -58,8 +55,7 @@ Recipe::Recipe (
         outPortions {outPortions},
         preparation {std::move(preparation)},
         presentation {std::move(presentation)},
-        remarks {std::move(remarks)},
-        favorite {favorite}
+        remarks {std::move(remarks)}
         {}
 
 void Recipe::setOutPortions (double newOutPortions) {
