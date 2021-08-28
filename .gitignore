@@ -53,5 +53,11 @@ CMakeLists.txt.user*
 # JetBrains IDE
 .idea
 
+# Visual Studio
+.vs
+
+# Visual Studio CMake
+CMakeSettings.json
+
 # CMake
 cmake-build-*
