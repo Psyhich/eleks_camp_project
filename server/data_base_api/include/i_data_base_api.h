@@ -1,0 +1,30 @@
+#ifndef I_DATA_BASE_API
+#define I_DATA_BASE_API
+
+#include <optional>
+
+#include "criteria.h"
+#include "data_containers.h"
+#include "recipe.h"
+#include "results.h"
+
+namespace server {
+namespace dbAPI {
+
+class IDataBase {
+public:
+    IDataBase() = default;
+    virtual ~IDataBase() = default;
+
+    virtual std::optional<initializer::DataContainers> getInitData() = 0;
+    virtual std::optional<searcher::Results> find(searcher::Criteria searchCriteria) = 0;
+
+    virtual bool add(const recipe::Recipe& newRecipe) = 0;
+    virtual bool edit(const recipe::Recipe& changedRecipe) = 0;
+    virtual bool remove(unsigned int id) = 0;
+};
+
+}   // dbAPI 
+}   // server
+
+#endif // I_DATA_BASE_API

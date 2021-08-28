@@ -8,20 +8,23 @@
 #include "recipe.h"
 #include "results.h"
 
+#include "i_data_base_api.h"
+
 namespace server {
 namespace dbAPI {
 
-class Extractor {
+class DataBase : public IDataBase{
+    // state members may be added if necessary
 public:
-    static std::optional<initializer::DataContainers> getInitData();
-    static std::optional<searcher::Results> find(searcher::Criteria searchCriteria);
-};
+    DataBase();
+    virtual ~DataBase();
 
-class Modifier {
-public:
-    static bool add(const recipe::Recipe& newRecipe);
-    static bool edit(const recipe::Recipe& changedRecipe);
-    static bool remove(unsigned int id);
+    std::optional<initializer::DataContainers> getInitData() override;
+    std::optional<searcher::Results> find(searcher::Criteria searchCriteria) override;
+
+    bool add(const recipe::Recipe& newRecipe) override;
+    bool edit(const recipe::Recipe& changedRecipe) override;
+    bool remove(unsigned int id) override;
 };
 
 }   // dbAPI 
