@@ -21,7 +21,7 @@ public:
         const std::string& nameSubstring,
         const std::string& course,
         const std::string& cuisine,
-        const std::set<std::string> ingredientsSubset,
+        const std::set<std::string>& ingredientsSubset,
         bool exclusiveIngredients = false
     ) :
         favoriteIDs{favoriteIDs},
@@ -33,11 +33,11 @@ public:
         {}
 
     Criteria(
-        std::set<unsigned int>& favoriteIDs,
-        std::string& nameSubstring,
-        std::string& course,
-        std::string& cuisine,
-        std::set<std::string> ingredientsSubset,
+        std::set<unsigned int>&& favoriteIDs,
+        std::string&& nameSubstring,
+        std::string&& course,
+        std::string&& cuisine,
+        std::set<std::string>&& ingredientsSubset,
         bool exclusiveIngredients = false
     ) noexcept :
         favoriteIDs{std::move(favoriteIDs)},
