@@ -38,8 +38,8 @@ public:
         fullIngredientSet{std::move(fullIngredientSet)}
         {}
 
-    explicit DataContainers(const DataContainers&) = default;
-    explicit DataContainers(DataContainers&&) noexcept = default;
+    DataContainers(const DataContainers&) = default;
+    DataContainers(DataContainers&&) noexcept = default;
 
     CourseSet getFullCourseSet() const noexcept {return fullCourseSet;}
     CuisineSet getFullCuisineSet() const noexcept {return fullCuisineSet;}

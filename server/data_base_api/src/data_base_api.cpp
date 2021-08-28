@@ -18,7 +18,7 @@ std::optional<initializer::DataContainers> DataBase::getInitData() {
     // note: "nothing found" is not an error
 }
 
-std::optional<searcher::Results> DataBase::find(searcher::Criteria searchCriteria) {
+std::optional<searcher::Results> DataBase::find(const searcher::Criteria& searchCriteria) {
     // to be implemented; returns container variable wrapped in std::optional if success, std::nullopt if error
     // note: "nothing found" is not an error
 }

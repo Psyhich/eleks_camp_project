@@ -20,7 +20,7 @@ public:
     virtual ~DataBase();
 
     std::optional<initializer::DataContainers> getInitData() override;
-    std::optional<searcher::Results> find(searcher::Criteria searchCriteria) override;
+    std::optional<searcher::Results> find(const searcher::Criteria& searchCriteria) override;
 
     bool add(const recipe::Recipe& newRecipe) override;
     bool edit(const recipe::Recipe& changedRecipe) override;

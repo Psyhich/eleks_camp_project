@@ -17,8 +17,8 @@ namespace searcher {
         Results(const RecipeSet& foundRecipes) : foundRecipes{foundRecipes} {}
         Results(RecipeSet&& foundRecipes) noexcept : foundRecipes{std::move(foundRecipes)} {}
 
-        explicit Results(const Results&) = default;
-        explicit Results(Results&&) noexcept = default;
+        Results(const Results&) = default;
+        Results(Results&&) noexcept = default;
 
         auto getFoundRecipes() const noexcept {return foundRecipes;}
     };
