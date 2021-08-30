@@ -7,9 +7,9 @@ namespace server {
 namespace modifier {
 
 class Modifier {
-    dbAPI::IDataBase& db;
+    dbAPI::IDatabase& db;
 public:
-    Modifier(dbAPI::IDataBase& db);
+    Modifier(dbAPI::IDatabase& db);
     bool add(const recipe::Recipe& newRecipe);
     bool edit(const recipe::Recipe& changedRecipe);
     bool remove(unsigned int id);

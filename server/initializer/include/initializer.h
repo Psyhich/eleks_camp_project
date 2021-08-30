@@ -10,9 +10,9 @@ namespace server {
 namespace initializer {
 
 class Initializer {
-    dbAPI::IDataBase& db;
+    dbAPI::IDatabase& db;
 public:
-    Initializer(dbAPI::IDataBase& db);
+    Initializer(dbAPI::IDatabase& db);
     std::optional<DataContainers> getInitData () const;
 };
 

@@ -13,11 +13,11 @@
 namespace server {
 namespace dbAPI {
 
-class DataBase : public IDataBase{
+class Database : public IDatabase{
     // state members may be added if necessary
 public:
-    DataBase();
-    virtual ~DataBase();
+    Database();
+    virtual ~Database();
 
     std::optional<initializer::DataContainers> getInitData() override;
     std::optional<searcher::Results> find(const searcher::Criteria& searchCriteria) override;

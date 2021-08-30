@@ -11,9 +11,9 @@ namespace server {
 namespace searcher {
 
 class Searcher {
-    dbAPI::IDataBase& db;
+    dbAPI::IDatabase& db;
 public:
-    Searcher(dbAPI::IDataBase& db);
+    Searcher(dbAPI::IDatabase& db);
     std::optional<Results> find(const Criteria& searchCriteria) const;
 };
 

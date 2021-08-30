@@ -11,10 +11,10 @@
 namespace server {
 namespace dbAPI {
 
-class IDataBase {
+class IDatabase {
 public:
-    IDataBase() = default;
-    virtual ~IDataBase() = default;
+    IDatabase() = default;
+    virtual ~IDatabase() = default;
 
     virtual std::optional<initializer::DataContainers> getInitData() = 0;
     virtual std::optional<searcher::Results> find(const searcher::Criteria& searchCriteria) = 0;

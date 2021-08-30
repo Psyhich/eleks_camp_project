@@ -3,35 +3,35 @@
 namespace server {
 namespace dbAPI {
 
-DataBase::DataBase() {
+Database::Database() {
     // to be implemented
     // data base initialization
 }
 
-DataBase::~DataBase() {
+Database::~Database() {
     // to be implemented
     // data base close-down probably goes here
 }
 
-std::optional<initializer::DataContainers> DataBase::getInitData() {
+std::optional<initializer::DataContainers> Database::getInitData() {
     // to be implemented; returns container variable wrapped in std::optional if success, std::nullopt if error
     // note: "nothing found" is not an error
 }
 
-std::optional<searcher::Results> DataBase::find(const searcher::Criteria& searchCriteria) {
+std::optional<searcher::Results> Database::find(const searcher::Criteria& searchCriteria) {
     // to be implemented; returns container variable wrapped in std::optional if success, std::nullopt if error
     // note: "nothing found" is not an error
 }
 
-bool DataBase::add(const recipe::Recipe& newRecipe) {
+bool Database::add(const recipe::Recipe& newRecipe) {
     // to be implemented; returns true if success, false if error
 }
 
-bool DataBase::edit(const recipe::Recipe& changedRecipe) {
+bool Database::edit(const recipe::Recipe& changedRecipe) {
     // to be implemented; returns true if success, false if error
 }
 
-bool DataBase::remove(unsigned int id) {
+bool Database::remove(unsigned int id) {
     // to be implemented; returns true if success, false if error    
 }
 

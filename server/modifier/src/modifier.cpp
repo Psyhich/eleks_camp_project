@@ -3,7 +3,7 @@
 namespace server {
 namespace modifier {
 
-    Modifier::Modifier(dbAPI::IDataBase& db) : db{db} {}
+    Modifier::Modifier(dbAPI::IDatabase& db) : db{db} {}
 
     bool Modifier::add(const recipe::Recipe& newRecipe) {
         return db.add(newRecipe);
