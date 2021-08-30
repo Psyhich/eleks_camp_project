@@ -8,6 +8,8 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1) 
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -16,13 +18,15 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
+	mainwindow.h
         mainwindow.cpp
-        mainwindow.h
         mainwindow.ui
 	recipe_item_model.h
 	recipe_item_model.cpp
 	base_types.h
 	base_types.cpp
+	recipe_row_view.h
+	recipe_row_view.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

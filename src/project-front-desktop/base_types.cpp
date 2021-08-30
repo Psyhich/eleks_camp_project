@@ -1,22 +1,33 @@
 #include "base_types.h"
 
-namespace QBaseTypes {
+namespace BaseTypes {
   // Recipe methods
-  // Getters
-  inline unsigned int Recipe::getId() const { return id; }
-  inline const QString&Recipe::getName() const { return name; }
-  inline const QList<QString>& Recipe::getTags() const { return tags; }
+  // Setters
+  inline void Recipe::setId(unsigned int id){ this->id = id; }
+  inline void Recipe::setName(QString name) { this->name = name;}
+  inline void Recipe::setTags(QList<QString> tags) { this->tags = tags; }
 
-  inline const QHash<QString, int>& Recipe::getIngredients() const { return ingredients; }
-  inline double Recipe::getCalories() const { return outCalories; }
-  inline double Recipe::getWeight() const { return outWeight; }
-  inline unsigned int Recipe::getBasePortionsCount() const { return outPortions; }
+  inline void Recipe::setIngredients(QMap<QString, int> ingredients) { this->ingredients = ingredients; }
+  inline void Recipe::setCalories(double calories) { this->outCalories = calories; }
+  inline void Recipe::setWeight(double weight) { this->outWeight = weight; }
+  inline void Recipe::setPortions(unsigned int portions) { this->outPortions = portions; }
+  inline void Recipe::setText(QString text) { this->recipeText = text; }
+  inline void Recipe::setPresentation(QString presentation) { this->presentationText = presentation; }
 
-  inline const QString& Recipe::getRecipeText() const { return recipeText; }
-  inline const QString& Recipe::getPresentationText() const { return presentationText; }
 
   // LocalRecipe methods
-  bool LocalRecipe::update(){
+  LocalRecipe::LocalRecipe(unsigned int id, QString name, QList<QString> tags, QMap<QString, int> ingredients, double calories, double weight, unsigned int basePortionCount, QString text, QString presentationText){
+	setId(id);
+	setName(name);
+	setTags(tags);
+	setIngredients(ingredients);
+	setCalories(calories);
+	setWeight(weight);
+	setPortions(basePortionCount);
+	setText(text);
+	setPresentation(presentationText);
+  }
+  bool LocalRecipe::update() {
 	// TODO implement
 	return true;
   }
@@ -24,6 +35,7 @@ namespace QBaseTypes {
 	// TODO implement
 	return false;
   }
+
 
   // RemoteRecipe methods
   bool RemoteRecipe::update(){
@@ -34,6 +46,5 @@ namespace QBaseTypes {
 	// TODO implement
 	return false;
   }
-
 
 }

@@ -1,62 +1,84 @@
-#ifndef BASE_TYPES_H
-#define BASE_TYPES_H
+#ifndef BASE_RECIPE_TYPES_H
+#define BASE_RECIPE_TYPES_H
 
+#include <QMap>
 #include <QString>
-#include <QHash>
 
-namespace QBaseTypes {
+namespace BaseTypes {
 
-  // Base class that responds for holding data about recipe
-  class Recipe{
-	  unsigned int id;
-	  QString name;
-	  QList<QString> tags;
+// Base class that responds for holding data about recipe
+class Recipe {
+  unsigned int id;
+  QString name;
+  QList<QString> tags;
 
-	  QHash<QString, int> ingredients;
-	  double outCalories;
-	  double outWeight;
-	  unsigned int outPortions;
+  QMap<QString, int> ingredients;
+  double outCalories;
+  double outWeight;
+  unsigned int outPortions;
 
-	  QString recipeText;
-	  QString presentationText;
+  QString recipeText;
+  QString presentationText;
 
-	public:
-	  unsigned int getId() const;
-	  const QString&getName() const;
-	  const QList<QString>& getTags() const;
-	  const QHash<QString, int>& getIngredients() const;
+protected:
+  inline void setId(unsigned int id);
+  inline void setName(QString name);
+  inline void setTags(QList<QString> tags);
+  inline void setIngredients(QMap<QString, int> ingredients);
+  inline void setCalories(double calories);
+  inline void setWeight(double weight);
+  inline void setPortions(unsigned int portions);
+  inline void setText(QString text);
+  inline void setPresentation(QString presentation);
 
-	  double getCalories() const;
-	  double getWeight() const;
-	  unsigned int getBasePortionsCount() const;
+public:
+  inline unsigned int getId() const { return id; }
+  inline const QString &getName() const { return name; }
+  inline const QList<QString> &getTags() const { return tags; }
+  inline const QMap<QString, int> &getIngredients() const {
+    return ingredients;
+  }
 
-	  const QString& getRecipeText() const;
-	  const QString& getPresentationText() const;
+  inline double getCalories() const { return outCalories; }
+  inline double getWeight() const { return outWeight; }
+  inline unsigned int getBasePortionsCount() const { return outPortions; }
 
-	  virtual bool update() = 0; // Function that responds for saving new data of recipe
-	  virtual bool load() = 0; // Function that responds for loading recipe from some resource into this class
+  inline const QString &getRecipeText() const { return recipeText; }
+  inline const QString &getPresentationText() const { return presentationText; }
 
-  };
+  virtual bool
+  update() = 0; // Function that responds for saving new data of recipe
+  virtual bool load() = 0; // Function that responds for loading recipe from
+                           // some resource into this class
 
-  // Child classes that would implement update and load method
-  // Local recipe must be saved ONLY localy
-  class LocalRecipe : public Recipe{
-	// Recipe interface
-	public:
-	  bool update() override;
-	  bool load() override;
-  };
+  virtual ~Recipe() {}
+};
 
-  // Remote recipe MUST be saved remotely, but CAN be cashed for future use
-  class RemoteRecipe : public Recipe{
-	// Recipe interface
-	public:
-	  bool update() override;
-	  bool load() override;
-  };
+// Child classes that would implement update and load method
+// Local recipe must be saved ONLY localy
+class LocalRecipe : public Recipe {
+  // Recipe interface
+public:
+  LocalRecipe(unsigned int id, QString name, QList<QString> tags,
+              QMap<QString, int> ingredients, double calories, double weight,
+              unsigned int basePortionCount, QString text,
+              QString presentationText);
+  bool update() override;
+  bool load() override;
 
+  ~LocalRecipe() {}
+};
 
+// Remote recipe MUST be saved remotely, but CAN be cashed for future use
+class RemoteRecipe : public Recipe {
+  // Recipe interface
+public:
+  bool update() override;
+  bool load() override;
 
-}
+  ~RemoteRecipe() {}
+};
 
-#endif // BASE_TYPES_H
+} // namespace BaseTypes
+
+#endif // BASE_RECIPE_TYPES_H
