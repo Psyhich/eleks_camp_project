@@ -1,5 +1,5 @@
-#ifndef I_DATA_BASE_API
-#define I_DATA_BASE_API
+#ifndef I_DATABASE_API
+#define I_DATABASE_API
 
 #include <optional>
 
@@ -27,4 +27,4 @@ public:
 }   // dbAPI 
 }   // server
 
-#endif // I_DATA_BASE_API
+#endif // I_DATABASE_API

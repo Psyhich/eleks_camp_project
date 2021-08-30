@@ -1,5 +1,5 @@
-#ifndef DATA_BASE_API
-#define DATA_BASE_API
+#ifndef DATABASE_API
+#define DATABASE_API
 
 #include <optional>
 
@@ -8,7 +8,7 @@
 #include "recipe.h"
 #include "results.h"
 
-#include "i_data_base_api.h"
+#include "i_database_api.h"
 
 namespace server {
 namespace dbAPI {
@@ -30,4 +30,4 @@ public:
 }   // dbAPI 
 }   // server
 
-#endif // DATA_BASE_API
+#endif // DATABASE_API

@@ -4,7 +4,7 @@
 #include <optional>
 
 #include "criteria.h"
-#include "i_data_base_api.h"
+#include "i_database_api.h"
 #include "results.h"
 
 namespace server {
