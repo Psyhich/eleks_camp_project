@@ -11,6 +11,8 @@
 namespace server {
 namespace dbAPI {
 
+using string = std::string;
+
 class Database : public IDatabase{
     // state members may be added if necessary
 public:
@@ -30,6 +32,10 @@ private:
     static constexpr char cuisinesTableName[] = "cuisines";
     static constexpr char recipesTableName[] = "recipes";
     static constexpr char ingredientsTableName[] = "ingredients";
+    static constexpr char unitsTableName[] = "units";
+    static constexpr char recipeIngredientsTableName[] = "recipe_ingredients";
+
+    static constexpr char defaultUnit[] = "г";
 
     SQLite::Database db;
 
@@ -37,6 +43,13 @@ private:
     void createCuisinesTable();
     void createRecipesTable();
     void createIngredientsTable();
+    void createUnitsTable();
+    void createRecipeIngredientsTable();
+
+    void insertDefaultUnit();
+    bool containsDefaultUnit();
+
+    void bindTableName(string& query, string tableName);
 };
 
 }   // dbAPI 
