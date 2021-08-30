@@ -28,11 +28,15 @@ private:
     static constexpr char databaseName[] = "cookbook.db";
     static constexpr char coursesTableName[] = "courses";
     static constexpr char cuisinesTableName[] = "cuisines";
+    static constexpr char recipesTableName[] = "recipes";
+    static constexpr char ingredientsTableName[] = "ingredients";
 
     SQLite::Database db;
 
     void createCoursesTable();
     void createCuisinesTable();
+    void createRecipesTable();
+    void createIngredientsTable();
 };
 
 }   // dbAPI 
