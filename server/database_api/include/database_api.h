@@ -2,11 +2,9 @@
 #define DATABASE_API
 
 #include <optional>
+#include <iostream>
 
-#include "criteria.h"
-#include "data_containers.h"
-#include "recipe.h"
-#include "results.h"
+#include "SQLiteCpp/SQLiteCpp.h"
 
 #include "i_database_api.h"
 
@@ -25,6 +23,16 @@ public:
     bool add(const recipe::Recipe& newRecipe) override;
     bool edit(const recipe::Recipe& changedRecipe) override;
     bool remove(unsigned int id) override;
+
+private:
+    static constexpr char databaseName[] = "cookbook.db";
+    static constexpr char coursesTableName[] = "courses";
+    static constexpr char cuisinesTableName[] = "cuisines";
+
+    SQLite::Database db;
+
+    void createCoursesTable();
+    void createCuisinesTable();
 };
 
 }   // dbAPI 
