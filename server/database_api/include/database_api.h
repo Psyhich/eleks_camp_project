@@ -3,6 +3,7 @@
 
 #include <optional>
 #include <iostream>
+#include <vector>
 
 #include "SQLiteCpp/SQLiteCpp.h"
 

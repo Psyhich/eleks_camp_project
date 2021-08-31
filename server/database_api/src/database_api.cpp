@@ -18,8 +18,30 @@ namespace dbAPI {
     }
 
     std::optional<initializer::DataContainers> Database::getInitData() {
-        // to be implemented; returns container variable wrapped in std::optional if success, std::nullopt if error
-        // note: "nothing found" is not an error
+        try {
+            string selectQuery = "SELECT * FROM %tableName%";
+
+            std::vector<string> tableNames{coursesTableName, cuisinesTableName, ingredientsTableName};
+            std::vector<std::set<string>> setsToInitialize(tableNames.size(), std::set<string>{});
+
+            for (int i = 0; i < tableNames.size(); i++) {
+                string query = selectQuery;
+                bindTableName(query, tableNames[i]);
+
+                SQLite::Statement statement{db, query};
+                while (statement.executeStep()) {
+                    setsToInitialize[i].insert(statement.getColumn(1));
+                }
+            }
+
+            initializer::DataContainers container{setsToInitialize[0], setsToInitialize[1], setsToInitialize[2]};
+            return container;
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot initialize DataContainers" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return std::nullopt;
+        }
     }
 
     std::optional<searcher::Results> Database::find(const searcher::Criteria& searchCriteria) {
@@ -44,7 +66,7 @@ namespace dbAPI {
             try {
                 string createCoursesTableQuery = "CREATE TABLE \"%tableName%\" (\n"
                                                 "\t\"course_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                                                "\t\"course_name\"\tTEXT NOT NULL\n"
+                                                "\t\"course_name\"\tTEXT NOT NULL UNIQUE\n"
                                                 ");";
                 bindTableName(createCoursesTableQuery, coursesTableName);
                 db.setBusyTimeout(50);
@@ -62,7 +84,7 @@ namespace dbAPI {
             try {
                 string createCuisinesTableQuery = "CREATE TABLE \"%tableName%\" (\n"
                                                  "\t\"cuisine_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                                                 "\t\"cuisine_name\"\tTEXT NOT NULL\n"
+                                                 "\t\"cuisine_name\"\tTEXT NOT NULL UNIQUE\n"
                                                  ");";
                 bindTableName(createCuisinesTableQuery, cuisinesTableName);
                 db.setBusyTimeout(50);
