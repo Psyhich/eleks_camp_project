@@ -65,7 +65,42 @@ namespace dbAPI {
     }
 
     bool Database::add(const recipe::Recipe& newRecipe) {
-        // to be implemented; returns true if success, false if error
+        try {
+            //SQLite::Transaction transaction(db);
+
+            string query = "INSERT INTO recipes(recipe_name, recipe_preparation, recipe_presentation, recipe_weight, recipe_portion_amount,\n"
+                           "recipe_portion_nutritional_value, recipe_cuisine_id, recipe_course_id, recipe_remarks)\n"
+                           "SELECT :name, :preparation, :presentation, :weight, :amount, :calories, cuisines.cuisine_id, courses.course_id, :remarks\n"
+                           "FROM cuisines, courses\n"
+                           "WHERE cuisines.cuisine_name= :cuisine\n"
+                           "AND courses.course_name = :course";
+            SQLite::Statement insertRecipeInformationQuery(db, query);
+            insertRecipeInformationQuery.bind(":name", newRecipe.getName());
+            insertRecipeInformationQuery.bind(":preparation", newRecipe.getPreparation());
+            insertRecipeInformationQuery.bind(":presentation", newRecipe.getPresentation());
+            insertRecipeInformationQuery.bind(":weight", newRecipe.getOutWeight());
+            insertRecipeInformationQuery.bind(":amount", newRecipe.getOutPortions());
+            insertRecipeInformationQuery.bind(":calories", newRecipe.getOutCalories());
+            insertRecipeInformationQuery.bind(":cuisine", newRecipe.getCuisine());
+            insertRecipeInformationQuery.bind(":course", newRecipe.getCourse());
+            insertRecipeInformationQuery.bind(":remarks", newRecipe.getRemarks());
+            insertRecipeInformationQuery.exec();
+
+            unsigned int id = 0;
+            SQLite::Statement selectID(db, "SELECT last_insert_rowid()");
+            if (selectID.executeStep()) {
+                id = selectID.getColumn(0);
+            }
+
+            insertIngredientsForRecipe(newRecipe.getIngredients(), id);
+
+            //transaction.commit();
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot insert recipe" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
     }
 
     bool Database::edit(const recipe::Recipe& changedRecipe) {
@@ -120,7 +155,7 @@ namespace dbAPI {
                                                  "\"recipe_name\"\tTEXT NOT NULL,\n"
                                                  "\"recipe_preparation\"\tTEXT NOT NULL,\n"
                                                  "\"recipe_presentation\"\tTEXT,"
-                                                 "\"recipe_mass\"\tREAL NOT NULL,\n"
+                                                 "\"recipe_weight\"\tREAL NOT NULL,\n"
                                                  "\"recipe_portion_amount\"\tINTEGER NOT NULL DEFAULT 1,\n"
                                                  "\"recipe_portion_nutritional_value\"\tREAL NOT NULL DEFAULT 0,\n"
                                                  "\"recipe_cuisine_id\"\tINTEGER,\n"
@@ -326,7 +361,7 @@ namespace dbAPI {
         std::string remarks{};
 
         try {
-            string selectRecipeInfoQuery = "SELECT recipe_name, recipe_preparation, recipe_presentation, recipe_mass, recipe_portion_amount,\n"
+            string selectRecipeInfoQuery = "SELECT recipe_name, recipe_preparation, recipe_presentation, recipe_weight, recipe_portion_amount,\n"
                                            "recipe_portion_nutritional_value, courses.course_name, cuisines.cuisine_name, recipe_remarks\n"
                                            "FROM %tableName%\n"
                                            "INNER JOIN courses ON recipes.recipe_course_id = courses.course_id\n"
@@ -380,6 +415,40 @@ namespace dbAPI {
             std::cerr << "error: cannot fetch ingredients for recipe with ID: " << id << std::endl;
             std::cerr << e.what() << std::endl;
             return recipe::IngredientsList {};
+        }
+    }
+
+    bool Database::addCourse(string &course) {
+        return false;
+    }
+
+    bool Database::removeCourse(string &course) {
+        return false;
+    }
+
+    bool Database::addCuisine(string &course) {
+        return false;
+    }
+
+    bool Database::removeCuisine(string &course) {
+        return false;
+    }
+
+    void Database::insertIngredientsForRecipe(recipe::IngredientsList ingredients, unsigned int id) {
+        for (auto item : ingredients) {
+            string query = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, unit_id, ingredient_amount)\n"
+                           "SELECT :id, ingredients.ingredient_id, units.unit_id, :amount\n"
+                           "FROM ingredients, units\n"
+                           "WHERE ingredients.ingredient_name = :ingredient\n"
+                           "AND units.unit_name = :unit";
+            SQLite::Statement insertRecipeIngredientQuery(db, query);
+
+            insertRecipeIngredientQuery.bind(":id", id);
+            insertRecipeIngredientQuery.bind(":amount", item.second.quantity);
+            insertRecipeIngredientQuery.bind(":ingredient", item.first);
+            insertRecipeIngredientQuery.bind(":unit", item.second.unit);
+
+            insertRecipeIngredientQuery.exec();
         }
     }
 

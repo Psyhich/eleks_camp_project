@@ -27,6 +27,12 @@ public:
     bool edit(const recipe::Recipe& changedRecipe) override;
     bool remove(unsigned int id) override;
 
+    bool addCourse(string &course) override;
+    bool removeCourse(string &course) override;
+
+    bool addCuisine(string &course) override;
+    bool removeCuisine(string &course) override;
+
 private:
     static constexpr char databaseName[] = "cookbook.db";
     static constexpr char coursesTableName[] = "courses";
@@ -53,6 +59,8 @@ private:
     std::set<unsigned int> fetchIDs(const searcher::Criteria& searchCriteria);
     std::optional<recipe::Recipe> fetchRecipe(unsigned int id);
     recipe::IngredientsList fetchIngredientsForRecipe(unsigned int id);
+
+    void insertIngredientsForRecipe(recipe::IngredientsList ingredients, unsigned int id);
 
     void bindTableName(string& query, string tableName);
 };
