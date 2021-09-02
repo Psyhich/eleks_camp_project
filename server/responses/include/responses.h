@@ -3,6 +3,7 @@
 
 #include <string>
 #include <utility>
+#include <variant>
 
 #include "data_containers.h"
 #include "results.h"
@@ -10,51 +11,85 @@
 namespace server {
 namespace responses {
 
-class Error {
+class Response {
+    unsigned int clientID{0};
+protected:
+    Response(unsigned int clientID) : clientID {clientID} {}
+public:
+    auto getClientID() const noexcept {return clientID;}
+};
+
+
+class Error : public Response {
     std::string message;
 public:
-    Error(const std::string& message) : message{message} {}
-    Error(std::string&& message) noexcept : message{std::move(message)} {}
+    Error(const std::string& message, unsigned int clientID = 0)
+        :
+        Response(clientID),
+        message{message}
+    {}
+
+    Error(std::string&& message, unsigned int clientID = 0) noexcept
+        :
+        Response(clientID),
+        message{std::move(message)}
+    {}
+
     auto getMessage() const noexcept {return message;}
 };
 
-class GetInitDataResult {
+class GetInitDataResult : public Response {
     initializer::DataContainers initData;
 public:
-    GetInitDataResult(const initializer::DataContainers& initData) : initData{initData} {}
-    GetInitDataResult(initializer::DataContainers&& initData) noexcept : initData{std::move(initData)} {}
+    GetInitDataResult(const initializer::DataContainers& initData, unsigned int clientID = 0)
+        :
+        Response(clientID),
+        initData{initData}
+    {}
+
+    GetInitDataResult(initializer::DataContainers&& initData, unsigned int clientID = 0) noexcept
+        :
+        Response (clientID),
+        initData{std::move(initData)}
+    {}
+
     auto getInitData() const noexcept {return initData;}
 };
 
-class FindResult {
-    searcher::Results results;
+class FindResult : public Response {
+    searcher::Results searchResults;
 public:
-    FindResult(const searcher::Results& results) : results{results} {}
-    FindResult(searcher::Results&& results) noexcept : results{std::move(results)} {}
-    auto getResults() const noexcept {return results;}
+    FindResult(const searcher::Results& searchResults, unsigned int clientID = 0)
+        :
+        Response(clientID),
+        searchResults{searchResults}
+    {}
+
+    FindResult(searcher::Results&& searchResults, unsigned int clientID = 0) noexcept
+        :
+        Response(clientID),
+        searchResults{std::move(searchResults)}
+    {}
+
+    auto getResults() const noexcept {return searchResults;}
 };
 
-class AddResult {
-    bool success;
+class AddSuccess : public Response {
 public:
-    AddResult(bool success) : success{success} {}
-    bool getSuccess() const noexcept {return success;}
+    AddSuccess(unsigned int clientID = 0) : Response(clientID) {}
 };
 
-class EditResult {
-    bool success;
+class EditSuccess : public Response {
 public:
-    EditResult(bool success) : success{success} {}
-    bool getSuccess() const noexcept {return success;} 
-
+    EditSuccess(unsigned int clientID = 0) : Response(clientID) {}
 };
 
-class RemoveResult {
-    bool success;
+class RemoveSuccess : public Response {
 public:
-    RemoveResult(bool success) : success{success} {}
-    bool getSuccess() const noexcept {return success;}
+    RemoveSuccess(unsigned int clientID = 0) : Response(clientID) {}
 };
+
+using ResponseVar = std::variant<Error, GetInitDataResult, FindResult, AddSuccess, EditSuccess, RemoveSuccess>;
 
 } // responses
 } // server
