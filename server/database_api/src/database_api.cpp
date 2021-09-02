@@ -45,8 +45,23 @@ namespace dbAPI {
     }
 
     std::optional<searcher::Results> Database::find(const searcher::Criteria& searchCriteria) {
-        // to be implemented; returns container variable wrapped in std::optional if success, std::nullopt if error
-        // note: "nothing found" is not an error
+        try {
+            std::set ids = fetchIDs(searchCriteria);
+
+            searcher::RecipeSet recipeSet;
+            for (auto id : ids) {
+                auto recipe = fetchRecipe(id);
+                if (recipe.has_value()) {
+                    recipeSet.insert(recipe.value());
+                }
+            }
+
+            return searcher::Results(recipeSet);
+        }
+        catch (std::exception& e) {
+            std::cout << e.what() << std::endl;
+            return std::nullopt;
+        }
     }
 
     bool Database::add(const recipe::Recipe& newRecipe) {
@@ -65,8 +80,8 @@ namespace dbAPI {
         if (!db.tableExists(coursesTableName)) {
             try {
                 string createCoursesTableQuery = "CREATE TABLE \"%tableName%\" (\n"
-                                                "\t\"course_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                                                "\t\"course_name\"\tTEXT NOT NULL UNIQUE\n"
+                                                "\"course_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                                                "\"course_name\"\tTEXT NOT NULL UNIQUE\n"
                                                 ");";
                 bindTableName(createCoursesTableQuery, coursesTableName);
                 db.setBusyTimeout(50);
@@ -83,8 +98,8 @@ namespace dbAPI {
         if (!db.tableExists(cuisinesTableName)) {
             try {
                 string createCuisinesTableQuery = "CREATE TABLE \"%tableName%\" (\n"
-                                                 "\t\"cuisine_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                                                 "\t\"cuisine_name\"\tTEXT NOT NULL UNIQUE\n"
+                                                 "\"cuisine_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                                                 "\"cuisine_name\"\tTEXT NOT NULL UNIQUE\n"
                                                  ");";
                 bindTableName(createCuisinesTableQuery, cuisinesTableName);
                 db.setBusyTimeout(50);
@@ -101,16 +116,18 @@ namespace dbAPI {
         if (!db.tableExists(recipesTableName)) {
             try {
                 string createRecipesTableQuery = "CREATE TABLE \"%tableName%\" (\n"
-                                                 "\t\"recipe_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                                                 "\t\"recipe_name\"\tTEXT NOT NULL,\n"
-                                                 "\t\"recipe_text\"\tTEXT NOT NULL,\n"
-                                                 "\t\"recipe_mass\"\tINTEGER NOT NULL,\n"
-                                                 "\t\"recipe_portion_amount\"\tINTEGER NOT NULL DEFAULT 1,\n"
-                                                 "\t\"recipe_portion_nutritional_value\"\tREAL NOT NULL DEFAULT 0,\n"
-                                                 "\t\"recipe_cuisine_id\"\tINTEGER,\n"
-                                                 "\t\"recipe_course_id\"\tINTEGER,\n"
-                                                 "\tFOREIGN KEY(\"recipe_cuisine_id\") REFERENCES \"cuisines\"(\"cuisine_id\"),\n"
-                                                 "\tFOREIGN KEY(\"recipe_course_id\") REFERENCES \"courses\"(\"course_id\")\n"
+                                                 "\"recipe_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                                                 "\"recipe_name\"\tTEXT NOT NULL,\n"
+                                                 "\"recipe_preparation\"\tTEXT NOT NULL,\n"
+                                                 "\"recipe_presentation\"\tTEXT,"
+                                                 "\"recipe_mass\"\tREAL NOT NULL,\n"
+                                                 "\"recipe_portion_amount\"\tINTEGER NOT NULL DEFAULT 1,\n"
+                                                 "\"recipe_portion_nutritional_value\"\tREAL NOT NULL DEFAULT 0,\n"
+                                                 "\"recipe_cuisine_id\"\tINTEGER,\n"
+                                                 "\"recipe_course_id\"\tINTEGER,\n"
+                                                 "\"recipe_remarks\"\tTEXT,"
+                                                 "FOREIGN KEY(\"recipe_cuisine_id\") REFERENCES \"cuisines\"(\"cuisine_id\"),\n"
+                                                 "FOREIGN KEY(\"recipe_course_id\") REFERENCES \"courses\"(\"course_id\")\n"
                                                  ");";
                 bindTableName(createRecipesTableQuery, recipesTableName);
                 db.setBusyTimeout(50);
@@ -127,8 +144,8 @@ namespace dbAPI {
         if (!db.tableExists(ingredientsTableName)) {
             try {
                 string createIngredientsTableQuery = "CREATE TABLE \"%tableName%\" (\n"
-                                                     "\t\"ingredient_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                                                     "\t\"ingredient_name\"\tTEXT NOT NULL UNIQUE\n"
+                                                     "\"ingredient_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                                                     "\"ingredient_name\"\tTEXT NOT NULL UNIQUE\n"
                                                      ");";
                 bindTableName(createIngredientsTableQuery, ingredientsTableName);
                 db.setBusyTimeout(50);
@@ -145,8 +162,8 @@ namespace dbAPI {
         if (!db.tableExists(unitsTableName)) {
             try {
                 string createUnitsTableQuery = "CREATE TABLE \"%tableName%\" (\n"
-                                               "\t\"unit_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                                               "\t\"unit_name\"\tTEXT NOT NULL UNIQUE\n"
+                                               "\"unit_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                                               "\"unit_name\"\tTEXT NOT NULL UNIQUE\n"
                                                ");";
                 bindTableName(createUnitsTableQuery, unitsTableName);
                 db.setBusyTimeout(50);
@@ -203,13 +220,13 @@ namespace dbAPI {
         if (!db.tableExists(recipeIngredientsTableName)) {
             try {
                 string createRecipeIngredientsTableQuery = "CREATE TABLE \"%tableName%\" (\n"
-                                                           "\t\"recipe_id\"\tINTEGER NOT NULL,\n"
-                                                           "\t\"ingredient_id\"\tINTEGER NOT NULL,\n"
-                                                           "\t\"measure_id\"\tINTEGER NOT NULL,\n"
-                                                           "\t\"ingredient_amount\"\tNUMERIC NOT NULL,\n"
-                                                           "\tFOREIGN KEY(\"measure_id\") REFERENCES \"units\"(\"measure_id\"),\n"
-                                                           "\tFOREIGN KEY(\"ingredient_id\") REFERENCES \"ingredients\"(\"ingredient_id\"),\n"
-                                                           "\tFOREIGN KEY(\"recipe_id\") REFERENCES \"recipes\"(\"recipe_id\")\n"
+                                                           "\"recipe_id\"\tINTEGER NOT NULL,\n"
+                                                           "\"ingredient_id\"\tINTEGER NOT NULL,\n"
+                                                           "\"unit_id\"\tINTEGER NOT NULL,\n"
+                                                           "\"ingredient_amount\"\tREAL NOT NULL,\n"
+                                                           "FOREIGN KEY(\"unit_id\") REFERENCES \"units\"(\"unit_id\"),\n"
+                                                           "FOREIGN KEY(\"ingredient_id\") REFERENCES \"ingredients\"(\"ingredient_id\"),\n"
+                                                           "FOREIGN KEY(\"recipe_id\") REFERENCES \"recipes\"(\"recipe_id\")\n"
                                                            ");";
                 bindTableName(createRecipeIngredientsTableQuery, recipeIngredientsTableName);
                 db.setBusyTimeout(50);
@@ -219,6 +236,150 @@ namespace dbAPI {
                 std::cerr << "error: cannot create " << recipeIngredientsTableName << " table" << std::endl;
                 std::cerr << e.what() << std::endl;
             }
+        }
+    }
+
+    std::set<unsigned int> Database::fetchIDs(const searcher::Criteria& searchCriteria) {
+        try {
+            std::vector<string> itemsToBind;
+
+            string query = "SELECT recipes.recipe_id\n"
+                           "FROM recipes \n";
+            if (!searchCriteria.getCourse().empty()) {
+                query += "INNER JOIN courses ON courses.course_name = ?\n";
+                itemsToBind.push_back(searchCriteria.getCourse());
+            }
+            if (!searchCriteria.getCuisine().empty()) {
+                query += "INNER JOIN cuisines ON cuisines.cuisine_name = ?\n";
+                itemsToBind.push_back(searchCriteria.getCuisine());
+            }
+            if (!searchCriteria.getIngredientsSubset().empty()) {
+                auto ingredientSubset = searchCriteria.getIngredientsSubset();
+                query += "INNER JOIN (\n"
+                         "SELECT recipe_id, COUNT(recipe_id) as ingredient_count\n"
+                         "FROM recipe_ingredients\n"
+                         "INNER JOIN ingredients ON recipe_ingredients.ingredient_id = ingredients.ingredient_id\n"
+                         "WHERE ingredients.ingredient_name IN (";
+                for (auto it = ingredientSubset.begin(); it != ingredientSubset.end(); ++it) {
+                    query += "?";
+                    query += (it != --ingredientSubset.end()) ? ", " : "";
+                    itemsToBind.push_back(*it);
+                }
+                query += ")\n"
+                         "GROUP BY recipe_id\n";
+                unsigned int criteriaIngredientsCount = searchCriteria.getIngredientsSubset().size();
+                query += "HAVING ingredient_count = " + std::to_string(criteriaIngredientsCount) + "\n";
+                query += ") ids ON recipes.recipe_id = ids.recipe_id\n"
+                         "INNER JOIN (\n"
+                         "SELECT recipe_id, COUNT(recipe_id) as ingredient_count\n"
+                         "FROM recipe_ingredients\n"
+                         "GROUP BY recipe_id\n"
+                         ") ingredient_count\n";
+            }
+            query +=     "WHERE recipes.recipe_id = recipes.recipe_id\n";
+            if (!searchCriteria.getNameSubstring().empty()) {
+                query += "AND recipes.recipe_name LIKE ?\n";
+                string subName = "%" + searchCriteria.getNameSubstring() + "%";
+                itemsToBind.push_back(subName);
+            }
+            if (!searchCriteria.getFavoriteIDs().empty()) {
+                auto favoriteIDs = searchCriteria.getFavoriteIDs();
+                query += "AND (";
+                for (auto it = favoriteIDs.begin(); it != favoriteIDs.end(); ++it) {
+                    string toConcat = "recipes.recipe_id = " + std::to_string(*it);
+                    toConcat += (it != --favoriteIDs.end()) ? " OR " : "";
+                    query += toConcat;
+                }
+                query += ")\n";
+            }
+            if (searchCriteria.getExclusiveIngredients()) {
+                query += "AND ingredient_count.ingredient_count = ids.ingredient_count";
+            }
+
+            SQLite::Statement fetchQuery{db, query};
+            for (auto i = 0; i < itemsToBind.size(); ++i) {
+                fetchQuery.bind(i + 1, itemsToBind[i]);
+            }
+            std::set<unsigned int> ids{};
+            while(fetchQuery.executeStep()) {
+                ids.insert(fetchQuery.getColumn(0));
+            }
+            return ids;
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot fetch recipe ids" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return std::set<unsigned int>{};
+        }
+    }
+
+    std::optional<recipe::Recipe> Database::fetchRecipe(unsigned int id) {
+        std::string name{};
+        std::string course{};
+        std::string cuisine{};
+        recipe::IngredientsList ingredients{};
+        double outCalories{};
+        double outWeight{};
+        unsigned int outPortions{};
+        std::string preparation{};
+        std::string presentation{};
+        std::string remarks{};
+
+        try {
+            string selectRecipeInfoQuery = "SELECT recipe_name, recipe_preparation, recipe_presentation, recipe_mass, recipe_portion_amount,\n"
+                                           "recipe_portion_nutritional_value, courses.course_name, cuisines.cuisine_name, recipe_remarks\n"
+                                           "FROM %tableName%\n"
+                                           "INNER JOIN courses ON recipes.recipe_course_id = courses.course_id\n"
+                                           "INNER JOIN cuisines ON recipes.recipe_cuisine_id = cuisines.cuisine_id\n"
+                                           "WHERE recipe_id = :recipeID";
+            bindTableName(selectRecipeInfoQuery, recipesTableName);
+            SQLite::Statement fetchRecipeInfo(db, selectRecipeInfoQuery);
+            fetchRecipeInfo.bind(":recipeID", id);
+            if (fetchRecipeInfo.executeStep()) {
+                name = fetchRecipeInfo.getColumn(0).getString();
+                preparation = fetchRecipeInfo.getColumn(1).getString();
+                presentation = fetchRecipeInfo.getColumn(2).getString();
+                outWeight = fetchRecipeInfo.getColumn(3).getDouble();
+                outPortions = fetchRecipeInfo.getColumn(4).getInt();
+                outCalories = fetchRecipeInfo.getColumn(5).getDouble();
+                course = fetchRecipeInfo.getColumn(6).getString();
+                cuisine = fetchRecipeInfo.getColumn(7).getString();
+                remarks = fetchRecipeInfo.getColumn(8).getString();
+                ingredients = fetchIngredientsForRecipe(id);
+            }
+            else {
+                throw std::runtime_error("no recipe with ID: " + std::to_string(id));
+            }
+            return recipe::Recipe{id, name, course, cuisine, ingredients, outCalories, outWeight, outPortions, preparation, presentation, remarks};
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot fetch recipe with ID: " << id << std::endl;
+            std::cerr << e.what() << std::endl;
+            return std::nullopt;
+        }
+    }
+
+    recipe::IngredientsList Database::fetchIngredientsForRecipe(unsigned int id) {
+        try {
+            recipe::IngredientsList ingredients{};
+            string selectIngredientsQuery = "SELECT ingredients.ingredient_name, ingredient_amount, units.unit_name\n"
+                                 "FROM recipe_ingredients\n"
+                                 "INNER JOIN units ON units.unit_id = recipe_ingredients.unit_id\n"
+                                 "INNER JOIN ingredients ON ingredients.ingredient_id = recipe_ingredients.ingredient_id\n"
+                                 "WHERE recipe_ingredients.recipe_id = :recipeID";
+            SQLite::Statement fetchIngredientsQuery{db, selectIngredientsQuery};
+            fetchIngredientsQuery.bind(":recipeID", id);
+            while (fetchIngredientsQuery.executeStep()) {
+                recipe::IngredientAmount amount{fetchIngredientsQuery.getColumn(1).getDouble(),
+                                                fetchIngredientsQuery.getColumn(2).getString()};
+                ingredients[fetchIngredientsQuery.getColumn(0)] = amount;
+            }
+            return ingredients;
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot fetch ingredients for recipe with ID: " << id << std::endl;
+            std::cerr << e.what() << std::endl;
+            return recipe::IngredientsList {};
         }
     }
 

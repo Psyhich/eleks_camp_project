@@ -50,6 +50,10 @@ private:
     void insertDefaultUnit();
     bool containsDefaultUnit();
 
+    std::set<unsigned int> fetchIDs(const searcher::Criteria& searchCriteria);
+    std::optional<recipe::Recipe> fetchRecipe(unsigned int id);
+    recipe::IngredientsList fetchIngredientsForRecipe(unsigned int id);
+
     void bindTableName(string& query, string tableName);
 };
 
