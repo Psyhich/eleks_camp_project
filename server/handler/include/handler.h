@@ -3,11 +3,11 @@
 
 #include <optional>
 
-#include "initializer.h"
-#include "modifier.h"
+#include "i_initializer.h"
+#include "i_modifier.h"
+#include "i_searcher.h"
 #include "requests.h"
 #include "responses.h"
-#include "searcher.h"
 
 #include "i_handler.h"
 
@@ -16,14 +16,14 @@ namespace handler {
 
 class Handler : public IHandler {
 protected:
-    initializer::Initializer& initializer;
-    searcher::Searcher& searcher;
-    modifier::Modifier& modifier;
+    initializer::IInitializer& initializer;
+    searcher::ISearcher& searcher;
+    modifier::IModifier& modifier;
 public:
     Handler(
-        initializer::Initializer& initializer,
-        searcher::Searcher& searcher,
-        modifier::Modifier& modifier
+        initializer::IInitializer& initializer,
+        searcher::ISearcher& searcher,
+        modifier::IModifier& modifier
     );
 
     virtual ~Handler() = default;

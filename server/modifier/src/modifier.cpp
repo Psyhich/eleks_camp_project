@@ -5,15 +5,15 @@ namespace modifier {
 
     Modifier::Modifier(dbAPI::IDatabase& db) : db{db} {}
 
-    bool Modifier::add(const recipe::Recipe& newRecipe) {
+    bool Modifier::add(const recipe::Recipe& newRecipe) const {
         return db.add(newRecipe);
     }
 
-    bool Modifier::edit(const recipe::Recipe& changedRecipe) {
+    bool Modifier::edit(const recipe::Recipe& changedRecipe) const {
         return db.edit(changedRecipe);
     }
 
-    bool Modifier::remove(unsigned int id) {
+    bool Modifier::remove(unsigned int id) const {
         return db.remove(id);
     }
 

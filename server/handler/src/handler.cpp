@@ -6,9 +6,9 @@ namespace server{
 namespace handler {
 
     Handler::Handler(
-        initializer::Initializer& initializer,
-        searcher::Searcher& searcher,
-        modifier::Modifier& modifier
+        initializer::IInitializer& initializer,
+        searcher::ISearcher& searcher,
+        modifier::IModifier& modifier
     ) :
         initializer{initializer},
         searcher{searcher},
