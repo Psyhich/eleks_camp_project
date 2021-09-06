@@ -2,6 +2,7 @@
 #define REQUESTS
 
 #include <utility>
+#include <variant>
 
 #include "criteria.h"
 #include "recipe.h"
@@ -9,41 +10,91 @@
 namespace server {
 namespace requests {
 
-class GetInitData {
+class Request {
+    unsigned int clientID{0};
+protected:
+    Request(unsigned int clientID) : clientID {clientID} {}
 public:
-    GetInitData() {}
+    auto getClientID() const noexcept {return clientID;}
 };
 
-class Find {
+// used in desktop version only
+class ShutDown : public Request {
+public:               
+    ShutDown(unsigned int clientID = 0) : Request(clientID) {}
+};
+
+class GetInitData : public Request {
+public:
+    GetInitData(unsigned int clientID = 0) : Request(clientID) {}
+};
+
+class Find : public Request {
     searcher::Criteria searchCriteria;
 public:
-    Find(const searcher::Criteria& searchCriteria) : searchCriteria{searchCriteria} {}
-    Find(searcher::Criteria&& searchCriteria) : searchCriteria{std::move(searchCriteria)} {}
+    Find(const searcher::Criteria& searchCriteria, unsigned int clientID = 0)
+        :
+        Request(clientID),
+        searchCriteria{searchCriteria}
+    {}
+
+    Find(searcher::Criteria&& searchCriteria, unsigned int clientID = 0) noexcept
+        :
+        Request (clientID),
+        searchCriteria{std::move(searchCriteria)}
+    {}
+
     auto getSearchCriteria() const noexcept {return searchCriteria;}
 };
 
-class Add {
+class Add : public Request {
     recipe::Recipe newRecipe;
 public:
-    Add(const recipe::Recipe& newRecipe) : newRecipe{newRecipe} {}
-    Add(recipe::Recipe&& newRecipe) : newRecipe{std::move(newRecipe)} {}
+    Add(const recipe::Recipe& newRecipe, unsigned int clientID = 0)
+        :
+        Request(clientID),
+        newRecipe{newRecipe}
+    {}
+
+    Add(recipe::Recipe&& newRecipe, unsigned int clientID = 0) noexcept
+        :
+        Request(clientID),
+        newRecipe{std::move(newRecipe)}
+    {}
+
     auto getNewRecipe() const noexcept {return newRecipe;}
 };
 
-class Edit {
+class Edit : public Request {
     recipe::Recipe changedRecipe;
 public:
-    Edit(const recipe::Recipe changedRecipe) : changedRecipe{changedRecipe} {}
-    Edit(recipe::Recipe&& changedRecipe) : changedRecipe{std::move(changedRecipe)} {}
+    Edit(const recipe::Recipe& changedRecipe, unsigned int clientID = 0)
+        :
+        Request(clientID),
+        changedRecipe{changedRecipe}
+    {}
+
+    Edit(recipe::Recipe&& changedRecipe, unsigned int clientID = 0) noexcept
+        :
+        Request(clientID),
+        changedRecipe{std::move(changedRecipe)}
+    {}
     auto getChangedRecipe() const noexcept {return changedRecipe;}
 };
 
-class Remove {
-    const unsigned int id;
+class Remove : public Request {
+    const unsigned int recipeID;
 public:
-    Remove(unsigned int id) : id{id} {}
-    auto getId() const noexcept {return id;}
+    Remove(unsigned int recipeID, unsigned int clientID = 0)
+        :
+        Request(clientID),
+        recipeID{recipeID}
+    {}
+
+    auto getRecipeID() const noexcept {return recipeID;}
 };
+
+using RequestVar = std::variant<ShutDown, GetInitData, Find, Add, Edit, Remove>;
 
 } // requests
 } // server
