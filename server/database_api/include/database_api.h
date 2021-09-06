@@ -61,6 +61,7 @@ private:
     recipe::IngredientsList fetchIngredientsForRecipe(unsigned int id);
 
     void insertIngredientsForRecipe(recipe::IngredientsList ingredients, unsigned int id);
+    void removeIngredientsForRecipe(unsigned int id);
 
     void bindTableName(string& query, string tableName);
 

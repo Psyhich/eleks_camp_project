@@ -108,7 +108,19 @@ namespace dbAPI {
     }
 
     bool Database::remove(unsigned int id) {
-        // to be implemented; returns true if success, false if error
+        try {
+            removeIngredientsForRecipe(id);
+            string query = "DELETE FROM recipes\n"
+                           "WHERE recipe_id = :id";
+            SQLite::Statement deleteQuery(db, query);
+            deleteQuery.bind(":id", id);
+            return deleteQuery.exec();
+        }
+        catch (std::exception &e) {
+            std::cerr << "error: cannot remove recipe" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
     }
 
     void Database::createCoursesTable() {
@@ -443,9 +455,9 @@ namespace dbAPI {
             try {
                 string query = "DELETE FROM courses\n"
                                "WHERE course_name = :course";
-                SQLite::Statement insertQuery(db, query);
-                insertQuery.bind(":course", course);
-                return insertQuery.exec();
+                SQLite::Statement deleteQuery(db, query);
+                deleteQuery.bind(":course", course);
+                return deleteQuery.exec();
             }
             catch (std::exception& e) {
                 std::cerr << "error: cannot remove course" << std::endl;
@@ -483,9 +495,9 @@ namespace dbAPI {
             try {
                 string query = "DELETE FROM cuisines\n"
                                "WHERE cuisine_name = :cuisine";
-                SQLite::Statement insertQuery(db, query);
-                insertQuery.bind(":cuisine", cuisine);
-                return insertQuery.exec();
+                SQLite::Statement deleteQuery(db, query);
+                deleteQuery.bind(":cuisine", cuisine);
+                return deleteQuery.exec();
             }
             catch (std::exception &e) {
                 std::cerr << "error: cannot remove cuisine" << std::endl;
@@ -543,6 +555,20 @@ namespace dbAPI {
             std::cerr << "error: cannot check course" << std::endl;
             std::cerr << e.what() << std::endl;
             return false;
+        }
+    }
+
+    void Database::removeIngredientsForRecipe(unsigned int id) {
+        try {
+            string query = "DELETE FROM recipe_ingredients\n"
+                           "WHERE recipe_id = :id";
+            SQLite::Statement deleteQuery(db, query);
+            deleteQuery.bind(":id", id);
+            deleteQuery.exec();
+        }
+        catch (std::exception &e) {
+            std::cerr << "error: cannot remove ingredients for recipe" << std::endl;
+            std::cerr << e.what() << std::endl;
         }
     }
 
