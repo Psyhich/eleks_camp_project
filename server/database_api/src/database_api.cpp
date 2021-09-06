@@ -94,6 +94,7 @@ namespace dbAPI {
             }
 
             insertIngredientsForRecipe(newRecipe.getIngredients(), id);
+            return true;
         }
         catch (std::exception& e) {
             std::cerr << "error: cannot insert recipe" << std::endl;
@@ -438,7 +439,23 @@ namespace dbAPI {
     }
 
     bool Database::removeCourse(string course) {
-        return false;
+        if (checkCourse(course)) {
+            try {
+                string query = "DELETE FROM courses\n"
+                               "WHERE course_name = :course";
+                SQLite::Statement insertQuery(db, query);
+                insertQuery.bind(":course", course);
+                return insertQuery.exec();
+            }
+            catch (std::exception& e) {
+                std::cerr << "error: cannot remove course" << std::endl;
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
     }
 
     bool Database::addCuisine(string cuisine) {
@@ -462,7 +479,23 @@ namespace dbAPI {
     }
 
     bool Database::removeCuisine(string cuisine) {
-        return false;
+        if (checkCuisine(cuisine)) {
+            try {
+                string query = "DELETE FROM cuisines\n"
+                               "WHERE cuisine_name = :cuisine";
+                SQLite::Statement insertQuery(db, query);
+                insertQuery.bind(":cuisine", cuisine);
+                return insertQuery.exec();
+            }
+            catch (std::exception &e) {
+                std::cerr << "error: cannot remove cuisine" << std::endl;
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
     }
 
     void Database::insertIngredientsForRecipe(recipe::IngredientsList ingredients, unsigned int id) {
