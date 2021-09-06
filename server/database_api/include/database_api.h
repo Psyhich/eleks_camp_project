@@ -27,11 +27,11 @@ public:
     bool edit(const recipe::Recipe& changedRecipe) override;
     bool remove(unsigned int id) override;
 
-    bool addCourse(string &course) override;
-    bool removeCourse(string &course) override;
+    bool addCourse(string course) override;
+    bool removeCourse(string course) override;
 
-    bool addCuisine(string &course) override;
-    bool removeCuisine(string &course) override;
+    bool addCuisine(string cuisine) override;
+    bool removeCuisine(string cuisine) override;
 
 private:
     static constexpr char databaseName[] = "cookbook.db";
@@ -63,6 +63,9 @@ private:
     void insertIngredientsForRecipe(recipe::IngredientsList ingredients, unsigned int id);
 
     void bindTableName(string& query, string tableName);
+
+    bool checkCuisine(string cuisine);
+    bool checkCourse(string course);
 };
 
 }   // dbAPI 

@@ -66,7 +66,8 @@ namespace dbAPI {
 
     bool Database::add(const recipe::Recipe& newRecipe) {
         try {
-            //SQLite::Transaction transaction(db);
+            addCourse(newRecipe.getCourse());
+            addCuisine(newRecipe.getCuisine());
 
             string query = "INSERT INTO recipes(recipe_name, recipe_preparation, recipe_presentation, recipe_weight, recipe_portion_amount,\n"
                            "recipe_portion_nutritional_value, recipe_cuisine_id, recipe_course_id, recipe_remarks)\n"
@@ -93,8 +94,6 @@ namespace dbAPI {
             }
 
             insertIngredientsForRecipe(newRecipe.getIngredients(), id);
-
-            //transaction.commit();
         }
         catch (std::exception& e) {
             std::cerr << "error: cannot insert recipe" << std::endl;
@@ -418,19 +417,51 @@ namespace dbAPI {
         }
     }
 
-    bool Database::addCourse(string &course) {
+    bool Database::addCourse(string course) {
+        if (!checkCourse(course)) {
+            try {
+                string query = "INSERT INTO courses\n"
+                               "VALUES (NULL, :course)";
+                SQLite::Statement insertQuery(db, query);
+                insertQuery.bind(":course", course);
+                return insertQuery.exec();
+            }
+            catch (std::exception& e) {
+                std::cerr << "error: cannot add course" << std::endl;
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+
+    bool Database::removeCourse(string course) {
         return false;
     }
 
-    bool Database::removeCourse(string &course) {
-        return false;
+    bool Database::addCuisine(string cuisine) {
+        if (!checkCuisine(cuisine)) {
+            try {
+                string query = "INSERT INTO cuisines\n"
+                               "VALUES (NULL, :cuisine)";
+                SQLite::Statement insertQuery(db, query);
+                insertQuery.bind(":cuisine", cuisine);
+                return insertQuery.exec();
+            }
+            catch (std::exception &e) {
+                std::cerr << "error: cannot add cuisine" << std::endl;
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
     }
 
-    bool Database::addCuisine(string &course) {
-        return false;
-    }
-
-    bool Database::removeCuisine(string &course) {
+    bool Database::removeCuisine(string cuisine) {
         return false;
     }
 
@@ -449,6 +480,36 @@ namespace dbAPI {
             insertRecipeIngredientQuery.bind(":unit", item.second.unit);
 
             insertRecipeIngredientQuery.exec();
+        }
+    }
+
+    bool Database::checkCuisine(string cuisine) {
+        try {
+            string query = "SELECT * FROM cuisines\n"
+                           "WHERE cuisine_name = :cuisine";
+            SQLite::Statement checkQuery(db, query);
+            checkQuery.bind(":cuisine", cuisine);
+            return checkQuery.executeStep();
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot check cuisine" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
+    }
+
+    bool Database::checkCourse(string course) {
+        try {
+            string query = "SELECT * FROM courses\n"
+                           "WHERE course_name = :course";
+            SQLite::Statement checkQuery(db, query);
+            checkQuery.bind(":course", course);
+            return checkQuery.executeStep();
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot check course" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
         }
     }
 
