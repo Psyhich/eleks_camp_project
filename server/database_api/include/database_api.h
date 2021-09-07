@@ -63,10 +63,10 @@ private:
     void insertIngredientsForRecipe(recipe::IngredientsList ingredients, unsigned int id);
     void removeIngredientsForRecipe(unsigned int id);
 
-    void bindTableName(string& query, string tableName);
-
     bool checkCuisine(string cuisine);
     bool checkCourse(string course);
+
+    void bindTableName(string& query, string tableName);
 };
 
 }   // dbAPI 

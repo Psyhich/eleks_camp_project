@@ -104,7 +104,42 @@ namespace dbAPI {
     }
 
     bool Database::edit(const recipe::Recipe& changedRecipe) {
-        // to be implemented; returns true if success, false if error
+        try {
+            addCourse(changedRecipe.getCourse());
+            addCuisine(changedRecipe.getCuisine());
+
+            string query = "UPDATE recipes\n"
+                           "SET recipe_name = :name, recipe_preparation = :preparation, recipe_presentation = :presentation,\n"
+                           "recipe_weight = :weight, recipe_portion_amount = :amount,\n"
+                           "recipe_portion_nutritional_value = :calories, recipe_cuisine_id = results.cuisine_id,\n"
+                           "recipe_course_id = results.course_id, recipe_remarks = :remarks\n"
+                           "FROM (SELECT *\n"
+                           "FROM cuisines, courses\n"
+                           "WHERE cuisines.cuisine_name= :cuisine\n"
+                           "AND courses.course_name = :course) as results\n"
+                           "WHERE recipes.recipe_id = :id\n";
+            SQLite::Statement updateRecipeQuery(db, query);
+            updateRecipeQuery.bind(":id", changedRecipe.getId());
+            updateRecipeQuery.bind(":name", changedRecipe.getName());
+            updateRecipeQuery.bind(":preparation", changedRecipe.getPreparation());
+            updateRecipeQuery.bind(":presentation", changedRecipe.getPresentation());
+            updateRecipeQuery.bind(":weight", changedRecipe.getOutWeight());
+            updateRecipeQuery.bind(":amount", changedRecipe.getOutPortions());
+            updateRecipeQuery.bind(":calories", changedRecipe.getOutCalories());
+            updateRecipeQuery.bind(":cuisine", changedRecipe.getCuisine());
+            updateRecipeQuery.bind(":course", changedRecipe.getCourse());
+            updateRecipeQuery.bind(":remarks", changedRecipe.getRemarks());
+            updateRecipeQuery.exec();
+
+            removeIngredientsForRecipe(changedRecipe.getId());
+            insertIngredientsForRecipe(changedRecipe.getIngredients(), changedRecipe.getId());
+            return true;
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot update recipe with ID: " << changedRecipe.getId() << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
     }
 
     bool Database::remove(unsigned int id) {
