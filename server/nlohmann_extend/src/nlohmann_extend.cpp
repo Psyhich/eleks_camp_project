@@ -51,7 +51,7 @@ server::recipe::IngredientsList adl_serializer<server::recipe::IngredientsList>:
     auto ingredientUnitArray = j.at("ingredientUnitArray");
     server::recipe::IngredientsList ingredients;
     for (size_t i{0}; i<ingredientNameArray.size(); ++i){
-        ingredients[ingredientNameArray.at(i)] = {ingredientQuantityArray.at(i), ingredientUnitArray.at(i)};
+        ingredients.try_emplace(ingredientNameArray.at(i), ingredientQuantityArray.at(i), ingredientUnitArray.at(i));
     }
     return ingredients;
 }
