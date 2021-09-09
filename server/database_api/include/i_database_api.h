@@ -22,6 +22,12 @@ public:
     virtual bool add(const recipe::Recipe& newRecipe) = 0;
     virtual bool edit(const recipe::Recipe& changedRecipe) = 0;
     virtual bool remove(unsigned int id) = 0;
+
+    virtual bool addCourse(std::string course) = 0;
+    virtual bool removeCourse(std::string course) = 0;
+
+    virtual bool addCuisine(std::string cuisine) = 0;
+    virtual bool removeCuisine(std::string cuisine) = 0;
 };
 
 }   // dbAPI 

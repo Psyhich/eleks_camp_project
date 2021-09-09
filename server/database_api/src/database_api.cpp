@@ -65,15 +65,97 @@ namespace dbAPI {
     }
 
     bool Database::add(const recipe::Recipe& newRecipe) {
-        // to be implemented; returns true if success, false if error
+        try {
+            addCourse(newRecipe.getCourse());
+            addCuisine(newRecipe.getCuisine());
+
+            string query = "INSERT INTO recipes(recipe_name, recipe_preparation, recipe_presentation, recipe_weight, recipe_portion_amount,\n"
+                           "recipe_portion_nutritional_value, recipe_cuisine_id, recipe_course_id, recipe_remarks)\n"
+                           "SELECT :name, :preparation, :presentation, :weight, :amount, :calories, cuisines.cuisine_id, courses.course_id, :remarks\n"
+                           "FROM cuisines, courses\n"
+                           "WHERE cuisines.cuisine_name= :cuisine\n"
+                           "AND courses.course_name = :course";
+            SQLite::Statement insertRecipeInformationQuery(db, query);
+            insertRecipeInformationQuery.bind(":name", newRecipe.getName());
+            insertRecipeInformationQuery.bind(":preparation", newRecipe.getPreparation());
+            insertRecipeInformationQuery.bind(":presentation", newRecipe.getPresentation());
+            insertRecipeInformationQuery.bind(":weight", newRecipe.getOutWeight());
+            insertRecipeInformationQuery.bind(":amount", newRecipe.getOutPortions());
+            insertRecipeInformationQuery.bind(":calories", newRecipe.getOutCalories());
+            insertRecipeInformationQuery.bind(":cuisine", newRecipe.getCuisine());
+            insertRecipeInformationQuery.bind(":course", newRecipe.getCourse());
+            insertRecipeInformationQuery.bind(":remarks", newRecipe.getRemarks());
+            insertRecipeInformationQuery.exec();
+
+            unsigned int id = 0;
+            SQLite::Statement selectID(db, "SELECT last_insert_rowid()");
+            if (selectID.executeStep()) {
+                id = selectID.getColumn(0);
+            }
+
+            insertIngredientsForRecipe(newRecipe.getIngredients(), id);
+            return true;
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot insert recipe" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
     }
 
     bool Database::edit(const recipe::Recipe& changedRecipe) {
-        // to be implemented; returns true if success, false if error
+        try {
+            addCourse(changedRecipe.getCourse());
+            addCuisine(changedRecipe.getCuisine());
+
+            string query = "UPDATE recipes\n"
+                           "SET recipe_name = :name, recipe_preparation = :preparation, recipe_presentation = :presentation,\n"
+                           "recipe_weight = :weight, recipe_portion_amount = :amount,\n"
+                           "recipe_portion_nutritional_value = :calories, recipe_cuisine_id = results.cuisine_id,\n"
+                           "recipe_course_id = results.course_id, recipe_remarks = :remarks\n"
+                           "FROM (SELECT *\n"
+                           "FROM cuisines, courses\n"
+                           "WHERE cuisines.cuisine_name= :cuisine\n"
+                           "AND courses.course_name = :course) as results\n"
+                           "WHERE recipes.recipe_id = :id\n";
+            SQLite::Statement updateRecipeQuery(db, query);
+            updateRecipeQuery.bind(":id", changedRecipe.getId());
+            updateRecipeQuery.bind(":name", changedRecipe.getName());
+            updateRecipeQuery.bind(":preparation", changedRecipe.getPreparation());
+            updateRecipeQuery.bind(":presentation", changedRecipe.getPresentation());
+            updateRecipeQuery.bind(":weight", changedRecipe.getOutWeight());
+            updateRecipeQuery.bind(":amount", changedRecipe.getOutPortions());
+            updateRecipeQuery.bind(":calories", changedRecipe.getOutCalories());
+            updateRecipeQuery.bind(":cuisine", changedRecipe.getCuisine());
+            updateRecipeQuery.bind(":course", changedRecipe.getCourse());
+            updateRecipeQuery.bind(":remarks", changedRecipe.getRemarks());
+            updateRecipeQuery.exec();
+
+            removeIngredientsForRecipe(changedRecipe.getId());
+            insertIngredientsForRecipe(changedRecipe.getIngredients(), changedRecipe.getId());
+            return true;
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot update recipe with ID: " << changedRecipe.getId() << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
     }
 
     bool Database::remove(unsigned int id) {
-        // to be implemented; returns true if success, false if error
+        try {
+            removeIngredientsForRecipe(id);
+            string query = "DELETE FROM recipes\n"
+                           "WHERE recipe_id = :id";
+            SQLite::Statement deleteQuery(db, query);
+            deleteQuery.bind(":id", id);
+            return deleteQuery.exec();
+        }
+        catch (std::exception &e) {
+            std::cerr << "error: cannot remove recipe" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
     }
 
     void Database::createCoursesTable() {
@@ -120,7 +202,7 @@ namespace dbAPI {
                                                  "\"recipe_name\"\tTEXT NOT NULL,\n"
                                                  "\"recipe_preparation\"\tTEXT NOT NULL,\n"
                                                  "\"recipe_presentation\"\tTEXT,"
-                                                 "\"recipe_mass\"\tREAL NOT NULL,\n"
+                                                 "\"recipe_weight\"\tREAL NOT NULL,\n"
                                                  "\"recipe_portion_amount\"\tINTEGER NOT NULL DEFAULT 1,\n"
                                                  "\"recipe_portion_nutritional_value\"\tREAL NOT NULL DEFAULT 0,\n"
                                                  "\"recipe_cuisine_id\"\tINTEGER,\n"
@@ -326,7 +408,7 @@ namespace dbAPI {
         std::string remarks{};
 
         try {
-            string selectRecipeInfoQuery = "SELECT recipe_name, recipe_preparation, recipe_presentation, recipe_mass, recipe_portion_amount,\n"
+            string selectRecipeInfoQuery = "SELECT recipe_name, recipe_preparation, recipe_presentation, recipe_weight, recipe_portion_amount,\n"
                                            "recipe_portion_nutritional_value, courses.course_name, cuisines.cuisine_name, recipe_remarks\n"
                                            "FROM %tableName%\n"
                                            "INNER JOIN courses ON recipes.recipe_course_id = courses.course_id\n"
@@ -380,6 +462,148 @@ namespace dbAPI {
             std::cerr << "error: cannot fetch ingredients for recipe with ID: " << id << std::endl;
             std::cerr << e.what() << std::endl;
             return recipe::IngredientsList {};
+        }
+    }
+
+    bool Database::addCourse(string course) {
+        if (!checkCourse(course)) {
+            try {
+                string query = "INSERT INTO courses\n"
+                               "VALUES (NULL, :course)";
+                SQLite::Statement insertQuery(db, query);
+                insertQuery.bind(":course", course);
+                return insertQuery.exec();
+            }
+            catch (std::exception& e) {
+                std::cerr << "error: cannot add course" << std::endl;
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+
+    bool Database::removeCourse(string course) {
+        if (checkCourse(course)) {
+            try {
+                string query = "DELETE FROM courses\n"
+                               "WHERE course_name = :course";
+                SQLite::Statement deleteQuery(db, query);
+                deleteQuery.bind(":course", course);
+                return deleteQuery.exec();
+            }
+            catch (std::exception& e) {
+                std::cerr << "error: cannot remove course" << std::endl;
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+
+    bool Database::addCuisine(string cuisine) {
+        if (!checkCuisine(cuisine)) {
+            try {
+                string query = "INSERT INTO cuisines\n"
+                               "VALUES (NULL, :cuisine)";
+                SQLite::Statement insertQuery(db, query);
+                insertQuery.bind(":cuisine", cuisine);
+                return insertQuery.exec();
+            }
+            catch (std::exception &e) {
+                std::cerr << "error: cannot add cuisine" << std::endl;
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+
+    bool Database::removeCuisine(string cuisine) {
+        if (checkCuisine(cuisine)) {
+            try {
+                string query = "DELETE FROM cuisines\n"
+                               "WHERE cuisine_name = :cuisine";
+                SQLite::Statement deleteQuery(db, query);
+                deleteQuery.bind(":cuisine", cuisine);
+                return deleteQuery.exec();
+            }
+            catch (std::exception &e) {
+                std::cerr << "error: cannot remove cuisine" << std::endl;
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+
+    void Database::insertIngredientsForRecipe(recipe::IngredientsList ingredients, unsigned int id) {
+        for (auto item : ingredients) {
+            string query = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, unit_id, ingredient_amount)\n"
+                           "SELECT :id, ingredients.ingredient_id, units.unit_id, :amount\n"
+                           "FROM ingredients, units\n"
+                           "WHERE ingredients.ingredient_name = :ingredient\n"
+                           "AND units.unit_name = :unit";
+            SQLite::Statement insertRecipeIngredientQuery(db, query);
+
+            insertRecipeIngredientQuery.bind(":id", id);
+            insertRecipeIngredientQuery.bind(":amount", item.second.quantity);
+            insertRecipeIngredientQuery.bind(":ingredient", item.first);
+            insertRecipeIngredientQuery.bind(":unit", item.second.unit);
+
+            insertRecipeIngredientQuery.exec();
+        }
+    }
+
+    bool Database::checkCuisine(string cuisine) {
+        try {
+            string query = "SELECT * FROM cuisines\n"
+                           "WHERE cuisine_name = :cuisine";
+            SQLite::Statement checkQuery(db, query);
+            checkQuery.bind(":cuisine", cuisine);
+            return checkQuery.executeStep();
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot check cuisine" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
+    }
+
+    bool Database::checkCourse(string course) {
+        try {
+            string query = "SELECT * FROM courses\n"
+                           "WHERE course_name = :course";
+            SQLite::Statement checkQuery(db, query);
+            checkQuery.bind(":course", course);
+            return checkQuery.executeStep();
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot check course" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
+    }
+
+    void Database::removeIngredientsForRecipe(unsigned int id) {
+        try {
+            string query = "DELETE FROM recipe_ingredients\n"
+                           "WHERE recipe_id = :id";
+            SQLite::Statement deleteQuery(db, query);
+            deleteQuery.bind(":id", id);
+            deleteQuery.exec();
+        }
+        catch (std::exception &e) {
+            std::cerr << "error: cannot remove ingredients for recipe" << std::endl;
+            std::cerr << e.what() << std::endl;
         }
     }
 
