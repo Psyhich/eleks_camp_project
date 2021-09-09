@@ -16,12 +16,7 @@ Server::Server(
 
 void Server::operator()() {
     while (true){
-        auto responseOpt = handleRequest(getRequest());
-        if (responseOpt){
-            sendResponse(*responseOpt);
-        } else {
-            break;
-        }
+        sendResponse(handleRequest(getRequest()));
     }
 }
 
@@ -29,7 +24,7 @@ requests::RequestVar Server::getRequest() const {
     return receiver.getRequest();
 }
 
-std::optional<responses::ResponseVar> Server::handleRequest(const requests::RequestVar& request) const {
+responses::ResponseVar Server::handleRequest(const requests::RequestVar& request) const {
     return std::visit(handler, request);
 }
 

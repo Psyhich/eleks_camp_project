@@ -18,12 +18,6 @@ public:
     auto getClientID() const noexcept {return clientID;}
 };
 
-// used in desktop version only
-class ShutDown : public Request {
-public:               
-    ShutDown(unsigned int clientID = 0) : Request(clientID) {}
-};
-
 class GetInitData : public Request {
 public:
     GetInitData(unsigned int clientID = 0) : Request(clientID) {}
@@ -94,7 +88,7 @@ public:
     auto getRecipeID() const noexcept {return recipeID;}
 };
 
-using RequestVar = std::variant<ShutDown, GetInitData, Find, Add, Edit, Remove>;
+using RequestVar = std::variant<GetInitData, Find, Add, Edit, Remove>;
 
 } // requests
 } // server

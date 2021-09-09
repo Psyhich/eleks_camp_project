@@ -1,8 +1,6 @@
 #ifndef HANDLER
 #define HANDLER
 
-#include <optional>
-
 #include "i_initializer.h"
 #include "i_modifier.h"
 #include "i_searcher.h"
@@ -28,12 +26,11 @@ public:
 
     virtual ~Handler() = default;
 
-    virtual std::optional<responses::ResponseVar> operator()(const requests::ShutDown& shutDownRequest) const override;
-    virtual std::optional<responses::ResponseVar> operator()(const requests::GetInitData& getInitDataRequest) const override;
-    virtual std::optional<responses::ResponseVar> operator()(const requests::Find& findRequest) const override;
-    virtual std::optional<responses::ResponseVar> operator()(const requests::Add& addRequest) const override;
-    virtual std::optional<responses::ResponseVar> operator()(const requests::Edit& editRequest) const override;
-    virtual std::optional<responses::ResponseVar> operator()(const requests::Remove& removeRequest) const override;
+    virtual responses::ResponseVar operator()(const requests::GetInitData& getInitDataRequest) const override;
+    virtual responses::ResponseVar operator()(const requests::Find& findRequest) const override;
+    virtual responses::ResponseVar operator()(const requests::Add& addRequest) const override;
+    virtual responses::ResponseVar operator()(const requests::Edit& editRequest) const override;
+    virtual responses::ResponseVar operator()(const requests::Remove& removeRequest) const override;
 };
 
 } // namespace handler

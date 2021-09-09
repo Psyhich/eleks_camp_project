@@ -13,9 +13,6 @@ requests::RequestVar JsonDeserializer::getRequest(const transfer::Pack& inPack) 
     auto j = nlohmann::json::parse(inPack.data);
     deserializer::RequestTag requestTag = j.at("requestTag");
     switch (requestTag){
-        case RequestTag::shutDown : {
-            return requests::RequestVar(std::in_place_type<requests::ShutDown>, inPack.clientID);
-        }
         case RequestTag::getInitData : {
             return requests::RequestVar(std::in_place_type<requests::GetInitData>, inPack.clientID);
         }
