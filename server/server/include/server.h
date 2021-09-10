@@ -1,23 +1,19 @@
 #ifndef SERVER
 #define SERVER
 
-#include <atomic>
-#include <memory>
-#include <thread>
-
 #include "i_handler.h"
 #include "i_receiver.h"
 #include "i_sender.h"
 #include "requests.h"
 #include "responses.h"
+#include "thread_cycler.h"
+
+#include "i_server.h"
 
 namespace server {
 
-class Server {
+class Server : virtual public helpers::ThreadCycler, virtual public IServer {
 protected:
-    std::unique_ptr<std::thread> threadPtr;
-    std::atomic<bool> stopFlag {true};
-
     handler::IHandler& handler;
     receiver::IReceiver& receiver;
     sender::ISender& sender;
@@ -28,13 +24,14 @@ public:
         receiver::IReceiver& receiver,
         sender::ISender& sender
     );
-    virtual ~Server();
+    virtual ~Server() = default;
 
-    virtual void start();
-    virtual void stop();
+    virtual void start() override;
+    virtual void stop() override;
 
 protected:
-    void run();
+    virtual void work() override;
+
     requests::RequestVar getRequest() const; 
     responses::ResponseVar handleRequest(const requests::RequestVar& request) const;
     void sendResponse(const responses::ResponseVar& response) const;

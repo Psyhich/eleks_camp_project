@@ -14,32 +14,16 @@ Server::Server(
     sender{sender}
 {}
 
-Server::~Server() {
-    stop();
-}
-
 void Server::start() {
-    if (stopFlag.load()){
-        stopFlag.store(false);
-        threadPtr.reset(new std::thread([this](){run();}));
-    }
+    ThreadCycler::start();
 }
 
 void Server::stop() {
-    if (!stopFlag.load()){
-        stopFlag.store(true);
-        threadPtr->join();
-    }
+    ThreadCycler::stop();
 }
 
-
-void Server::run(){
-    while (true){
-        sendResponse(handleRequest(getRequest()));
-        if (stopFlag.load()){
-            break;
-        }
-    }
+void Server::work() {
+    sendResponse(handleRequest(getRequest()));
 }
 
 requests::RequestVar Server::getRequest() const {

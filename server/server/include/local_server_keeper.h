@@ -2,14 +2,17 @@
 #define LOCAL_SERVER_KEEPER
 
 #include "database_api.h"
-#include "initializer.h"
-#include "searcher.h"
-#include "modifier.h"
 #include "handler.h"
+#include "initializer.h"
 #include "local_exchange.h"
 #include "local_receiver.h"
 #include "local_sender.h"
+#include "modifier.h"
+#include "searcher.h"
 #include "server.h"
+
+#include "i_server.h"
+#include "i_frontend_exchange.h"
 
 namespace server{
 
@@ -24,7 +27,7 @@ class LocalServerKeeper {
     sender::LocalSender sender{localExchange};
     server::Server server{handler, receiver, sender};
 public:
-    server::Server& getServer() {return server;}
+    server::IServer& getServer() {return server;}
     localex::IFrontendExchange& getFrontendExchange() {return localExchange;}
 };
 
