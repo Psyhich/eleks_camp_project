@@ -6,6 +6,15 @@
 
 namespace BaseTypes {
 
+struct RequestQuery{
+	QList<unsigned int> favoriteIDs;
+	QString name;
+	QString course;
+	QString cuisine;
+	QList<QString> ingredients;
+	bool searchExclusively;
+};
+
 // Base class that responds for holding data about recipe
 class Recipe {
   unsigned int id;

@@ -1,65 +1,34 @@
 #include "recipe_item_model.h"
 #include <QSharedPointer>
 
-RecipesListModel::RecipesListModel(
-    QList<QSharedPointer<BaseTypes::Recipe>> recipes, QObject *parent)
-    : QAbstractListModel(parent) {
-  this->recipes = recipes;
-  this->setParent(parent);
+
+RecipesList::RecipesList(QList<BaseTypes::Recipe*> recipesToAdd){
+  for(BaseTypes::Recipe* recipe : recipesToAdd){
+	recipes.append(QSharedPointer<BaseTypes::Recipe>(recipe));
+	emit this->recipeAdded(recipes.back());
+  }
 }
 
-int RecipesListModel::rowCount(const QModelIndex &parent) const {
-  return recipes.count();
-}
-int RecipesListModel::columnCount(const QModelIndex &parent) const {
-  return MODEL_PRESENTATION_COLUMN;
-}
-
-QVariant RecipesListModel::data(const QModelIndex &index, int role) const {
-  // Validating
-  if (!index.isValid() || index.row() >= rowCount() ||
-      index.column() > columnCount() || role != Qt::ItemDataRole::DisplayRole) {
-    return QVariant();
+inline QSharedPointer<BaseTypes::Recipe> RecipesList::operator[](int index){ return recipes[index]; }
+QSharedPointer<BaseTypes::Recipe> RecipesList::get(unsigned int recipeID){
+  for(QSharedPointer<BaseTypes::Recipe> recipe : recipes){
+	if(recipe->getId() == recipeID){
+	  return recipe;
+	}
   }
-  BaseTypes::Recipe *foundRecipe = recipes[index.row()].get();
-  switch (index.column()) {
-  case MODEL_NAME_COLUMN: {
-    return QVariant(foundRecipe->getName());
-  }
-  case MODEL_ID_COLUMN: {
-    return QVariant(foundRecipe->getId());
-  }
-  case MODEL_TAGS_COLUMN: {
-    return QVariant(foundRecipe->getTags());
-  }
-  case MODEL_INGREDIENTS_COLUMN: {
-    QMap<QString, QVariant> ingredients;
-    for (auto pairKey : foundRecipe->getIngredients().keys()) {
-      ingredients.insert(pairKey,
-                         QVariant(foundRecipe->getIngredients()[pairKey]));
-    }
-    return QVariant(ingredients);
-  }
-  case MODEL_CALORIES_COLUMN: {
-    return QVariant(foundRecipe->getCalories());
-  }
-  case MODEL_WEIGHT_COLUMN: {
-    return QVariant(foundRecipe->getWeight());
-  }
-  case MODEL_MIN_PORTIONS_COLUMN: {
-    return QVariant(foundRecipe->getBasePortionsCount());
-  }
-  case MODEL_TEXT_COLUMN: {
-    return QVariant(foundRecipe->getRecipeText());
-  }
-  case MODEL_PRESENTATION_COLUMN: {
-    return QVariant(foundRecipe->getPresentationText());
-  }
-  }
-  return QVariant();
+  return nullptr;
 }
 
-bool RecipesListModel::setData(const QModelIndex &index, const QVariant &value,
-                               int role) {
-  return false;
+void RecipesList::removeRecipe(unsigned int recipeID){
+  for(int index = 0; index < recipes.count(); index++){
+	if(recipes[index]->getId() == recipeID){
+	  recipes.removeAt(index);
+	  emit recipeRemoved(recipeID);
+	  break;
+	}
+  }
+}
+void RecipesList::addRecipe(BaseTypes::Recipe* recipeToAdd){
+  recipes.append(QSharedPointer<BaseTypes::Recipe>(recipeToAdd));
+  emit recipeAdded(recipes.back());
 }

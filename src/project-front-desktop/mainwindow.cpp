@@ -4,14 +4,12 @@
 #include "base_types.h"
 #include "recipe_item_model.h"
 #include <QSharedPointer>
+#include "recipe_item_model.h"
+#include "recipes_list_view.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
-
-  QList<QSharedPointer<BaseTypes::Recipe>> recipes;
-
-  ui->listView->setModel(new RecipesListModel(recipes));
 }
 
 MainWindow::~MainWindow() { delete ui; }

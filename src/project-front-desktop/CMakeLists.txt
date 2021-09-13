@@ -15,6 +15,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(Qt5Network REQUIRED)
+
 
 set(PROJECT_SOURCES
         main.cpp
@@ -27,6 +29,12 @@ set(PROJECT_SOURCES
 	base_types.cpp
 	recipe_row_view.h
 	recipe_row_view.cpp
+	recipes_list_view.h
+	recipes_list_view.cpp
+	search_widget.h
+	search_widget.cpp
+	searcher.h
+	searcher.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -47,6 +55,8 @@ else()
 endif()
 
 target_link_libraries(project-front-desktop PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(project-front-desktop PRIVATE Qt${QT_VERSION_MAJOR}::Network)
+
 
 set_target_properties(project-front-desktop PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
