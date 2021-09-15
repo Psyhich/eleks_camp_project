@@ -15,6 +15,10 @@ namespace handler {
         modifier{modifier}
     {}
 
+    responses::ResponseVar Handler::operator()(const requests::Error& errorRequest) const {
+        return responses::ResponseVar(std::in_place_type<responses::Error>, "Хибний формат запиту.");
+    }
+
     responses::ResponseVar Handler::operator()(const requests::GetInitData& getInitDataRequest) const {
         auto initDataOpt = initializer.getInitData();
         if (initDataOpt){

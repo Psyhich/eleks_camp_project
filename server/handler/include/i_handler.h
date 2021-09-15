@@ -11,6 +11,7 @@ class IHandler {
 public:
     virtual ~IHandler() = default;
 
+    virtual responses::ResponseVar operator()(const requests::Error& errorRequest) const = 0;
     virtual responses::ResponseVar operator()(const requests::GetInitData& getInitDataRequest) const = 0;
     virtual responses::ResponseVar operator()(const requests::Find& findRequest) const = 0;
     virtual responses::ResponseVar operator()(const requests::Add& addRequest) const = 0;

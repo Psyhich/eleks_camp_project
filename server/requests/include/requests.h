@@ -18,6 +18,11 @@ public:
     auto getClientID() const noexcept {return clientID;}
 };
 
+class Error : public Request {
+public:
+    Error(unsigned int clientID = 0) : Request(clientID) {}
+};
+
 class GetInitData : public Request {
 public:
     GetInitData(unsigned int clientID = 0) : Request(clientID) {}
@@ -77,7 +82,7 @@ public:
 };
 
 class Remove : public Request {
-    const unsigned int recipeID;
+    unsigned int recipeID;
 public:
     Remove(unsigned int recipeID, unsigned int clientID = 0)
         :
@@ -88,7 +93,7 @@ public:
     auto getRecipeID() const noexcept {return recipeID;}
 };
 
-using RequestVar = std::variant<GetInitData, Find, Add, Edit, Remove>;
+using RequestVar = std::variant<Error, GetInitData, Find, Add, Edit, Remove>;
 
 } // requests
 } // server
