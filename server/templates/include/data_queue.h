@@ -2,7 +2,7 @@
 #define DATA_QUEUE
 
 #include <condition_variable>
-#include <queue>
+#include <deque>
 #include <mutex>
 #include <utility>
 
@@ -12,46 +12,46 @@ namespace helpers {
 template <typename T> class DataQueue {
 protected:
     std::mutex queueMut;
-    std::queue<T> queueContainer;
+    std::deque<T> queueContainer;
     std::condition_variable waitCV;
     std::mutex waitMut;
 
 public:
     DataQueue() = default;
     DataQueue(const DataQueue<T>&) = delete;
-    virtual ~DataQueue() {clear()}
+    virtual ~DataQueue() { clear(); }
 
-    bool empty(){
+    bool empty() {
         std::scoped_lock queueLock(queueMut);
         return queueContainer.empty();
     }
 
-    size_t size(){
+    size_t size() {
         std::scoped_lock queueLock(queueMut);
-        return queueContainer.size();   
+        return queueContainer.size();
     }
 
     const T& peekFront() {
         std::scoped_lock queueLock(queueMut);
-        return queueContainer.front();        
+        return queueContainer.front();
     }
 
     const T& peekBack() {
         std::scoped_lock queueLock(queueMut);
-        return queueContainer.back();    
+        return queueContainer.back();
     }
 
-    T popGet(){
+    T popGet() {
         std::scoped_lock queueLock(queueMut);
         auto temp = std::move(queueContainer.front());
-        queueContainer.pop();
+        queueContainer.pop_front();
         return temp;
     }
 
     template <typename T>
-    void push(T&& value){
+    void push(T&& value) {
         std::scoped_lock queueLock(queueMut);
-        queueContainer.push(std::forward(value));
+        queueContainer.push_back(std::forward<T>(value));
         std::unique_lock waitLock(waitMut);
         waitCV.notify_one();
     }
@@ -62,14 +62,14 @@ public:
     }
 
     void wait() {
-        while(empty()){
+        while (empty()) {
             std::unique_lock waitLock(waitMut);
             waitCV.wait(waitLock);
         }
     }
 };
 
-} // helpers
-} // server
+} // namespace helpers
+} // namespace server
 
 #endif // DATA_QUEUE
