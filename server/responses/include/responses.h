@@ -12,7 +12,7 @@ namespace server {
 namespace responses {
 
 class Response {
-    unsigned int clientID{0};
+    unsigned int clientID{1};
 protected:
     Response(unsigned int clientID) : clientID {clientID} {}
 public:
@@ -23,13 +23,13 @@ public:
 class Error : public Response {
     std::string message;
 public:
-    Error(const std::string& message, unsigned int clientID = 0)
+    Error(const std::string& message, unsigned int clientID = 1)
         :
         Response(clientID),
         message{message}
     {}
 
-    Error(std::string&& message, unsigned int clientID = 0) noexcept
+    Error(std::string&& message, unsigned int clientID = 1) noexcept
         :
         Response(clientID),
         message{std::move(message)}
@@ -41,13 +41,13 @@ public:
 class GetInitDataResult : public Response {
     initializer::DataContainers initData;
 public:
-    GetInitDataResult(const initializer::DataContainers& initData, unsigned int clientID = 0)
+    GetInitDataResult(const initializer::DataContainers& initData, unsigned int clientID = 1)
         :
         Response(clientID),
         initData{initData}
     {}
 
-    GetInitDataResult(initializer::DataContainers&& initData, unsigned int clientID = 0) noexcept
+    GetInitDataResult(initializer::DataContainers&& initData, unsigned int clientID = 1) noexcept
         :
         Response (clientID),
         initData{std::move(initData)}
@@ -59,13 +59,13 @@ public:
 class FindResult : public Response {
     searcher::Results searchResults;
 public:
-    FindResult(const searcher::Results& searchResults, unsigned int clientID = 0)
+    FindResult(const searcher::Results& searchResults, unsigned int clientID = 1)
         :
         Response(clientID),
         searchResults{searchResults}
     {}
 
-    FindResult(searcher::Results&& searchResults, unsigned int clientID = 0) noexcept
+    FindResult(searcher::Results&& searchResults, unsigned int clientID = 1) noexcept
         :
         Response(clientID),
         searchResults{std::move(searchResults)}
@@ -76,17 +76,17 @@ public:
 
 class AddSuccess : public Response {
 public:
-    AddSuccess(unsigned int clientID = 0) : Response(clientID) {}
+    AddSuccess(unsigned int clientID = 1) : Response(clientID) {}
 };
 
 class EditSuccess : public Response {
 public:
-    EditSuccess(unsigned int clientID = 0) : Response(clientID) {}
+    EditSuccess(unsigned int clientID = 1) : Response(clientID) {}
 };
 
 class RemoveSuccess : public Response {
 public:
-    RemoveSuccess(unsigned int clientID = 0) : Response(clientID) {}
+    RemoveSuccess(unsigned int clientID = 1) : Response(clientID) {}
 };
 
 using ResponseVar = std::variant<Error, GetInitDataResult, FindResult, AddSuccess, EditSuccess, RemoveSuccess>;
