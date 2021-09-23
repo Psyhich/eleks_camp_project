@@ -31,6 +31,7 @@ public:
 
 protected:
     virtual void work() override;
+    virtual void handleFatalThreadException(std::exception& e) override;
 
     requests::RequestVar getRequest() const; 
     responses::ResponseVar handleRequest(const requests::RequestVar& request) const;

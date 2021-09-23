@@ -1,5 +1,6 @@
 #include "server.h"
 
+#include <iostream>
 #include <variant>
 
 namespace server {
@@ -24,6 +25,12 @@ void Server::stop() {
 
 void Server::work() {
     sendResponse(handleRequest(getRequest()));
+}
+
+void Server::handleFatalThreadException(std::exception& e) {
+    ThreadCycler::handleFatalThreadException(e);
+    std::cerr << "error: cannot run the request server" << std::endl;
+    std::cerr << e.what() << std::endl;
 }
 
 requests::RequestVar Server::getRequest() const {
