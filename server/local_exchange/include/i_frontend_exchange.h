@@ -11,6 +11,9 @@ class IFrontendExchange {
 public:
     virtual ~IFrontendExchange() = default;
 
+    virtual void start() = 0;
+    virtual void stop() = 0;
+
     virtual void sendRequest(const requests::RequestVar& request) = 0;
     virtual responses::ResponseVar getResponse() = 0;
 };

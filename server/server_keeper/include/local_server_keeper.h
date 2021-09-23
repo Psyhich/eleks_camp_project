@@ -27,8 +27,11 @@ class LocalServerKeeper {
     sender::LocalSender sender{localExchange};
     server::Server server{handler, receiver, sender};
 public:
-    server::IServer& getServer() {return server;}
-    localex::IFrontendExchange& getFrontendExchange() {return localExchange;}
+    LocalServerKeeper();
+    ~LocalServerKeeper();
+    
+    void sendRequest(const requests::RequestVar& request) const;
+    responses::ResponseVar getResponse() const;
 };
 
 } // namespace server

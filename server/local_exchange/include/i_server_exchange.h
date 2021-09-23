@@ -10,7 +10,10 @@ namespace localex {
 class IServerExchange {
 public:
     virtual ~IServerExchange() = default;
-    
+
+    virtual void start() = 0;
+    virtual void stop() = 0;
+
     virtual requests::RequestVar getRequest() = 0;
     virtual void sendResponse (const responses::ResponseVar& response) = 0;
 };
