@@ -8,11 +8,10 @@
 #include "local_receiver.h"
 #include "local_sender.h"
 #include "modifier.h"
+#include "requests.h"
+#include "responses.h"
 #include "searcher.h"
 #include "server.h"
-
-#include "i_server.h"
-#include "i_frontend_exchange.h"
 
 namespace server{
 
@@ -28,6 +27,7 @@ class LocalServerKeeper {
     server::Server server{handler, receiver, sender};
 public:
     LocalServerKeeper();
+    LocalServerKeeper(const LocalServerKeeper&) = delete;
     ~LocalServerKeeper();
     
     void sendRequest(const requests::RequestVar& request) const;
