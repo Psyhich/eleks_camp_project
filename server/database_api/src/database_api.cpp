@@ -129,8 +129,11 @@ namespace dbAPI {
             updateRecipeQuery.bind(":cuisine", changedRecipe.getCuisine());
             updateRecipeQuery.bind(":course", changedRecipe.getCourse());
             updateRecipeQuery.bind(":remarks", changedRecipe.getRemarks());
-            updateRecipeQuery.exec();
-
+            int recordsCount = updateRecipeQuery.exec();
+            if (!recordsCount) {
+                std::cerr << "error: cannot edit recipe. no recipe with ID: " << changedRecipe.getId() << std::endl;
+                return false;
+            }
             removeIngredientsForRecipe(changedRecipe.getId());
             insertIngredientsForRecipe(changedRecipe.getIngredients(), changedRecipe.getId());
             return true;
@@ -302,6 +305,7 @@ namespace dbAPI {
         if (!db.tableExists(recipeIngredientsTableName)) {
             try {
                 string createRecipeIngredientsTableQuery = "CREATE TABLE \"%tableName%\" (\n"
+                                                           "\"record_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
                                                            "\"recipe_id\"\tINTEGER NOT NULL,\n"
                                                            "\"ingredient_id\"\tINTEGER NOT NULL,\n"
                                                            "\"unit_id\"\tINTEGER NOT NULL,\n"
@@ -448,7 +452,8 @@ namespace dbAPI {
                                  "FROM recipe_ingredients\n"
                                  "INNER JOIN units ON units.unit_id = recipe_ingredients.unit_id\n"
                                  "INNER JOIN ingredients ON ingredients.ingredient_id = recipe_ingredients.ingredient_id\n"
-                                 "WHERE recipe_ingredients.recipe_id = :recipeID";
+                                 "WHERE recipe_ingredients.recipe_id = :recipeID\n"
+                                 "ORDER BY recipe_ingredients.record_id\n";
             SQLite::Statement fetchIngredientsQuery{db, selectIngredientsQuery};
             fetchIngredientsQuery.bind(":recipeID", id);
             while (fetchIngredientsQuery.executeStep()) {
