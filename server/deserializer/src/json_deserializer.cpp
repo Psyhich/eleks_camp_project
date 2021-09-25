@@ -10,7 +10,7 @@ namespace server {
 namespace deserializer {
 
 requests::RequestVar JsonDeserializer::getRequest(const transfer::Pack& inPack) const {
-    if (!inPack.data.empty()){
+    if (inPack.clientID && (!inPack.data.empty())){
         try{
             auto j = nlohmann::json::parse(inPack.data);
             deserializer::RequestTag requestTag = j.at("requestTag");
