@@ -21,10 +21,6 @@ void Server::start() {
 
 void Server::stop() {
     ThreadCycler::stop();
-    if (errorFlag.load()){
-        errorFlag.store(false);
-        throw std::runtime_error("Server stopped due to internal error.");
-    }
 }
 
 void Server::work() {

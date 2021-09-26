@@ -20,7 +20,7 @@ int main(){
                     serverKeeper.start();
                     stopped = false;
                 } catch (std::exception& e) {
-                    std::cerr << "Server stopped unexpectedly.";
+                    std::cerr << "Server failed to start.";
                 }
             } else if (command == "stop") {
                 serverKeeper.stop();

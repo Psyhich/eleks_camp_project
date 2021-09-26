@@ -5,11 +5,12 @@
 namespace server {
 
 LocalServerKeeper::LocalServerKeeper() {
-    localExchange.start();
     try {
+        localExchange.start();
         server.start();
     } catch (std::exception& e) {
         localExchange.stop();
+        server.stop();
         throw;
     }
 }
