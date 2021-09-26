@@ -18,7 +18,6 @@ void ThreadCycler::start() {
 void ThreadCycler::stop() {
     if (!stopFlag.load()){
         stopFlag.store(true);
-        prepareStop();
         std::unique_lock finishLock(finishMut);
         finishCV.wait(finishLock, [this] {return !runFlag.load(); });
     }

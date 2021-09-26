@@ -29,7 +29,6 @@ public:
 protected:
     virtual void run();
     virtual void work() {}
-    virtual void prepareStop() {}
     virtual void handleNonFatalThreadException (std::exception&e);
     virtual void handleFatalThreadException (std::exception& e);
 };
