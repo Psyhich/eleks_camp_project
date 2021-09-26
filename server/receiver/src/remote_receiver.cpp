@@ -11,6 +11,14 @@ RemoteReceiver::RemoteReceiver(
     deserializer{deserializer}
 {}
 
+void RemoteReceiver::start() {
+    transfer.start();
+}
+
+void RemoteReceiver::stop() {
+    transfer.stop();
+}
+
 requests::RequestVar RemoteReceiver::getRequest() const {
     return deserializer.getRequest(transfer.getPack());
 }

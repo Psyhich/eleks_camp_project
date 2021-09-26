@@ -17,10 +17,12 @@ Server::Server(
 {}
 
 void Server::start() {
+    receiver.start();
     ThreadCycler::start();
 }
 
 void Server::stop() {
+    receiver.stop();
     ThreadCycler::stop();
 }
 
@@ -29,7 +31,7 @@ void Server::work() {
 }
 
 void Server::handleFatalThreadException(std::exception& e) {
-    std::cerr << "Server stopped due to exception thrown in the working thread. " << e.what() <<std::endl;
+    receiver.stop();
     ThreadCycler::handleFatalThreadException(e);
 }
 

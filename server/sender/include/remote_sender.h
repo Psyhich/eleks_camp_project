@@ -19,6 +19,9 @@ public:
     RemoteSender(transfer::ITransfer& transfer, serializer::ISerializer& serializer);
     virtual ~RemoteSender() = default;
 
+    virtual void start() override;
+    virtual void stop() override;
+
     virtual void sendResponse(const responses::ResponseVar& response) const override;
 };
 
