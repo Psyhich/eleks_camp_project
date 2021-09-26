@@ -13,6 +13,8 @@
 #include "server.h"
 #include "tcp_transfer.h"
 
+#include "i_server.h"
+
 namespace server{
 
 class RemoteServerKeeper {
@@ -34,8 +36,7 @@ public:
     RemoteServerKeeper(const RemoteServerKeeper&) = delete; 
     ~RemoteServerKeeper();
 
-    void start();
-    void stop();
+    IServer& getServer() noexcept {return server;}
 };
 
 } // namespace server

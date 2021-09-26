@@ -13,6 +13,8 @@
 #include "searcher.h"
 #include "server.h"
 
+#include "i_frontend_exchange.h"
+
 namespace server{
 
 class LocalServerKeeper {
@@ -29,9 +31,8 @@ public:
     LocalServerKeeper();
     LocalServerKeeper(const LocalServerKeeper&) = delete;
     ~LocalServerKeeper();
-    
-    void sendRequest(const requests::RequestVar& request) const;
-    responses::ResponseVar getResponse() const;
+
+    localex::IFrontendExchange& getLocalExchange() noexcept {return localExchange;}
 };
 
 } // namespace server

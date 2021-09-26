@@ -1,6 +1,7 @@
 #include <exception>
 #include <iostream>
 
+#include "i_server.h"
 #include "remote_server_keeper.h"
 
 int main(){
@@ -8,6 +9,7 @@ int main(){
         bool stopped{true};
         std::string command;
         server::RemoteServerKeeper serverKeeper;
+        server::IServer& server = serverKeeper.getServer();
         while (true){
             if (stopped){
                 std::cout<<"start/exit >";
@@ -17,17 +19,17 @@ int main(){
             std::cin>>command;
             if (command == "start"){
                 try{
-                    serverKeeper.start();
+                    server.start();
                     stopped = false;
                 } catch (std::exception& e) {
                     std::cerr << "Server failed to start.";
                 }
             } else if (command == "stop") {
-                serverKeeper.stop();
+                server.stop();
                 stopped = true;
             } else if (command == "exit") {
                 if (!stopped){
-                    serverKeeper.stop();
+                    server.stop();
                 }
                 break;
             }
