@@ -1,5 +1,6 @@
 #include "server.h"
 
+#include <iostream>
 #include <stdexcept>
 #include <variant>
 
@@ -28,8 +29,8 @@ void Server::work() {
 }
 
 void Server::handleFatalThreadException(std::exception& e) {
+    std::cerr << "Server stopped due to exception thrown in the working thread. " << e.what() <<std::endl;
     ThreadCycler::handleFatalThreadException(e);
-    errorFlag.store(true);
 }
 
 requests::RequestVar Server::getRequest() const {
