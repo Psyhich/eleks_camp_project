@@ -1,6 +1,8 @@
 #ifndef SERVER
 #define SERVER
 
+#include <atomic>
+
 #include "i_handler.h"
 #include "i_receiver.h"
 #include "i_sender.h"
@@ -17,6 +19,8 @@ protected:
     handler::IHandler& handler;
     receiver::IReceiver& receiver;
     sender::ISender& sender;
+
+    std::atomic<bool> errorFlag{false};
     
 public:
     Server(

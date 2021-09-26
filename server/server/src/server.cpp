@@ -1,6 +1,6 @@
 #include "server.h"
 
-#include <iostream>
+#include <stdexcept>
 #include <variant>
 
 namespace server {
@@ -21,6 +21,10 @@ void Server::start() {
 
 void Server::stop() {
     ThreadCycler::stop();
+    if (errorFlag.load()){
+        errorFlag.store(false);
+        throw std::runtime_error("Server stopped due to internal error.");
+    }
 }
 
 void Server::work() {
@@ -29,8 +33,7 @@ void Server::work() {
 
 void Server::handleFatalThreadException(std::exception& e) {
     ThreadCycler::handleFatalThreadException(e);
-    std::cerr << "error: cannot run the request server" << std::endl;
-    std::cerr << e.what() << std::endl;
+    errorFlag.store(true);
 }
 
 requests::RequestVar Server::getRequest() const {

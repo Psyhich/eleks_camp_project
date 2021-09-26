@@ -1,3 +1,4 @@
+#include <exception>
 #include <iostream>
 
 #include "remote_server_keeper.h"
@@ -15,8 +16,12 @@ int main(){
             }
             std::cin>>command;
             if (command == "start"){
-                serverKeeper.start();
-                stopped = false;
+                try{
+                    serverKeeper.start();
+                    stopped = false;
+                } catch (std::exception& e) {
+                    std::cerr << "Server stopped unexpectedly.";
+                }
             } else if (command == "stop") {
                 serverKeeper.stop();
                 stopped = true;

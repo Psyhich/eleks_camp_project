@@ -7,8 +7,13 @@ namespace server {
     }
 
     void RemoteServerKeeper::start(){
-        transfer.start();
-        server.start();
+        try {
+            transfer.start();
+            server.start();
+        } catch (std::exception& e){
+            stop();
+            throw;
+        }
     }
 
     void RemoteServerKeeper::stop(){

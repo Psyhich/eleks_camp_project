@@ -41,6 +41,10 @@ void ThreadCycler::run() {
     finishCV.notify_one();
 }
 
+void ThreadCycler::handleNonFatalThreadException (std::exception&e) {
+    throw;
+}
+
 void ThreadCycler::handleFatalThreadException(std::exception& e) {
     runFlag.store(false);
     finishCV.notify_one();

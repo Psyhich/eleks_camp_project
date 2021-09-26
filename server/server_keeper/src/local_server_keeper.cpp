@@ -1,10 +1,17 @@
 #include "local_server_keeper.h"
 
+#include <exception>
+
 namespace server {
 
 LocalServerKeeper::LocalServerKeeper() {
     localExchange.start();
-    server.start();
+    try {
+        server.start();
+    } catch (std::exception& e) {
+        localExchange.stop();
+        throw;
+    }
 }
 
 LocalServerKeeper::~LocalServerKeeper() {
