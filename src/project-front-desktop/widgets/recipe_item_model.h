@@ -1,12 +1,13 @@
 #ifndef RECIPE_ITEM_MODEL_H
 #define RECIPE_ITEM_MODEL_H
 
+#include "types/base_types.h"
 #include <QObject>
-#include "base_types.h"
 #include <QSharedPointer>
 #include <QAbstractItemModel>
 #include <qabstractitemmodel.h>
 
+// Item model that responds for displaying recipes
 class RecipesList  : public QObject{
 Q_OBJECT
   QList<QSharedPointer<BaseTypes::Recipe>> recipes;

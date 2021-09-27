@@ -10,6 +10,7 @@ RecipesList::RecipesList(QList<BaseTypes::Recipe*> recipesToAdd){
 }
 
 inline QSharedPointer<BaseTypes::Recipe> RecipesList::operator[](int index){ return recipes[index]; }
+
 QSharedPointer<BaseTypes::Recipe> RecipesList::get(unsigned int recipeID){
   for(QSharedPointer<BaseTypes::Recipe> recipe : recipes){
 	if(recipe->getId() == recipeID){
@@ -18,7 +19,7 @@ QSharedPointer<BaseTypes::Recipe> RecipesList::get(unsigned int recipeID){
   }
   return nullptr;
 }
-
+// Add/Remove
 void RecipesList::removeRecipe(unsigned int recipeID){
   for(int index = 0; index < recipes.count(); index++){
 	if(recipes[index]->getId() == recipeID){

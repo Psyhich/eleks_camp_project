@@ -20,21 +20,21 @@ find_package(Qt5Network REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
-	mainwindow.h
-        mainwindow.cpp
-        mainwindow.ui
-	recipe_item_model.h
-	recipe_item_model.cpp
-	base_types.h
-	base_types.cpp
-	recipe_row_view.h
-	recipe_row_view.cpp
-	recipes_list_view.h
-	recipes_list_view.cpp
-	search_widget.h
-	search_widget.cpp
-	searcher.h
-	searcher.cpp
+	widgets/mainwindow.h
+	widgets/mainwindow.cpp
+	widgets/mainwindow.ui
+	types/base_types.h
+	types/base_types.cpp
+	widgets/recipe_row_view.h
+	widgets/recipe_row_view.cpp
+	widgets/recipes_list_view.h
+	widgets/recipes_list_view.cpp
+	widgets/tab_manager.h
+	widgets/tab_manager.cpp
+	connections/connection_manager.h
+	connections/connection_manager.cpp
+	connections/connector.h
+	icon_favorite.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
