@@ -53,6 +53,7 @@ private:
     static constexpr char defaultUnit[] = "g";
 
     //remove functions delete record only it is not used
+    //add functions add only if it is not exist
     bool addCourse(string course);
     bool removeCourse(string course);
     bool checkCuisine(string cuisine);
@@ -61,9 +62,9 @@ private:
     bool removeCuisine(string cuisine);
     bool checkCourse(string course);
 
-    bool addIngredient(string cuisine);
-    bool removeIngredient(string cuisine);
-    bool checkIngredient(string course);
+    bool addIngredient(string ingredient);
+    bool removeIngredient(string ingredient);
+    bool checkIngredient(string ingredient);
 
     void insertDefaultUnit();
     bool containsDefaultUnit();

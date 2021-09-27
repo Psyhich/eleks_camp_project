@@ -509,7 +509,11 @@ namespace dbAPI {
                            "WHERE courses.course_name = :course";
             SQLite::Statement checkQuery(db, query);
             checkQuery.bind(":course", course);
-            return checkQuery.executeStep();
+            int recordCount{};
+            if (checkQuery.executeStep()){
+                recordCount = checkQuery.getColumn(0);
+            }
+            return recordCount;
         }
         catch (std::exception& e) {
             std::cerr << "error: cannot check course" << std::endl;
@@ -566,7 +570,11 @@ namespace dbAPI {
                            "WHERE cuisines.cuisine_name = :cuisine";
             SQLite::Statement checkQuery(db, query);
             checkQuery.bind(":cuisine", cuisine);
-            return checkQuery.executeStep();
+            int recordCount{};
+            if (checkQuery.executeStep()){
+                recordCount = checkQuery.getColumn(0);
+            }
+            return recordCount;
         }
         catch (std::exception& e) {
             std::cerr << "error: cannot check cuisine" << std::endl;
@@ -575,8 +583,71 @@ namespace dbAPI {
         }
     }
 
+    bool Database::addIngredient(string ingredient) {
+        if (!checkIngredient(ingredient)) {
+            try {
+                string query = "INSERT INTO ingredients\n"
+                               "VALUES (NULL, :ingredient)";
+                SQLite::Statement insertQuery(db, query);
+                insertQuery.bind(":ingredient", ingredient);
+                return insertQuery.exec();
+            }
+            catch (std::exception& e) {
+                std::cerr << "error: cannot add ingredient" << std::endl;
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+
+    bool Database::removeIngredient(string ingredient) {
+        if (checkIngredient(ingredient)) {
+            try {
+                string query = "DELETE FROM ingredients\n"
+                               "WHERE ingredient_name = :ingredient";
+                SQLite::Statement deleteQuery(db, query);
+                deleteQuery.bind(":ingredient", ingredient);
+                return deleteQuery.exec();
+            }
+            catch (std::exception& e) {
+                std::cerr << "error: cannot remove ingredient" << std::endl;
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+
+    bool Database::checkIngredient(string ingredient) {
+        try {
+            string query = "SELECT COUNT(record_id)\n"
+                           "FROM recipe_ingredients\n"
+                           "INNER JOIN ingredients ON ingredients.ingredient_id = recipe_ingredients.ingredient_id\n"
+                           "WHERE ingredients.ingredient_name = :ingredient";
+            SQLite::Statement checkQuery(db, query);
+            checkQuery.bind(":ingredient", ingredient);
+            int recordCount{};
+            if (checkQuery.executeStep()){
+                recordCount = checkQuery.getColumn(0);
+            }
+            return recordCount;
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot check ingredient" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
+    }
+
     void Database::insertIngredientsForRecipe(recipe::IngredientsList ingredients, unsigned int id) {
         for (auto item : ingredients) {
+            addIngredient(item.first);
+
             string query = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, unit_id, ingredient_amount)\n"
                            "SELECT :id, ingredients.ingredient_id, units.unit_id, :amount\n"
                            "FROM ingredients, units\n"
