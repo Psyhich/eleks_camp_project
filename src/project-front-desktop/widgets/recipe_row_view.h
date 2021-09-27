@@ -14,16 +14,16 @@ class RecipeRowView : public QFrame {
   Q_OBJECT
 	QSharedPointer<BaseTypes::Recipe> recipe;
 private:
-  inline void emitFavoriteClicked() { emit favoriteClicked(recipe->getId()); }
+  inline void emitFavoriteClicked() { emit favoriteClicked(recipe); }
   inline void emitEditClicked() { emit editClicked(recipe); }
   inline void emitOpenClicked() { emit openClicked(recipe); }
 
 public:
 
   RecipeRowView(QSharedPointer<BaseTypes::Recipe> recipe, QWidget *parent);
-  inline unsigned int getId() const { return recipe->getId(); }
+  inline unsigned int getId() const { return *recipe->getID(); }
   signals:
-	void favoriteClicked(unsigned int recipeID);
+	void favoriteClicked(QSharedPointer<BaseTypes::Recipe> recipe);
 	void editClicked(QSharedPointer<BaseTypes::Recipe> recipe);
 	void openClicked(QSharedPointer<BaseTypes::Recipe> recipe);
 };

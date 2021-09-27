@@ -17,7 +17,7 @@ class RecipesListView : public QWidget
  signals:
 	void requestOpenRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen){}
 	void requestEditRecipe(QSharedPointer<BaseTypes::Recipe> recipeToEdit){}
-	void requestFavoriteRecipe(unsigned int recipeToFavorite){}
+	void requestFavoriteRecipe(QSharedPointer<BaseTypes::Recipe> recipeToEdit){}
 
   public slots:
 	void addRecipe(QSharedPointer<BaseTypes::Recipe> recipeToAdd);

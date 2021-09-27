@@ -17,14 +17,17 @@ MainWindow::MainWindow(QWidget *parent)
 	// Hiding close button for search tab
 	ui->RecipeTabs->tabBar()->tabButton(0, QTabBar::RightSide)->resize(0, 0);
 	ui->RecipeTabs->tabBar()->tabButton(0, QTabBar::RightSide)->hide();
-	QSet<QString> courses;
-	courses.insert("Starter");
+	QSharedPointer<BaseTypes::Recipe> recipe = QSharedPointer<BaseTypes::Recipe>(new BaseTypes::Recipe(0));
 
-	QSet<QString> cusines;
-	cusines.insert("Ukraine");
+	recipe->name = "Soup";
+	recipe->courses.insert("Starter");
+	recipe->cuisines.insert("Ukraine");
+	recipe->ingredients = {{"Liter of water", 1}, {"Bowl", 1}, {"Spoon", 1}};
+	recipe->outWeight = 1000;
+	recipe->outCalories = 10;
+	recipe->recipeText = "Take liter of water and boil it until it's hot";
+	recipe->presentationText = "Pour hot water into bowl and eat with spoon";
 
-	QSharedPointer<BaseTypes::Recipe> recipe = QSharedPointer<BaseTypes::Recipe>(new BaseTypes::LocalRecipe(0, "Soup", courses, cusines, QMap<QString, int>(), 1000, 1000, 1, "Take water and boil it", ""));
-	ui->RecipesView->addRecipe(recipe);
 	ui->RecipesView->addRecipe(recipe);
 	ui->RecipesView->addRecipe(recipe);
 	ui->RecipesView->addRecipe(recipe);

@@ -34,6 +34,8 @@ set(PROJECT_SOURCES
 	connections/connection_manager.h
 	connections/connection_manager.cpp
 	connections/connector.h
+	connections/connectors.h
+	connections/connectors.cpp
 	icon_favorite.qrc
 )
 

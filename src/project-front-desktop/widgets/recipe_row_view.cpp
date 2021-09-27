@@ -7,10 +7,10 @@ RecipeRowView::RecipeRowView(QSharedPointer<BaseTypes::Recipe> recipe, QWidget *
 	// Should create name of recipe, and add cusine + course
 	QGridLayout *gridLayout = new QGridLayout(this);
 	gridLayout->setSizeConstraint(QLayout::SizeConstraint::SetMinAndMaxSize);
-	QLabel *nameLabel = new QLabel(recipe->getName(), this);
+	QLabel *nameLabel = new QLabel(recipe->name, this);
 
-	QLabel *coursesLabel = new QLabel(recipe->getCourses().values().join(" "), this);
-	QLabel *cusinesLabel = new QLabel(recipe->getCusines().values().join(" "), this);
+	QLabel *coursesLabel = new QLabel(recipe->courses.values().join(" "), this);
+	QLabel *cusinesLabel = new QLabel(recipe->cuisines.values().join(" "), this);
 
 	//Creating interactive buttons and connecting their events to out own signals
 	QToolButton* favoriteButton = new QToolButton(this);
