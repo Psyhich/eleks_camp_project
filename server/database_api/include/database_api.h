@@ -27,13 +27,13 @@ public:
     bool edit(const recipe::Recipe& changedRecipe) override;
     bool remove(unsigned int id) override;
 
-    bool addCourse(string course) override;
-    bool removeCourse(string course) override;
-
-    bool addCuisine(string cuisine) override;
-    bool removeCuisine(string cuisine) override;
-
 private:
+    SQLite::Database db;
+
+    //time that database wait until return SQLITE_BUSY
+    static constexpr unsigned int busyTime = 100;
+
+    //names are used only to create tables
     static constexpr char databaseName[] = "cookbook.db";
     static constexpr char coursesTableName[] = "courses";
     static constexpr char cuisinesTableName[] = "cuisines";
@@ -42,16 +42,28 @@ private:
     static constexpr char unitsTableName[] = "units";
     static constexpr char recipeIngredientsTableName[] = "recipe_ingredients";
 
-    static constexpr char defaultUnit[] = "г";
-
-    SQLite::Database db;
-
     void createCoursesTable();
     void createCuisinesTable();
     void createRecipesTable();
     void createIngredientsTable();
     void createUnitsTable();
     void createRecipeIngredientsTable();
+
+    //default ingredient unit
+    static constexpr char defaultUnit[] = "g";
+
+    //remove functions delete record only it is not used
+    bool addCourse(string course);
+    bool removeCourse(string course);
+    bool checkCuisine(string cuisine);
+
+    bool addCuisine(string cuisine);
+    bool removeCuisine(string cuisine);
+    bool checkCourse(string course);
+
+    bool addIngredient(string cuisine);
+    bool removeIngredient(string cuisine);
+    bool checkIngredient(string course);
 
     void insertDefaultUnit();
     bool containsDefaultUnit();
@@ -62,9 +74,6 @@ private:
 
     void insertIngredientsForRecipe(recipe::IngredientsList ingredients, unsigned int id);
     void removeIngredientsForRecipe(unsigned int id);
-
-    bool checkCuisine(string cuisine);
-    bool checkCourse(string course);
 
     void bindTableName(string& query, string tableName);
 };
