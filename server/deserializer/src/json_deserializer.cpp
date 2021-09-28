@@ -34,9 +34,8 @@ requests::RequestVar JsonDeserializer::getRequest(const transfer::Pack& inPack) 
         } catch (const nlohmann::detail::exception&) {
             return requests::RequestVar(std::in_place_type<requests::Error>, inPack.clientID); 
         }
-    } else {
-        return requests::RequestVar(std::in_place_type<requests::Error>, inPack.clientID);
     }
+    return requests::RequestVar(std::in_place_type<requests::Error>, inPack.clientID);
 }
 
 } // namespace deserializer
