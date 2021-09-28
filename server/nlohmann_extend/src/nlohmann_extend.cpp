@@ -1,6 +1,7 @@
 #include "nlohmann_extend.h"
 
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace nlohmann {
@@ -51,7 +52,7 @@ server::recipe::IngredientsList adl_serializer<server::recipe::IngredientsList>:
     auto ingredientUnitArray = j.at("ingredientUnitArray");
     server::recipe::IngredientsList ingredients;
     for (size_t i{0}; i<ingredientNameArray.size(); ++i){
-        ingredients.try_emplace(ingredientNameArray.at(i), ingredientQuantityArray.at(i), ingredientUnitArray.at(i));
+        ingredients[ingredientNameArray.at(i)] = server::recipe::IngredientAmount{ingredientQuantityArray.at(i), ingredientUnitArray.at(i)};
     }
     return ingredients;
 }
@@ -105,11 +106,21 @@ void adl_serializer<server::recipe::Recipe>::to_json(json& j, server::recipe::Re
 // server::searcher::Results converter
 
 server::searcher::Results adl_serializer<server::searcher::Results>::from_json(const json& j){
-    return server::searcher::Results(j.at("foundRecipes"));
+    auto foundRecipeArray = j.at("foundRecipeArray");
+    server::searcher::RecipeSet foundRecipes;
+    for (const auto& recipe : foundRecipeArray){
+        foundRecipes.emplace(recipe);
+    }
+    return server::searcher::Results(std::move(foundRecipes));
 }
 
 void adl_serializer<server::searcher::Results>::to_json(json& j, server::searcher::Results searchResults){
-    j["foundRecipes"] = searchResults.getFoundRecipes();
+    std::vector<server::recipe::Recipe> foundRecipeArray;
+    auto foundRecipes = searchResults.getFoundRecipes();
+    for (const auto& recipe : foundRecipes){
+        foundRecipeArray.emplace_back(recipe);
+    }
+    j["foundRecipeArray"] = foundRecipeArray;
 }
 
 } // nlohmann
