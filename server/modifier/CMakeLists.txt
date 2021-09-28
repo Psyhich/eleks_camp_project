@@ -1,23 +1,19 @@
-project(searcher)
+project(modifier)
 
 set(HEADERS
     ../database_api/include/i_database_api.h
-    ../recipe/include/recipe.h
-   include/criteria.h
-   include/results.h
-   include/i_searcher.h
-   include/searcher.h
+   include/i_modifier.h
+   include/modifier.h
 )
 
 set(SOURCES
-   src/searcher.cpp
+   src/modifier.cpp
 )
 
 add_library(${PROJECT_NAME} STATIC ${HEADERS} ${SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
    include/
-   ../recipe/include/
    ../database_api/include/
 )
 
