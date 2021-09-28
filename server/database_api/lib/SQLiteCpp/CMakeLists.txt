@@ -162,8 +162,6 @@ if (SQLITECPP_INCLUDE_SCRIPT)
     set(SQLITECPP_SCRIPT
      .editorconfig
      .gitbugtraq
-     .github/workflows/build.yml
-     .github/workflows/subdir_example.yml
      .gitignore
      .gitmodules
      .travis.yml
