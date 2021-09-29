@@ -59,10 +59,9 @@ public:
         return temp;
     }
 
-    template <typename T>
-    void push(T&& value) {
+    void push(const T& value) {
         std::scoped_lock queueLock(queueMut);
-        queueContainer.push_back(std::forward<T>(value));
+        queueContainer.push_back(value);
         std::unique_lock waitLock(waitMut);
         waitCV.notify_one();
     }
