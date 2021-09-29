@@ -66,7 +66,7 @@ private:
     bool removeIngredient(string ingredient);
     bool checkIngredient(string ingredient);
 
-git     void removeUnusedElements();
+    void removeUnusedElements();
 
     void insertDefaultUnit();
     bool containsDefaultUnit();
