@@ -678,5 +678,32 @@ namespace dbAPI {
         }
     }
 
+    void Database::removeUnusedElements() {
+        db.exec(
+                "DELETE FROM cuisines\n"
+                "WHERE cuisine_name IN(\n"
+                    "SELECT cuisine_name\n"
+                    "FROM cuisines\n"
+                    "LEFT JOIN recipes ON cuisines.cuisine_id = recipes.recipe_cuisine_id\n"
+                    "GROUP BY cuisine_name\n"
+                    "HAVING count(recipe_cuisine_id) = 0)");
+
+        db.exec("DELETE FROM courses\n"
+                "WHERE course_name IN(\n"
+                    "SELECT course_name\n"
+                    "FROM courses\n"
+                    "LEFT JOIN recipes ON courses.course_id = recipes.recipe_course_id\n"
+                    "GROUP BY course_name\n"
+                    "HAVING count(recipe_course_id) = 0)");
+
+        db.exec("DELETE FROM ingredients\n"
+                "WHERE ingredient_name IN (\n"
+                    "SELECT ingredient_name\n"
+                    "FROM ingredients\n"
+                    "LEFT JOIN recipe_ingredients ON recipe_ingredients.ingredient_id = ingredients.ingredient_id\n"
+                    "GROUP BY ingredient_name\n"
+                    "HAVING count(recipe_ingredients.ingredient_id) = 0)");
+    }
+
 }   // dbAPI 
 }   // server
