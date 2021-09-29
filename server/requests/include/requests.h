@@ -18,21 +18,26 @@ public:
     auto getClientID() const noexcept {return clientID;}
 };
 
+class Error : public Request {
+public:
+    Error(unsigned int clientID) : Request(clientID) {}
+};
+
 class GetInitData : public Request {
 public:
-    GetInitData(unsigned int clientID = 0) : Request(clientID) {}
+    GetInitData(unsigned int clientID) : Request(clientID) {}
 };
 
 class Find : public Request {
     searcher::Criteria searchCriteria;
 public:
-    Find(const searcher::Criteria& searchCriteria, unsigned int clientID = 0)
+    Find(const searcher::Criteria& searchCriteria, unsigned int clientID)
         :
         Request(clientID),
         searchCriteria{searchCriteria}
     {}
 
-    Find(searcher::Criteria&& searchCriteria, unsigned int clientID = 0) noexcept
+    Find(searcher::Criteria&& searchCriteria, unsigned int clientID) noexcept
         :
         Request (clientID),
         searchCriteria{std::move(searchCriteria)}
@@ -44,13 +49,13 @@ public:
 class Add : public Request {
     recipe::Recipe newRecipe;
 public:
-    Add(const recipe::Recipe& newRecipe, unsigned int clientID = 0)
+    Add(const recipe::Recipe& newRecipe, unsigned int clientID)
         :
         Request(clientID),
         newRecipe{newRecipe}
     {}
 
-    Add(recipe::Recipe&& newRecipe, unsigned int clientID = 0) noexcept
+    Add(recipe::Recipe&& newRecipe, unsigned int clientID) noexcept
         :
         Request(clientID),
         newRecipe{std::move(newRecipe)}
@@ -62,13 +67,13 @@ public:
 class Edit : public Request {
     recipe::Recipe changedRecipe;
 public:
-    Edit(const recipe::Recipe& changedRecipe, unsigned int clientID = 0)
+    Edit(const recipe::Recipe& changedRecipe, unsigned int clientID)
         :
         Request(clientID),
         changedRecipe{changedRecipe}
     {}
 
-    Edit(recipe::Recipe&& changedRecipe, unsigned int clientID = 0) noexcept
+    Edit(recipe::Recipe&& changedRecipe, unsigned int clientID) noexcept
         :
         Request(clientID),
         changedRecipe{std::move(changedRecipe)}
@@ -77,9 +82,9 @@ public:
 };
 
 class Remove : public Request {
-    const unsigned int recipeID;
+    unsigned int recipeID;
 public:
-    Remove(unsigned int recipeID, unsigned int clientID = 0)
+    Remove(unsigned int recipeID, unsigned int clientID)
         :
         Request(clientID),
         recipeID{recipeID}
@@ -88,7 +93,7 @@ public:
     auto getRecipeID() const noexcept {return recipeID;}
 };
 
-using RequestVar = std::variant<GetInitData, Find, Add, Edit, Remove>;
+using RequestVar = std::variant<Error, GetInitData, Find, Add, Edit, Remove>;
 
 } // requests
 } // server

@@ -10,6 +10,9 @@ class ITransfer {
 public:
     virtual ~ITransfer() = default;
 
+    virtual void start() = 0;
+    virtual void stop() = 0;
+
     virtual Pack getPack() = 0;
     virtual void sendPack(const Pack& pack) = 0;
 };

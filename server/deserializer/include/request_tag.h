@@ -5,7 +5,8 @@ namespace server {
 namespace deserializer {
 
 enum class RequestTag {
-    getInitData = 1,
+    error,
+    getInitData,
     find,
     add,
     edit,

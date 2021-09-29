@@ -17,6 +17,9 @@ protected:
 public:
     RemoteReceiver(transfer::ITransfer& transfer, deserializer::IDeserializer& deserializer);
     virtual ~RemoteReceiver() = default;
+
+    virtual void start() override;
+    virtual void stop() override;
     
     virtual requests::RequestVar getRequest() const override;
 };

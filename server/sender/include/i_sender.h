@@ -10,6 +10,9 @@ class ISender {
 public:
     virtual ~ISender() = default;
 
+    virtual void start() = 0;
+    virtual void stop() = 0;
+
     virtual void sendResponse(const responses::ResponseVar& response) const = 0;
 };
 

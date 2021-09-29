@@ -1,6 +1,8 @@
 #ifndef SERVER
 #define SERVER
 
+#include <atomic>
+
 #include "i_handler.h"
 #include "i_receiver.h"
 #include "i_sender.h"
@@ -17,6 +19,8 @@ protected:
     handler::IHandler& handler;
     receiver::IReceiver& receiver;
     sender::ISender& sender;
+
+    std::atomic<bool> errorFlag{false};
     
 public:
     Server(
@@ -31,6 +35,7 @@ public:
 
 protected:
     virtual void work() override;
+    virtual void handleFatalThreadException(std::exception& e) override;
 
     requests::RequestVar getRequest() const; 
     responses::ResponseVar handleRequest(const requests::RequestVar& request) const;

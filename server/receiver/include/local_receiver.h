@@ -15,6 +15,9 @@ public:
     LocalReceiver(localex::IServerExchange& localExchange);
     virtual ~LocalReceiver() = default;
 
+    virtual void start() override;
+    virtual void stop() override;
+
     virtual requests::RequestVar getRequest() const override;
 };
 

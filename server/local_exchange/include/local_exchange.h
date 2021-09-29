@@ -1,6 +1,8 @@
 #ifndef LOCAL_EXCHANGE
 #define LOCAL_EXCHANGE
 
+#include <atomic>
+
 #include "data_queue.h"
 #include "requests.h"
 #include "responses.h"
@@ -12,13 +14,17 @@ namespace server {
 namespace localex {
 
 class LocalExchange : public virtual IFrontendExchange, public virtual IServerExchange {
-    using RequestQueue = helpers::DataQueue<requests::RequestVar>;
-    using ResponseQueue = helpers::DataQueue<responses::ResponseVar>;
+    static constexpr int queueTimeoutMs = 1000;
+
+    using RequestQueue = helpers::DataQueue<requests::RequestVar, queueTimeoutMs>;
+    using ResponseQueue = helpers::DataQueue<responses::ResponseVar, queueTimeoutMs>;
 protected:
     RequestQueue requests;
     ResponseQueue responses;
 public:
-    virtual ~LocalExchange() = default;
+
+    virtual void start() override;
+    virtual void stop() override;
 
     virtual void sendRequest(const requests::RequestVar& request) override;
     virtual responses::ResponseVar getResponse() override;

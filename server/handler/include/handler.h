@@ -26,6 +26,7 @@ public:
 
     virtual ~Handler() = default;
 
+    virtual responses::ResponseVar operator()(const requests::Error& errorRequest) const override;
     virtual responses::ResponseVar operator()(const requests::GetInitData& getInitDataRequest) const override;
     virtual responses::ResponseVar operator()(const requests::Find& findRequest) const override;
     virtual responses::ResponseVar operator()(const requests::Add& addRequest) const override;

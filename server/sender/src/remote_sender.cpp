@@ -11,6 +11,14 @@ RemoteSender::RemoteSender(
     serializer{serializer}
 {}
 
+void RemoteSender::start(){
+    transfer.start();
+}
+
+void RemoteSender::stop(){
+    transfer.stop();
+}
+
 void RemoteSender::sendResponse(const responses::ResponseVar& response) const {
     transfer.sendPack(serializer.getPack(response));
 }    

@@ -14,6 +14,9 @@ public:
     LocalSender(localex::IServerExchange& localExchange);
     virtual ~LocalSender() = default;
 
+    virtual void start() override;
+    virtual void stop() override;
+
     virtual void sendResponse(const responses::ResponseVar& response) const override;
 };
 

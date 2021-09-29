@@ -15,12 +15,16 @@ namespace handler {
         modifier{modifier}
     {}
 
+    responses::ResponseVar Handler::operator()(const requests::Error& errorRequest) const {
+        return responses::ResponseVar(std::in_place_type<responses::Error>, "Invalid request format.", errorRequest.getClientID());
+    }
+
     responses::ResponseVar Handler::operator()(const requests::GetInitData& getInitDataRequest) const {
         auto initDataOpt = initializer.getInitData();
         if (initDataOpt){
             return responses::ResponseVar(std::in_place_type<responses::GetInitDataResult>, *initDataOpt, getInitDataRequest.getClientID());
         } else {
-            return responses::ResponseVar(std::in_place_type<responses::Error>, "Не вдалося одержати дані ініціалізації.", getInitDataRequest.getClientID());
+            return responses::ResponseVar(std::in_place_type<responses::Error>, "Failed to fetch initialization data.", getInitDataRequest.getClientID());
         }
     }
 
@@ -29,7 +33,7 @@ namespace handler {
         if (searchResultsOpt) {
             return responses::ResponseVar(std::in_place_type<responses::FindResult>, *searchResultsOpt, findRequest.getClientID());
         } else {
-            return responses::ResponseVar(std::in_place_type<responses::Error>, "Не вдалося провести пошук.", findRequest.getClientID()); 
+            return responses::ResponseVar(std::in_place_type<responses::Error>, "Failed to perform search.", findRequest.getClientID()); 
         }
     }
 
@@ -37,7 +41,7 @@ namespace handler {
         if (modifier.add(addRequest.getNewRecipe())){
             return responses::ResponseVar(std::in_place_type<responses::AddSuccess>, addRequest.getClientID());
         } else {
-            return responses::ResponseVar(std::in_place_type<responses::Error>, "Не вдалося додати рецепт.", addRequest.getClientID());
+            return responses::ResponseVar(std::in_place_type<responses::Error>, "Failed to add recipe.", addRequest.getClientID());
         }
     }
 
@@ -45,7 +49,7 @@ namespace handler {
         if (modifier.edit(editRequest.getChangedRecipe())){
             return responses::ResponseVar(std::in_place_type<responses::EditSuccess>, editRequest.getClientID());
         } else {
-            return responses::ResponseVar(std::in_place_type<responses::Error>, "Не вдалося змінити рецепт.", editRequest.getClientID());
+            return responses::ResponseVar(std::in_place_type<responses::Error>, "Failed to modify recipe.", editRequest.getClientID());
         }
     }
 
@@ -53,7 +57,7 @@ namespace handler {
         if (modifier.remove(removeRequest.getRecipeID())){
             return responses::ResponseVar(std::in_place_type<responses::RemoveSuccess>, removeRequest.getClientID());
         } else {
-            return responses::ResponseVar(std::in_place_type<responses::Error>, "Не вдалося видалити рецепт.", removeRequest.getClientID());
+            return responses::ResponseVar(std::in_place_type<responses::Error>, "Failed to delete recipe.", removeRequest.getClientID());
         }        
     }
 

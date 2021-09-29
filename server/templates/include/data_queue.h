@@ -1,57 +1,67 @@
 #ifndef DATA_QUEUE
 #define DATA_QUEUE
 
+#include <atomic>
+#include <chrono>
 #include <condition_variable>
-#include <queue>
+#include <deque>
 #include <mutex>
 #include <utility>
 
 namespace server {
 namespace helpers {
 
-template <typename T> class DataQueue {
+template <typename T, int Ms> class DataQueue {
 protected:
     std::mutex queueMut;
-    std::queue<T> queueContainer;
+    std::deque<T> queueContainer;
+    std::atomic<bool> stopFlag{ false };
     std::condition_variable waitCV;
     std::mutex waitMut;
 
 public:
     DataQueue() = default;
-    DataQueue(const DataQueue<T>&) = delete;
-    virtual ~DataQueue() {clear()}
+    DataQueue(const DataQueue&) = delete;
+    virtual ~DataQueue() { clear(); }
 
-    bool empty(){
+    void start() {
+        stopFlag.store(false);
+    }
+
+    void stop() {
+        stopFlag.store(true);
+    }
+
+    bool empty() {
         std::scoped_lock queueLock(queueMut);
         return queueContainer.empty();
     }
 
-    size_t size(){
+    size_t size() {
         std::scoped_lock queueLock(queueMut);
-        return queueContainer.size();   
+        return queueContainer.size();
     }
 
     const T& peekFront() {
         std::scoped_lock queueLock(queueMut);
-        return queueContainer.front();        
+        return queueContainer.front();
     }
 
     const T& peekBack() {
         std::scoped_lock queueLock(queueMut);
-        return queueContainer.back();    
+        return queueContainer.back();
     }
 
-    T popGet(){
+    T popGet() {
         std::scoped_lock queueLock(queueMut);
         auto temp = std::move(queueContainer.front());
-        queueContainer.pop();
+        queueContainer.pop_front();
         return temp;
     }
 
-    template <typename T>
-    void push(T&& value){
+    void push(const T& value) {
         std::scoped_lock queueLock(queueMut);
-        queueContainer.push(std::forward(value));
+        queueContainer.push_back(value);
         std::unique_lock waitLock(waitMut);
         waitCV.notify_one();
     }
@@ -62,14 +72,13 @@ public:
     }
 
     void wait() {
-        while(empty()){
+        while (empty() && !stopFlag.load()) {
             std::unique_lock waitLock(waitMut);
-            waitCV.wait(waitLock);
+            waitCV.wait_for(waitLock, std::chrono::milliseconds{ Ms }, [this] {return !empty() || stopFlag.load(); });
         }
-    }
-};
+    }};
 
-} // helpers
-} // server
+} // namespace helpers
+} // namespace server
 
 #endif // DATA_QUEUE

@@ -1,5 +1,7 @@
 #include "server.h"
 
+#include <iostream>
+#include <stdexcept>
 #include <variant>
 
 namespace server {
@@ -15,15 +17,22 @@ Server::Server(
 {}
 
 void Server::start() {
+    receiver.start();
     ThreadCycler::start();
 }
 
 void Server::stop() {
+    receiver.stop();
     ThreadCycler::stop();
 }
 
 void Server::work() {
     sendResponse(handleRequest(getRequest()));
+}
+
+void Server::handleFatalThreadException(std::exception& e) {
+    receiver.stop();
+    ThreadCycler::handleFatalThreadException(e);
 }
 
 requests::RequestVar Server::getRequest() const {
