@@ -16,7 +16,7 @@ namespace handler {
     {}
 
     responses::ResponseVar Handler::operator()(const requests::Error& errorRequest) const {
-        return responses::ResponseVar(std::in_place_type<responses::Error>, "Invalid request format.");
+        return responses::ResponseVar(std::in_place_type<responses::Error>, "Invalid request format.", errorRequest.getClientID());
     }
 
     responses::ResponseVar Handler::operator()(const requests::GetInitData& getInitDataRequest) const {
