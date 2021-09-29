@@ -57,14 +57,17 @@ private:
     bool addCourse(string course);
     bool removeCourse(string course);
     bool checkCuisine(string cuisine);
+    bool checkCuisineUsage(string cuisine);
 
     bool addCuisine(string cuisine);
     bool removeCuisine(string cuisine);
     bool checkCourse(string course);
+    bool checkCourseUsage(string course);
 
     bool addIngredient(string ingredient);
     bool removeIngredient(string ingredient);
     bool checkIngredient(string ingredient);
+    bool checkIngredientUsage(string ingredient);
 
     void removeUnusedElements();
 

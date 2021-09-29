@@ -509,6 +509,21 @@ namespace dbAPI {
 
     bool Database::checkCourse(string course) {
         try {
+            string query = "SELECT * FROM courses\n"
+                           "WHERE course_name = :course";
+            SQLite::Statement checkQuery(db, query);
+            checkQuery.bind(":course", course);
+            return checkQuery.executeStep();
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot check course" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
+    }
+
+    bool Database::checkCourseUsage(string course) {
+        try {
             string query = "SELECT COUNT(recipe_id)\n"
                            "FROM recipes\n"
                            "INNER JOIN courses ON courses.course_id = recipes.recipe_course_id\n"
@@ -570,6 +585,21 @@ namespace dbAPI {
 
     bool Database::checkCuisine(string cuisine) {
         try {
+            string query = "SELECT * FROM cuisines\n"
+                           "WHERE cuisine_name = :cuisine";
+            SQLite::Statement checkQuery(db, query);
+            checkQuery.bind(":cuisine", cuisine);
+            return checkQuery.executeStep();
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot check cuisine" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
+    }
+
+    bool Database::checkCuisineUsage(string cuisine) {
+        try {
             string query = "SELECT COUNT(recipe_id)\n"
                            "FROM recipes\n"
                            "INNER JOIN cuisines ON cuisines.cuisine_id = recipes.recipe_cuisine_id\n"
@@ -630,6 +660,21 @@ namespace dbAPI {
     }
 
     bool Database::checkIngredient(string ingredient) {
+        try {
+            string query = "SELECT * FROM ingredients\n"
+                           "WHERE ingredient_name = :ingredient";
+            SQLite::Statement checkQuery(db, query);
+            checkQuery.bind(":ingredient", ingredient);
+            return checkQuery.executeStep();
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot check course" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
+    }
+
+    bool Database::checkIngredientUsage(string ingredient) {
         try {
             string query = "SELECT COUNT(record_id)\n"
                            "FROM recipe_ingredients\n"
