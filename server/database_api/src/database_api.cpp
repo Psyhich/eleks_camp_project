@@ -137,6 +137,8 @@ namespace dbAPI {
             }
             removeIngredientsForRecipe(changedRecipe.getId());
             insertIngredientsForRecipe(changedRecipe.getIngredients(), changedRecipe.getId());
+
+            removeUnusedElements();
             return true;
         }
         catch (std::exception& e) {
@@ -153,7 +155,10 @@ namespace dbAPI {
                            "WHERE recipe_id = :id";
             SQLite::Statement deleteQuery(db, query);
             deleteQuery.bind(":id", id);
-            return deleteQuery.exec();
+
+            bool status = deleteQuery.exec();
+            removeUnusedElements();
+            return status;
         }
         catch (std::exception &e) {
             std::cerr << "error: cannot remove recipe" << std::endl;
@@ -285,6 +290,7 @@ namespace dbAPI {
         catch (std::exception& e) {
             std::cerr << "error: cannot check containing default unit" << std::endl;
             std::cerr << e.what() << std::endl;
+            return false;
         }
     }
 
