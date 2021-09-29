@@ -47,7 +47,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
    ../server/include/
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
+target_link_libraries(${PROJECT_NAME} PUBLIC
     db_api
     initializer
     searcher
