@@ -137,6 +137,8 @@ namespace dbAPI {
             }
             removeIngredientsForRecipe(changedRecipe.getId());
             insertIngredientsForRecipe(changedRecipe.getIngredients(), changedRecipe.getId());
+
+            removeUnusedElements();
             return true;
         }
         catch (std::exception& e) {
@@ -153,7 +155,10 @@ namespace dbAPI {
                            "WHERE recipe_id = :id";
             SQLite::Statement deleteQuery(db, query);
             deleteQuery.bind(":id", id);
-            return deleteQuery.exec();
+
+            bool status = deleteQuery.exec();
+            removeUnusedElements();
+            return status;
         }
         catch (std::exception &e) {
             std::cerr << "error: cannot remove recipe" << std::endl;
@@ -285,6 +290,7 @@ namespace dbAPI {
         catch (std::exception& e) {
             std::cerr << "error: cannot check containing default unit" << std::endl;
             std::cerr << e.what() << std::endl;
+            return false;
         }
     }
 
@@ -503,6 +509,21 @@ namespace dbAPI {
 
     bool Database::checkCourse(string course) {
         try {
+            string query = "SELECT * FROM courses\n"
+                           "WHERE course_name = :course";
+            SQLite::Statement checkQuery(db, query);
+            checkQuery.bind(":course", course);
+            return checkQuery.executeStep();
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot check course" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
+    }
+
+    bool Database::checkCourseUsage(string course) {
+        try {
             string query = "SELECT COUNT(recipe_id)\n"
                            "FROM recipes\n"
                            "INNER JOIN courses ON courses.course_id = recipes.recipe_course_id\n"
@@ -563,6 +584,21 @@ namespace dbAPI {
     }
 
     bool Database::checkCuisine(string cuisine) {
+        try {
+            string query = "SELECT * FROM cuisines\n"
+                           "WHERE cuisine_name = :cuisine";
+            SQLite::Statement checkQuery(db, query);
+            checkQuery.bind(":cuisine", cuisine);
+            return checkQuery.executeStep();
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot check cuisine" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
+    }
+
+    bool Database::checkCuisineUsage(string cuisine) {
         try {
             string query = "SELECT COUNT(recipe_id)\n"
                            "FROM recipes\n"
@@ -625,6 +661,21 @@ namespace dbAPI {
 
     bool Database::checkIngredient(string ingredient) {
         try {
+            string query = "SELECT * FROM ingredients\n"
+                           "WHERE ingredient_name = :ingredient";
+            SQLite::Statement checkQuery(db, query);
+            checkQuery.bind(":ingredient", ingredient);
+            return checkQuery.executeStep();
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot check course" << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
+    }
+
+    bool Database::checkIngredientUsage(string ingredient) {
+        try {
             string query = "SELECT COUNT(record_id)\n"
                            "FROM recipe_ingredients\n"
                            "INNER JOIN ingredients ON ingredients.ingredient_id = recipe_ingredients.ingredient_id\n"
@@ -676,6 +727,33 @@ namespace dbAPI {
             std::cerr << "error: cannot remove ingredients for recipe" << std::endl;
             std::cerr << e.what() << std::endl;
         }
+    }
+
+    void Database::removeUnusedElements() {
+        db.exec(
+                "DELETE FROM cuisines\n"
+                "WHERE cuisine_name IN(\n"
+                    "SELECT cuisine_name\n"
+                    "FROM cuisines\n"
+                    "LEFT JOIN recipes ON cuisines.cuisine_id = recipes.recipe_cuisine_id\n"
+                    "GROUP BY cuisine_name\n"
+                    "HAVING count(recipe_cuisine_id) = 0)");
+
+        db.exec("DELETE FROM courses\n"
+                "WHERE course_name IN(\n"
+                    "SELECT course_name\n"
+                    "FROM courses\n"
+                    "LEFT JOIN recipes ON courses.course_id = recipes.recipe_course_id\n"
+                    "GROUP BY course_name\n"
+                    "HAVING count(recipe_course_id) = 0)");
+
+        db.exec("DELETE FROM ingredients\n"
+                "WHERE ingredient_name IN (\n"
+                    "SELECT ingredient_name\n"
+                    "FROM ingredients\n"
+                    "LEFT JOIN recipe_ingredients ON recipe_ingredients.ingredient_id = ingredients.ingredient_id\n"
+                    "GROUP BY ingredient_name\n"
+                    "HAVING count(recipe_ingredients.ingredient_id) = 0)");
     }
 
 }   // dbAPI 
