@@ -188,8 +188,8 @@ void TCPTransfer::Client::start() {
 
 void TCPTransfer::Client::stop() {
     if (!stopFlag.load()) {
+        stopFlag.store(true);
         disconnect();
-//        stopFlag.store(true);
         std::unique_lock finishLock(finishMut);
         finishCV.wait(finishLock, [this] {return !runFlag.load(); });
     }
@@ -256,6 +256,7 @@ void TCPTransfer::Client::onMessageWritten(const asio::error_code& ec, size_t by
     if (ec) {
         handleError(ec);
     }
+    transfer.logInfo("Bytes written to client "+ std::to_string(id)+": "+std::to_string(bytesWritten)); // temporary
     finish();
 }
 
