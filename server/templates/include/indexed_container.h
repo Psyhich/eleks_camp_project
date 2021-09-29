@@ -34,10 +34,9 @@ public:
         return vectorContainer.at(index);
     }
 
-    template <typename T>
     void push_back(T&& value) {
         std::scoped_lock vectorLock(vectorMut);
-        vectorContainer.push_back(std::forward<T>(value));
+        vectorContainer.push_back(std::move(value));
     }
 
     void clear() {
