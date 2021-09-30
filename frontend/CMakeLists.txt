@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.18)
 
 project(project-front-desktop VERSION 0.1 LANGUAGES CXX)
 
@@ -10,32 +10,40 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1) 
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 find_package(Qt5Network REQUIRED)
 
-
 set(PROJECT_SOURCES
-        main.cpp
+        # Project sources
+	main.cpp
+	# Widgets
 	widgets/mainwindow.h
 	widgets/mainwindow.cpp
 	widgets/mainwindow.ui
-	types/base_types.h
-	types/base_types.cpp
 	widgets/recipe_row_view.h
 	widgets/recipe_row_view.cpp
 	widgets/recipes_list_view.h
 	widgets/recipes_list_view.cpp
 	widgets/tab_manager.h
 	widgets/tab_manager.cpp
+	# Base data types
+	types/requests.h
+	types/requests.cpp
+	types/responses.h
+	types/responses.cpp
+	# Connection and network
 	connections/connection_manager.h
 	connections/connection_manager.cpp
-	connections/connector.h
+	connections/i_connector.h
 	connections/connectors.h
-	connections/connectors.cpp
+	connections/local_connector.cpp
+	# Resources
 	icon_favorite.qrc
 )
 
@@ -56,9 +64,11 @@ else()
     endif()
 endif()
 
+target_include_directories(project-front-desktop PUBLIC ${SERVER_KEEPER_INCLUDE_DIRECTORIES})
+target_link_libraries(project-front-desktop PUBLIC server_keeper)
+
 target_link_libraries(project-front-desktop PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(project-front-desktop PRIVATE Qt${QT_VERSION_MAJOR}::Network)
-
 
 set_target_properties(project-front-desktop PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
