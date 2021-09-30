@@ -34,12 +34,12 @@ struct JsonSerializer::Process {
     }
 
     transfer::Pack operator()(const responses::EditSuccess& editSuccessResponse) const {
-        nlohmann::json j = {"responseTag", ResponseTag::editSuccess};
+        nlohmann::json j = {{"responseTag", ResponseTag::editSuccess}};
         return {j.dump(), editSuccessResponse.getClientID()};
     }
 
     transfer::Pack operator()(const responses::RemoveSuccess& removeSuccessResponse) const {
-        nlohmann::json j = {"responseTag", ResponseTag::removeSuccess};
+        nlohmann::json j = {{"responseTag", ResponseTag::removeSuccess}};
         return {j.dump(), removeSuccessResponse.getClientID()};
     }    
 };
