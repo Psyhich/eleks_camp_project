@@ -10,7 +10,7 @@ class IModifier {
 public:
     virtual ~IModifier() = default;
 
-    virtual bool add(const recipe::Recipe& newRecipe) const = 0;
+    virtual unsigned int add(const recipe::Recipe& newRecipe) const = 0;
     virtual bool edit(const recipe::Recipe& changedRecipe) const = 0;
     virtual bool remove(unsigned int id) const = 0;
 };

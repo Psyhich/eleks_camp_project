@@ -75,8 +75,15 @@ public:
 };
 
 class AddSuccess : public Response {
+    unsigned int recipeID;
 public:
-    AddSuccess(unsigned int clientID) : Response(clientID) {}
+    AddSuccess(unsigned int recipeID, unsigned int clientID)
+        :
+        Response(clientID),
+        recipeID {recipeID}
+    {}
+
+    auto getRecipeID() const noexcept {return recipeID;}
 };
 
 class EditSuccess : public Response {

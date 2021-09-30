@@ -28,7 +28,8 @@ struct JsonSerializer::Process {
     }
 
     transfer::Pack operator()(const responses::AddSuccess& addSuccessResponse) const {
-        nlohmann::json j = {"responseTag", ResponseTag::addSuccess};
+        nlohmann::json j = {{"responseTag", ResponseTag::addSuccess},
+                            {"recipeID", addSuccessResponse.getRecipeID()}};
         return {j.dump(), addSuccessResponse.getClientID()};
     }
 

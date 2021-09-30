@@ -38,8 +38,9 @@ namespace handler {
     }
 
     responses::ResponseVar Handler::operator()(const requests::Add& addRequest) const {
-        if (modifier.add(addRequest.getNewRecipe())){
-            return responses::ResponseVar(std::in_place_type<responses::AddSuccess>, addRequest.getClientID());
+        auto newRecipeID = modifier.add(addRequest.getNewRecipe());
+        if (newRecipeID){
+            return responses::ResponseVar(std::in_place_type<responses::AddSuccess>, newRecipeID, addRequest.getClientID());
         } else {
             return responses::ResponseVar(std::in_place_type<responses::Error>, "Failed to add recipe.", addRequest.getClientID());
         }
