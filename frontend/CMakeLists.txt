@@ -33,6 +33,8 @@ set(PROJECT_SOURCES
 	widgets/tab_manager.h
 	widgets/tab_manager.cpp
 	# Base data types
+	types/recipe.h
+	types/recipe.cpp
 	types/requests.h
 	types/requests.cpp
 	types/responses.h

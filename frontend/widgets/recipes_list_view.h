@@ -4,7 +4,6 @@
 #include <QScrollArea>
 #include <QSharedPointer>
 #include <QWidget>
-#include "types/base_types.h"
 #include "recipe_row_view.h"
 
 class RecipesListView : public QWidget

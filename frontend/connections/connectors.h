@@ -1,20 +1,35 @@
 #ifndef CONNECTORS_H
 #define CONNECTORS_H
 
-#include "connector.h"
+#include "i_connector.h"
+#include "../server/requests/include/requests.h"
+#include "../server/server_keeper/include/local_server_keeper.h"
+#include "../server/local_exchange/include/i_frontend_exchange.h"
+
 namespace Connections {
-	class LocalConnector : public Connections::IConnector {
-	  public:
-		LocalConnector();
+class LocalConnector : public Connections::IConnector {
+private:
+	server::LocalServerKeeper currentLocal;
+	server::localex::IFrontendExchange& exchanger;
+public:
+	LocalConnector();
 
-		// IConnector interface
-	  public:
-		void openConnection() override;
-		void closeConnection() override;
+	void openConnection() override;
+	void closeConnection() override;
 
-		QList<BaseTypes::Response*> runQuery(BaseTypes::RequestQuery query) override;
-		void postRecipe(BaseTypes::Recipe* recipeToPost) override;
-		~LocalConnector() override;
-	};
+	BaseTypes::Responses::SearchResponse runSearch(QSharedPointer<BaseTypes::Requests::SearchQuery> filter) override;
+
+	BaseTypes::Responses::TagsResponse getTags(QSharedPointer<BaseTypes::Requests::GetInitDataRequest> tagRequest) override;
+
+	virtual BaseTypes::Responses::RemoveResponse removeRecipe(QSharedPointer<BaseTypes::Requests::RemoveRecipeRequest> removeRequest) override;
+	virtual BaseTypes::Responses::AddResponse postRecipe(QSharedPointer<BaseTypes::Requests::AddRecipeRequest> arrRequest) override;
+	virtual BaseTypes::Responses::EditResponse editRecipe(QSharedPointer<BaseTypes::Requests::EditRecipeRequest> editRequest) override;
+
+	virtual BaseTypes::Responses::ErrorResponse sendError(QSharedPointer<BaseTypes::Requests::Error> error) override;
+
+	~LocalConnector() override;
+};
+
+
 }
 #endif // CONNECTORS_H

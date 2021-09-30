@@ -1,5 +1,5 @@
-#ifndef REQUESTS_H
-#define REQUESTS_H
+#ifndef FRONT_REQUESTS_H
+#define FRONT_REQUESTS_H
 
 #include <QString>
 #include <QList>
@@ -10,14 +10,14 @@
 
 
 // TODO remake Request type to have 2 virtual methods: toString() - for JSON, translate() - for local protocols
-namespace BaseTypes {
+namespace BaseTypes::Requests {
 
 class Request {
 public:
 	virtual QString toJSONString() = 0;
 	virtual server::requests::RequestVar translate() = 0;
 
-	virtual ~Request() = 0;
+	virtual ~Request(){}
 };
 
 class SearchQuery : public Request {
@@ -76,10 +76,11 @@ public:
 };
 
 class GetInitDataRequest : public Request {
+public:
 	QString toJSONString() override;
 	server::requests::RequestVar translate() override;
 
-	~GetInitDataRequest() override;
+	~GetInitDataRequest() override {}
 };
 
 class Error : public Request {

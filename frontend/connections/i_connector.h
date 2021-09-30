@@ -1,11 +1,12 @@
 #ifndef CONNECTOR_H
 #define CONNECTOR_H
 
+#include <QList>
+#include <QSharedPointer>
+
 #include "recipe.h"
 #include "types/responses.h"
 #include "types/requests.h"
-#include <QList>
-#include <QSharedPointer>
 
 namespace Connections {
 	class IConnector {
@@ -13,15 +14,15 @@ namespace Connections {
 		virtual void openConnection() = 0;
 		virtual void closeConnection() = 0;
 
-		virtual QList<QSharedPointer<BaseTypes::Recipe>> runSearch(BaseTypes::SearchQuery query) = 0;
+		virtual BaseTypes::Responses::SearchResponse runSearch(QSharedPointer<BaseTypes::Requests::SearchQuery> query) = 0;
 
-		virtual QSharedPointer<BaseTypes::TagsResponse> getTags() = 0;
+		virtual BaseTypes::Responses::TagsResponse getTags(QSharedPointer<BaseTypes::Requests::GetInitDataRequest> tagRequest) = 0;
 
-		virtual bool removeRecipe(unsigned int recipeID) = 0;
-		virtual QSharedPointer<BaseTypes::Recipe> postRecipe(QSharedPointer<BaseTypes::Recipe> recipeToPost) = 0;
-		virtual QSharedPointer<BaseTypes::Recipe> editRecipe(QSharedPointer<BaseTypes::Recipe> recipeToEdit) = 0;
+		virtual BaseTypes::Responses::RemoveResponse removeRecipe(QSharedPointer<BaseTypes::Requests::RemoveRecipeRequest> removeRequest) = 0;
+		virtual BaseTypes::Responses::AddResponse postRecipe(QSharedPointer<BaseTypes::Requests::AddRecipeRequest> addRequest) = 0;
+		virtual BaseTypes::Responses::EditResponse editRecipe(QSharedPointer<BaseTypes::Requests::EditRecipeRequest> editRequest) = 0;
 
-		virtual void sendError(BaseTypes::Error error) = 0;
+		virtual BaseTypes::Responses::ErrorResponse sendError(QSharedPointer<BaseTypes::Requests::Error> error) = 0;
 
 		virtual ~IConnector(){}
 	};

@@ -1,20 +1,18 @@
 #ifndef CONNECTION_MANAGER_H
 #define CONNECTION_MANAGER_H
 
-#include "connector.h"
-#include "types/base_types.h"
+#include "i_connector.h"
 
 namespace Connections {
 
 	// There can be only one connection manager
 	// Class that gives abstraction beetwean UI and different interaction protocols
 	class ConnectionManager {
-
 	  private:
-		IConnector* localConnection = nullptr;
-		IConnector* remoteConnection = nullptr;
+		QSharedPointer<IConnector> localConnection;
+		QSharedPointer<IConnector> remoteConnection;
 
-		IConnector* currentConnection = nullptr;
+		QWeakPointer<IConnector> currentConnection;
 
 		ConnectionManager();
 
@@ -24,16 +22,17 @@ namespace Connections {
 
 		static ConnectionManager& getManager();
 
-		~ConnectionManager();
-
-
 		void toggleToLocal();
 		void toggleToRemote();
 
 		void openRemoteConnection(QString address);
 
-		void sendRecipe(BaseTypes::Recipe* recipeToSend);
-		QList<BaseTypes::Response*> runQuery(BaseTypes::RequestQuery query);
+		BaseTypes::Responses::TagsResponse getTags();
+
+		bool sendRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSend);
+		QSharedPointer<QVector<QSharedPointer<BaseTypes::Recipe>>> runSearch(QSharedPointer<BaseTypes::Requests::SearchQuery> query);
+		bool removeRecipe(unsigned int recipeID);
+		bool editRecipe(QSharedPointer<BaseTypes::Recipe> editedRecipe);
 
 	};
 }

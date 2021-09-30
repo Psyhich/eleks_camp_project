@@ -2,4 +2,5 @@
 
 TabManager::TabManager(QWidget* parrent) : QTabWidget(parrent) {
 
+
 }

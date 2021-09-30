@@ -1,7 +1,7 @@
 #ifndef RECIPE_ROW_VIEW_H
 #define RECIPE_ROW_VIEW_H
 
-#include "types/base_types.h"
+#include "types/responses.h"
 #include <QSharedPointer>
 #include <QToolButton>
 #include <QIcon>

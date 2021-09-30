@@ -1,6 +1,6 @@
 #include "requests.h"
 
-using namespace BaseTypes;
+using namespace BaseTypes::Requests;
 
 // SearchQueryRequest class
 QString SearchQuery::toJSONString() {
@@ -67,7 +67,6 @@ server::requests::RequestVar RemoveRecipeRequest::translate() {
 QString GetInitDataRequest::toJSONString() {
   throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement
 }
-
 server::requests::RequestVar GetInitDataRequest::translate() {
   return server::requests::GetInitData(1);
 }

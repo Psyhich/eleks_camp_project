@@ -4,7 +4,8 @@
 #include <QTabWidget>
 #include <QWidget>
 #include <QSharedPointer>
-#include "types/base_types.h"
+#include "types/requests.h"
+#include "types/responses.h"
 
 class TabManager : public QTabWidget
 {
@@ -12,7 +13,7 @@ class TabManager : public QTabWidget
 	TabManager(QWidget *parrent=nullptr);
 
   public slots:
-	void requestRecipes(BaseTypes::RequestQuery request);
+	void requestRecipes(BaseTypes::Requests::SearchQuery request);
 
 	void openRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
 	void editRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);

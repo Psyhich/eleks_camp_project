@@ -10,45 +10,61 @@ ConnectionManager& ConnectionManager::getManager(){
 
 ConnectionManager::ConnectionManager() {
 	// Enabling local connection by default
-	currentConnection = localConnection = new LocalConnector();
+	currentConnection = localConnection = QSharedPointer<IConnector>(new LocalConnector());
 }
 
 void ConnectionManager::toggleToLocal() {
-	if(localConnection != nullptr){
-		if(currentConnection != nullptr){ currentConnection->closeConnection(); }
+	if(!localConnection.isNull()){
 		currentConnection = localConnection;
-		currentConnection->openConnection();
 	}
 }
 
 void ConnectionManager::toggleToRemote() {
-	if(remoteConnection != nullptr){
-		if(currentConnection != nullptr){ currentConnection->closeConnection(); }
+	if(!remoteConnection.isNull()){
 		currentConnection = remoteConnection;
-		currentConnection->openConnection();
 	}
 }
 
-void ConnectionManager::sendRecipe(BaseTypes::Recipe *recipeToSend){
-  if(currentConnection != nullptr){
-	currentConnection->postRecipe(recipeToSend);
+bool ConnectionManager::sendRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSend){
+  if(auto connection = currentConnection.lock()){
+	QSharedPointer<BaseTypes::Requests::AddRecipeRequest>
+		request(new BaseTypes::Requests::AddRecipeRequest(recipeToSend));
+	return  connection->postRecipe(request).isSuccessfull();
   }
+  return false;
 }
 
-QList<BaseTypes::Response*> ConnectionManager::runQuery(BaseTypes::RequestQuery query){
-	if(currentConnection != nullptr){
-	  return currentConnection->runQuery(query);
+QSharedPointer<QVector<QSharedPointer<BaseTypes::Recipe>>> ConnectionManager::runSearch(QSharedPointer<BaseTypes::Requests::SearchQuery> query){
+	if(auto connection = currentConnection.lock()){
+		return connection->runSearch(query).getRecipes();
 	}
 	return {};
 }
 
-ConnectionManager::~ConnectionManager() {
-	if(localConnection != nullptr){
-		localConnection->closeConnection();
-		delete localConnection;
-	}
-	if(remoteConnection != nullptr){
-		remoteConnection->closeConnection();
-		delete remoteConnection;
-	}
+
+BaseTypes::Responses::TagsResponse ConnectionManager::getTags(){
+  if(auto connection = currentConnection.lock()){
+	QSharedPointer<BaseTypes::Requests::GetInitDataRequest>
+		request(new BaseTypes::Requests::GetInitDataRequest());
+	return connection->getTags(request);
+  }
+  return false;
 }
+bool ConnectionManager::removeRecipe(unsigned int recipeID){
+  if(auto connection = currentConnection.lock()){
+	QSharedPointer<BaseTypes::Requests::RemoveRecipeRequest>
+		request(new BaseTypes::Requests::RemoveRecipeRequest(recipeID));
+	return connection->removeRecipe(request).isSuccessfull();
+  }
+  return false;
+}
+bool ConnectionManager::editRecipe(QSharedPointer<BaseTypes::Recipe> editedRecipe){
+  if(auto connection = currentConnection.lock()){
+	QSharedPointer<BaseTypes::Requests::EditRecipeRequest>
+		request(new BaseTypes::Requests::EditRecipeRequest(editedRecipe));
+	return connection->editRecipe(request).isSuccessfull();
+  }
+  return false;
+}
+
+
