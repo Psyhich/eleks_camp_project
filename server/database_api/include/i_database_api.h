@@ -19,7 +19,7 @@ public:
     virtual std::optional<initializer::DataContainers> getInitData() = 0;
     virtual std::optional<searcher::Results> find(const searcher::Criteria& searchCriteria) = 0;
 
-    virtual bool add(const recipe::Recipe& newRecipe) = 0;
+    virtual unsigned int add(const recipe::Recipe& newRecipe) = 0;
     virtual bool edit(const recipe::Recipe& changedRecipe) = 0;
     virtual bool remove(unsigned int id) = 0;
 };
