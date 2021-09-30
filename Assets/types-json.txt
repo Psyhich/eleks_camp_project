@@ -47,7 +47,7 @@
 // Edit request
 {
 	"requestTag":4,
-	"newRecipe":{
+	"changedRecipe":{
 		"course":"course1",
 		"cuisine":"cuisine1",
 		"id":1,
