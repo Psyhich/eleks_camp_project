@@ -15,7 +15,7 @@ public:
     Modifier(dbAPI::IDatabase& db);
     virtual ~Modifier() = default;
 
-    virtual bool add(const recipe::Recipe& newRecipe) const override;
+    virtual unsigned int add(const recipe::Recipe& newRecipe) const override;
     virtual bool edit(const recipe::Recipe& changedRecipe) const override;
     virtual bool remove(unsigned int id) const override;
 };
