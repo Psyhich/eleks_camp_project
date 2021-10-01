@@ -2,7 +2,7 @@
 #define RECIPE
 
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <utility>
 
 namespace server {
@@ -13,7 +13,7 @@ struct IngredientAmount{
     std::string unit;
 };
 
-using IngredientsList = std::unordered_map<std::string, IngredientAmount>;
+using IngredientsList = std::map<std::string, IngredientAmount>;
 
 class Recipe {
     unsigned int id;              // 0 value should be reserved to indicate a new recipe to be added
