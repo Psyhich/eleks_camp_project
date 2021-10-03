@@ -19,6 +19,7 @@
 #include "data_queue.h"
 #include "indexed_container.h"
 #include "pack.h"
+#include "server_output.h"
 
 #include "i_transfer.h"
 
@@ -54,8 +55,6 @@ protected:
     AcceptorPtr acceptor;
     ThreadPool ioContextRunPool;
     unsigned short port;
-
-    std::mutex consoleMut;   // temporary
     
  public:
     TCPTransfer(unsigned short port);
