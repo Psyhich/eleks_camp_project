@@ -26,7 +26,7 @@ void TCPTransfer::start() {
         acceptor->start();
         makeIOContextRunPool();
         stopFlag.store(false);
-        logInfo ("Transfer component started."); // temporary
+        logInfo ("Server started.");
     }
 }
 
@@ -39,7 +39,7 @@ void TCPTransfer::stop() {
         ioContext->stop();
         destroyIOContextRunPool();
         stopFlag.store(true);
-        logInfo("Transfer component stopped."); // temporary
+        logInfo("Server stopped.");
     }
 }
 
@@ -83,17 +83,16 @@ void TCPTransfer::clearAllClients() {
 }
 
 void TCPTransfer::logError(const asio::error_code& ec, const std::string& intro) {
-    std::scoped_lock consoleLock(consoleMut);
-    std::cerr
-        << intro << " "
-        << "Error code: "<< ec.value() << "; "
-        << "error message: \"" << ec.message() << "\""
-        << std::endl;                                       // temporary
+    output.error(
+        intro+
+        "Error code: "+
+        std::to_string(ec.value())+"; "+
+        "error message: \""+
+        ec.message()+"\"");
 }
 
 void TCPTransfer::logInfo(const std::string& info) {
-    std::scoped_lock consoleLock(consoleMut);
-    std::cout << info << std::endl;                         // temporary
+    output.info(info);
 }
 
 

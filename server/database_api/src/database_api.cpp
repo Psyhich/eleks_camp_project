@@ -65,7 +65,7 @@ namespace dbAPI {
         }
     }
 
-    bool Database::add(const recipe::Recipe& newRecipe) {
+    unsigned int Database::add(const recipe::Recipe& newRecipe) {
         try {
             addCourse(newRecipe.getCourse());
             addCuisine(newRecipe.getCuisine());
@@ -95,12 +95,12 @@ namespace dbAPI {
             }
 
             insertIngredientsForRecipe(newRecipe.getIngredients(), id);
-            return true;
+            return id;
         }
         catch (std::exception& e) {
             std::cerr << "error: cannot insert recipe" << std::endl;
             std::cerr << e.what() << std::endl;
-            return false;
+            return 0;
         }
     }
 

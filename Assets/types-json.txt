@@ -1,0 +1,154 @@
+// REQUESTS
+
+//  "Error request": for server's internal use, not to be submitted.
+{
+	"requestTag":0
+}
+
+// Request to get the list of tags.
+{
+	"requestTag":1
+}
+
+// Search request
+{
+	"requestTag":2,
+	"searchCriteria":{
+		"favoriteIDs":[1,2,3,4,5],
+		"nameSubstring":"recipe",
+		"course":"course1",
+		"cuisine":"cuisine1",
+		"ingredientsSubset":["ingredient1", "ingredient2"],
+		"exclusiveIngredients":false
+	}
+}
+
+// Add request
+{
+	"requestTag":3,
+	"newRecipe":{
+			"course":"course1",
+			"cuisine":"cuisine1",
+			"id":1,
+			"ingredients":{
+				"ingredientNameArray":["ingredient4","ingredient2","ingredient3","ingredient1"],
+				"ingredientQuantityArray":[80.0,2.0,1.0,200.0],
+				"ingredientUnitArray":["g","g","g","g"]},
+			"name":"recipe1",
+			"outCalories":83.23,
+			"outPortions":1,
+			"outWeight":200.0,
+			"preparation":"prepare1",
+			"presentation":"",
+			"remarks":""
+	}
+}
+
+// Edit request
+{
+	"requestTag":4,
+	"changedRecipe":{
+		"course":"course1",
+		"cuisine":"cuisine1",
+		"id":1,
+		"ingredients":{
+			"ingredientNameArray":["ingredient4","ingredient2","ingredient3","ingredient1"],
+			"ingredientQuantityArray":[80.0,2.0,1.0,200.0],
+			"ingredientUnitArray":["g","g","g","g"]
+		},
+		"name":"recipe1",
+		"outCalories":83.23,
+		"outPortions":1,
+		"outWeight":200.0,
+		"preparation":"prepare1",
+		"presentation":"",
+		"remarks":""
+	}
+}
+
+// Remove request
+{
+	"requestTag":5,
+	"recipeID":2
+}
+
+
+// RESPONSES
+
+// Error response
+{
+	"responseTag":0,
+	"message":"Invalid request format."
+}
+
+// Fetched full list of tags response
+{
+	"responseTag":1,
+	"initData":{
+		"fullCourseSet":["course1","course2","course3"],
+		"fullCuisineSet":["cuisine1","cuisine2","cuisine3"],
+		"fullIngredientSet":["ingredient1","ingredient2","ingredient3","ingredient4","ingredient5","ingredient6","ingredient9"]
+	}
+}
+
+// Recipes found response
+{
+	"responseTag":2,
+	"searchResults":{
+		"foundRecipeArray":[
+			{
+				"course":"course1",
+				"cuisine":"cuisine1",
+				"id":1,
+				"ingredients":{
+					"ingredientNameArray":["ingredient4","ingredient2","ingredient3","ingredient1"],
+					"ingredientQuantityArray":[80.0,2.0,1.0,200.0],
+					"ingredientUnitArray":["g","g","g","g"]
+				},
+				"name":"recipe1",
+				"outCalories":83.23,
+				"outPortions":1,
+				"outWeight":200.0,
+				"preparation":"prepare1",
+				"presentation":"",
+				"remarks":""
+			},
+			{
+				"course":"course1",
+				"cuisine":"cuisine2",
+				"id":2,
+				"ingredients":{
+					"ingredientNameArray":["ingredient4","ingredient6","ingredient2","ingredient1"],
+					"ingredientQuantityArray":[80.0,80.0,2.0,200.0],
+					"ingredientUnitArray":["g","g","g","g"]
+				},
+				"name":"recipe2",
+				"outCalories":83.23,
+				"outPortions":1,
+				"outWeight":100.0,
+				"preparation":"prepare2",
+				"presentation":"",
+				"remarks":""
+			}
+		]
+	}
+}
+
+// Recipe added successfully response:
+{
+	"reponseTag":3,
+	"recipeID":2
+}
+
+// Recipe edited successfully response:
+
+{
+	"responseTag":4
+}
+
+// Recipe removed successfully response:
+
+{
+	"responseTag":5
+}
+

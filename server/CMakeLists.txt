@@ -1,5 +1,6 @@
 project(eleks_chef_server)
 
+add_subdirectory(server_output)
 add_subdirectory(database_api)
 add_subdirectory(initializer)
 add_subdirectory(searcher)

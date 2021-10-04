@@ -23,7 +23,7 @@ public:
     std::optional<initializer::DataContainers> getInitData() override;
     std::optional<searcher::Results> find(const searcher::Criteria& searchCriteria) override;
 
-    bool add(const recipe::Recipe& newRecipe) override;
+    unsigned int add(const recipe::Recipe& newRecipe) override;
     bool edit(const recipe::Recipe& changedRecipe) override;
     bool remove(unsigned int id) override;
 

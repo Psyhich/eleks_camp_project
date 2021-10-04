@@ -5,7 +5,7 @@ namespace modifier {
 
     Modifier::Modifier(dbAPI::IDatabase& db) : db{db} {}
 
-    bool Modifier::add(const recipe::Recipe& newRecipe) const {
+    unsigned int Modifier::add(const recipe::Recipe& newRecipe) const {
         return db.add(newRecipe);
     }
 
