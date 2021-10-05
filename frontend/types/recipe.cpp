@@ -24,7 +24,7 @@ server::recipe::Recipe Recipe::translateToServer() const {
 	  cusine = cusines.values()[0].toStdString();
 	}
 
-	std::unordered_map<std::string, server::recipe::IngredientAmount> ingredients;
+	server::recipe::IngredientsList ingredients;
 	for(auto key : this->ingredients.keys()) {
 		server::recipe::IngredientAmount amount;
 		const Recipe::IngredientAmount &my_amount = this->ingredients.value(key);
