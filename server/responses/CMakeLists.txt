@@ -1,10 +1,6 @@
 project(responses)
 
-set (HEADERS
-    include/responses.h
-)
-
-add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
+add_library(${PROJECT_NAME} INTERFACE)
 
 target_include_directories(${PROJECT_NAME}
     INTERFACE
