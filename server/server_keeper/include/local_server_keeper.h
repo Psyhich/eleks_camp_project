@@ -8,8 +8,6 @@
 #include "local_receiver.h"
 #include "local_sender.h"
 #include "modifier.h"
-#include "requests.h"
-#include "responses.h"
 #include "searcher.h"
 #include "server.h"
 
