@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.16)
 
 project(project-front-desktop VERSION 0.1 LANGUAGES CXX)
 
@@ -23,26 +23,52 @@ set(PROJECT_SOURCES
         # Project sources
 	main.cpp
 	# Widgets
+	widgets/mainwindow.ui
+
 	widgets/mainwindow.h
 	widgets/mainwindow.cpp
-	widgets/mainwindow.ui
-	widgets/recipe_row_view.h
-	widgets/recipe_row_view.cpp
-	widgets/recipes_list_view.h
-	widgets/recipes_list_view.cpp
+
 	widgets/tab_manager.h
 	widgets/tab_manager.cpp
+
+	widgets/recipe_view_tab.h
+	widgets/recipe_view_tab.cpp
+
+	widgets/recipes_list_view.h
+	widgets/recipes_list_view.cpp
+
+	widgets/recipe_row_view.h
+	widgets/recipe_row_view.cpp
+
+	widgets/search_filters.h
+	widgets/search_filters.cpp
+
+	widgets/search_widget.h
+	widgets/search_widget.cpp
+
+	widgets/criteria_widget.h
+	widgets/criteria_widget.cpp
+
+	widgets/ingredients_filter_widget.h
+	widgets/ingredients_filter_widget.cpp
 	# Base data types
 	types/recipe.h
 	types/recipe.cpp
+
 	types/requests.h
 	types/requests.cpp
+
 	types/responses.h
 	types/responses.cpp
+
+	types/favorites_manager.h
+	types/favorites_manager.cpp
 	# Connection and network
 	connections/connection_manager.h
 	connections/connection_manager.cpp
+
 	connections/i_connector.h
+
 	connections/connectors.h
 	connections/local_connector.cpp
 	# Resources
