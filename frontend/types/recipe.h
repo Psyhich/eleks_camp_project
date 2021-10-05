@@ -28,7 +28,7 @@ public:
 	QMap<QString, IngredientAmount> ingredients;
 	double outCalories{0};
 	double outWeight{0};
-	unsigned int outPortions{0};
+	unsigned int outPortions{1};
 
 	// Returns reference to ID if it was initialized
 	const unsigned int* getID() const;
