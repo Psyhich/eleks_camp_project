@@ -1,11 +1,8 @@
 project(nlohmann_extend)
 
+add_subdirectory(lib/nlohmann)
+
 set(HEADERS
-    ../initializer/include/data_containers.h    
-    ../searcher/include/criteria.h
-    ../searcher/include/results.h
-    ../recipe/include/recipe.h
-   lib/nlohmann/include/json.hpp
    include/nlohmann_extend.h
 )
 
@@ -17,8 +14,12 @@ add_library(${PROJECT_NAME} STATIC ${HEADERS} ${SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
    include/
-   ../initializer/include/
-   ../searcher/include/
-   ../recipe/include/
-   lib/nlohmann/include/
+)
+
+target_link_libraries(${PROJECT_NAME}
+   PUBLIC
+      nlohmann
+      recipe
+      initializer
+      searcher
 )
