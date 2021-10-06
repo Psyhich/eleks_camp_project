@@ -6,21 +6,24 @@
 #include <QWidget>
 #include "recipe_row_view.h"
 
-class RecipesListView : public QWidget
-{
-  QList<RecipeRowView *> rows;
+class RecipesListView : public QWidget {
+Q_OBJECT
+	//QSet<QSharedPointer<BaseTypes::Recipe>> recipeCache; // TODO implement recipe cache to update all widgets that contain opened recipe
+	QList<RecipeRowView *> rows;
 
-  public:
+public:
 	RecipesListView(QWidget *parrent=nullptr);
 
- signals:
-	void requestOpenRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen){}
-	void requestEditRecipe(QSharedPointer<BaseTypes::Recipe> recipeToEdit){}
-	void requestFavoriteRecipe(QSharedPointer<BaseTypes::Recipe> recipeToEdit){}
+signals:
+	void requestOpenRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
+	void requestEditRecipe(QSharedPointer<BaseTypes::Recipe> recipeToEdit);
+	void requestFavoriteRecipe(QSharedPointer<BaseTypes::Recipe> recipeToEdit);
+	void recipeUpdated(unsigned int recipeID);
 
-  public slots:
+public slots:
 	void addRecipe(QSharedPointer<BaseTypes::Recipe> recipeToAdd);
 	void removeRecipe(unsigned int recipeID);
+	void clearRecipes();
 
 };
 

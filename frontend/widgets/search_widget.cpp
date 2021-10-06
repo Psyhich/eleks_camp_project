@@ -13,7 +13,7 @@ MySearchWidget::MySearchWidget(QWidget *parent) : QWidget(parent) {
 	searchLine = new QLineEdit(this);
 
 	searchButton = new QPushButton("Search", this);
-	QObject::connect(searchButton, &QPushButton::toggled, this, &MySearchWidget::emitClickSearchButton);
+	QObject::connect(searchButton, &QPushButton::clicked, this, &MySearchWidget::searchButtonClicked);
 
 	hLayout->addWidget(moreButton);
 	hLayout->addWidget(searchLine, 1);
@@ -22,6 +22,7 @@ MySearchWidget::MySearchWidget(QWidget *parent) : QWidget(parent) {
 	setLayout(hLayout);
 }
 
-void MySearchWidget::emitClickSearchButton(){
-  emit searchButtonClicked(searchLine->text());
+
+QString MySearchWidget::getSearchSubstring(){
+  return searchLine->text();
 }

@@ -56,15 +56,15 @@ public:
 class TagsResponse : public Response {
 private:
 	// I use pointers here to easily move values and not copy them
-	QSharedPointer<QVector<QString>> courses;
-	QSharedPointer<QVector<QString>> cusines;
-	QSharedPointer<QVector<QString>> ingredients;
+	QSharedPointer<QSet<QString>> courses;
+	QSharedPointer<QSet<QString>> cusines;
+	QSharedPointer<QSet<QString>> ingredients;
 public:
 	TagsResponse(unsigned int clientID);
 
-	QSharedPointer<QVector<QString>> getCourses();
-	QSharedPointer<QVector<QString>> getCusines();
-	QSharedPointer<QVector<QString>> getIngredients();
+	QSharedPointer<QSet<QString>> getCourses();
+	QSharedPointer<QSet<QString>> getCusines();
+	QSharedPointer<QSet<QString>> getIngredients();
 
 	void translate(const server::responses::ResponseVar&&) override;
 	void translateFromJSON(const QString& str) override;

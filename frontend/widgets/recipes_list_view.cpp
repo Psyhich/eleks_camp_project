@@ -8,6 +8,11 @@ RecipesListView::RecipesListView(QWidget *parrent) : QWidget(parrent) {
 }
 
 void RecipesListView::addRecipe(QSharedPointer<BaseTypes::Recipe> recipeToAdd){
+	//if(recipeCache.contains(recipeToAdd)){
+		// Calling update methods and updating row representing this recipe
+		//emit recipeUpdated(*recipeToAdd->getID());
+
+	//}
 	RecipeRowView* currentRow = new RecipeRowView(recipeToAdd, this);
 	// Connecting newly created row to own signals
 
@@ -28,4 +33,12 @@ void RecipesListView::removeRecipe(unsigned int recipeID){
 	  break;
 	}
   }
+}
+
+void RecipesListView::clearRecipes(){
+  // Deleting rows, but not stored values, we just clean the list
+  for(auto row : rows){
+	row->deleteLater();
+  }
+  rows.clear();
 }

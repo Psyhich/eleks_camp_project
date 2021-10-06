@@ -11,7 +11,7 @@ IngredientsFilterWidget::IngredientsFilterWidget(QSharedPointer<QSet<QString>> v
 	QVBoxLayout *mainLayout = new QVBoxLayout(innerWidget);
 
 	addButton = new QPushButton("+", innerWidget);
-	QObject::connect(addButton, SIGNAL(clicked()), this, SLOT(addRow()));
+	QObject::connect(addButton, &QPushButton::clicked, this, &IngredientsFilterWidget::addRow);
 	mainLayout->addWidget(addButton, 0, Qt::AlignmentFlag::AlignRight);
 
 	innerWidget->setLayout(mainLayout);
@@ -20,13 +20,18 @@ IngredientsFilterWidget::IngredientsFilterWidget(QSharedPointer<QSet<QString>> v
 
 void IngredientsFilterWidget::deleteFilter(IngredientRowFilter *filterToDelete){
 	widget()->layout()->removeWidget(filterToDelete);
+	rows.removeOne(filterToDelete);
 	filterToDelete->deleteLater();
 }
 
 void IngredientsFilterWidget::addRow(){
 	widget()->layout()->removeWidget(addButton);
 
-	widget()->layout()->addWidget(new IngredientRowFilter(filterVariants, widget()));
+	IngredientRowFilter *row = new IngredientRowFilter(filterVariants, widget());
+	rows.append(row);
+
+	QObject::connect(row, &IngredientRowFilter::deletePressed, this, &IngredientsFilterWidget::deleteFilter);
+	widget()->layout()->addWidget(row);
 
 	widget()->layout()->addWidget(addButton);
 	widget()->layout()->setAlignment(addButton, Qt::AlignmentFlag::AlignRight);
@@ -34,25 +39,22 @@ void IngredientsFilterWidget::addRow(){
 
 void IngredientsFilterWidget::updateFilters(QSharedPointer<QSet<QString>> newVariants){
 	filterVariants = newVariants;
-	for(auto child : widget()->children()){
-		if(child != addButton){
-			reinterpret_cast<IngredientRowFilter*>(child)->updateVariants(newVariants);
-		}
+
+	for(auto child : rows){
+		child->updateVariants(newVariants);
 	}
 }
 
 QSet<QString> IngredientsFilterWidget::getIngredientFilter() {
 	QSet<QString> ingredients;
-	for(auto child : widget()->children()){
-		if(child != addButton){
-			ingredients.insert(reinterpret_cast<IngredientRowFilter*>(child)->getFilter());
-		}
+	for(auto row : rows){
+			ingredients.insert(row->getFilter());
 	}
 	return ingredients;
 }
 
 
-IngredientsFilterWidget::IngredientRowFilter::IngredientRowFilter(
+IngredientRowFilter::IngredientRowFilter(
 	QSharedPointer<QSet<QString>> variants, QWidget *parrent) : QWidget(parrent) {
 	QHBoxLayout *rowLayout = new QHBoxLayout(this);
 
@@ -61,20 +63,20 @@ IngredientsFilterWidget::IngredientRowFilter::IngredientRowFilter(
 	rowLayout->addWidget(ingredientFilter, 1);
 
 	QPushButton *closeButton = new QPushButton(this);
-	QObject::connect(closeButton, SIGNAL(clicked()), this, SLOT(emitDeletePressed()));
+	QObject::connect(closeButton, &QPushButton::clicked, this, &IngredientRowFilter::emitDeletePressed);
 	rowLayout->addWidget(closeButton);
 
 	setLayout(rowLayout);
 }
 
-void IngredientsFilterWidget::IngredientRowFilter::updateVariants(
+void IngredientRowFilter::updateVariants(
 	QSharedPointer<QSet<QString>> newVariants){
 	ingredientFilter->clear();
 	ingredientFilter->addItems(newVariants->values());
 }
 
-void IngredientsFilterWidget::IngredientRowFilter::emitDeletePressed(){ emit deletePressed(this); }
+void IngredientRowFilter::emitDeletePressed(){ emit deletePressed(this); }
 
-QString IngredientsFilterWidget::IngredientRowFilter::getFilter(){
+QString IngredientRowFilter::getFilter(){
 	return ingredientFilter->currentText();
 }

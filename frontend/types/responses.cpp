@@ -18,29 +18,25 @@ void ErrorResponse::translateFromJSON(const QString& str) {
 
 // TagsResponse class
 TagsResponse::TagsResponse(unsigned int clientID):
-  Response(clientID), courses(new QVector<QString>),
-  cusines(new QVector<QString>()), ingredients(new QVector<QString>()){
+  Response(clientID), courses{new QSet<QString>()}, cusines{new QSet<QString>()}, ingredients{new QSet<QString>()}{
 }
-QSharedPointer<QVector<QString>> TagsResponse::getCourses() { return courses; }
-QSharedPointer<QVector<QString>> TagsResponse::getCusines() { return cusines; }
-QSharedPointer<QVector<QString>> TagsResponse::getIngredients() { return ingredients; }
+QSharedPointer<QSet<QString>> TagsResponse::getCourses() { return courses; }
+QSharedPointer<QSet<QString>> TagsResponse::getCusines() { return cusines; }
+QSharedPointer<QSet<QString>> TagsResponse::getIngredients() { return ingredients; }
 
 void TagsResponse::translate(const server::responses::ResponseVar&& response) {
 	auto tags = Response::extractType<server::responses::GetInitDataResult>(response);
 	setClientID(tags.getClientID());
 	for(auto course : tags.getInitData().getFullCourseSet()){
-	  courses->append(QString::fromStdString(course));
+	  courses->insert(QString::fromStdString(course));
 	}
 	for(auto cusine : tags.getInitData().getFullCuisineSet()){
-	  cusines->append(QString::fromStdString(cusine));
+	  cusines->insert(QString::fromStdString(cusine));
 	}
 	for(auto ingredient : tags.getInitData().getFullIngredientSet()){
-	  ingredients->append(QString::fromStdString(ingredient));
+	  ingredients->insert(QString::fromStdString(ingredient));
 	}
 	// Shrinking vectors, because we won't change them
-	courses->shrink_to_fit();
-	cusines->shrink_to_fit();
-	ingredients->shrink_to_fit();
 }
 void TagsResponse::translateFromJSON(const QString& str) {
 	throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement

@@ -34,6 +34,9 @@ set(PROJECT_SOURCES
 	widgets/recipe_view_tab.h
 	widgets/recipe_view_tab.cpp
 
+	widgets/search_tab.h
+	widgets/search_tab.cpp
+
 	widgets/recipes_list_view.h
 	widgets/recipes_list_view.cpp
 

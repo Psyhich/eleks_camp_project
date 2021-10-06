@@ -61,3 +61,6 @@ CMakeSettings.json
 
 # CMake
 cmake-build-*
+
+# Cache folder for clangd
+.cache/

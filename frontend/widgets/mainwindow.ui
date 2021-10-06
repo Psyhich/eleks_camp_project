@@ -23,228 +23,10 @@
       <property name="tabsClosable">
        <bool>true</bool>
       </property>
-      <widget class="QWidget" name="SearchTab">
+      <widget class="SearchTab" name="SearchPage">
        <attribute name="title">
         <string>Search</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_2">
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <item row="0" column="0">
-         <widget class="QWidget" name="SearchWidget" native="true">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>262</height>
-           </size>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <property name="sizeConstraint">
-            <enum>QLayout::SetMinAndMaxSize</enum>
-           </property>
-           <item>
-            <widget class="QWidget" name="SearchBar" native="true">
-             <layout class="QHBoxLayout" name="horizontalLayout">
-              <item>
-               <widget class="QToolButton" name="SearchMoreButton">
-                <property name="text">
-                 <string>&gt;</string>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-                <property name="toolButtonStyle">
-                 <enum>Qt::ToolButtonIconOnly</enum>
-                </property>
-                <property name="autoRaise">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="SearchLineEdit"/>
-              </item>
-              <item>
-               <widget class="QPushButton" name="SearchPushButton">
-                <property name="text">
-                 <string>Search</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QWidget" name="SearchFilters" native="true">
-             <layout class="QVBoxLayout" name="verticalLayout_2">
-              <item>
-               <widget class="QFrame" name="Filters">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_4">
-                 <item row="1" column="2">
-                  <widget class="QLabel" name="CuisineLabel">
-                   <property name="text">
-                    <string>Cuisine:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="0">
-                  <widget class="QCheckBox" name="SearchIngredientsCheckBox">
-                   <property name="text">
-                    <string>By ingredients</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="3">
-                  <widget class="QComboBox" name="CuisineComboBox"/>
-                 </item>
-                 <item row="3" column="1">
-                  <widget class="QCheckBox" name="ExavtIngredientsCheckBox">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="text">
-                    <string>Exact</string>
-                   </property>
-                   <property name="tristate">
-                    <bool>false</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QComboBox" name="CourseComboBox"/>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="CourseLabel">
-                   <property name="text">
-                    <string>Course:</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item>
-               <widget class="QScrollArea" name="IngredientsHolder">
-                <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
-                </property>
-                <property name="widgetResizable">
-                 <bool>true</bool>
-                </property>
-                <widget class="QWidget" name="Ingredients">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>0</y>
-                   <width>1013</width>
-                   <height>86</height>
-                  </rect>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label">
-                    <property name="text">
-                     <string>Ingredient 1: </string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLineEdit" name="lineEdit_2"/>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QToolButton" name="toolButton_3">
-                    <property name="text">
-                     <string>-</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="2">
-                   <widget class="QToolButton" name="toolButton_2">
-                    <property name="text">
-                     <string>+</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QScrollArea" name="RecipesViewHolder">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAsNeeded</enum>
-          </property>
-          <property name="sizeAdjustPolicy">
-           <enum>QAbstractScrollArea::AdjustToContents</enum>
-          </property>
-          <property name="widgetResizable">
-           <bool>true</bool>
-          </property>
-          <widget class="RecipesListView" name="RecipesView">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>1022</width>
-             <height>400</height>
-            </rect>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>1022</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>1022</width>
-             <height>400</height>
-            </size>
-           </property>
-           <property name="baseSize">
-            <size>
-             <width>1022</width>
-             <height>400</height>
-            </size>
-           </property>
-          </widget>
-         </widget>
-        </item>
-       </layout>
       </widget>
      </widget>
     </item>
@@ -256,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>1107</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuConnection">
@@ -270,7 +52,7 @@
   </widget>
   <action name="actionConnect_to_database">
    <property name="text">
-    <string>Connect to database</string>
+    <string>Connect to remote database</string>
    </property>
   </action>
   <action name="actionConnect_to_local">
@@ -281,67 +63,18 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>RecipesListView</class>
-   <extends>QWidget</extends>
-   <header>widgets/recipes_list_view.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>TabManager</class>
    <extends>QTabWidget</extends>
    <header>widgets/tab_manager.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>SearchTab</class>
+   <extends>QWidget</extends>
+   <header>widgets/search_tab.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>SearchMoreButton</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>SearchFilters</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>45</x>
-     <y>112</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>30</x>
-     <y>158</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>SearchIngredientsCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>ExavtIngredientsCheckBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>241</x>
-     <y>216</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>318</x>
-     <y>224</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>SearchIngredientsCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>IngredientsHolder</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>109</x>
-     <y>220</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>103</x>
-     <y>321</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

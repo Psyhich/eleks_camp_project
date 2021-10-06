@@ -13,13 +13,12 @@ private:
 	QPushButton *searchButton;
 	QToolButton *moreButton;
 
-	void emitClickSearchButton();
-
 public:
 	MySearchWidget(QWidget *parent = nullptr);
+	QString getSearchSubstring();
 
 signals:
-	void searchButtonClicked(QString searchSubstring);
+	void searchButtonClicked();
 	void moreButtonClicked(bool state);
 };
 

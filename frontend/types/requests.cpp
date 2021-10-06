@@ -19,7 +19,7 @@ server::requests::RequestVar SearchQuery::translate() {
 	}
 	std::string cusine;
 	if(cusines.size() > 0) {
-	  course = cusines.values()[0].toStdString();
+	  cusine = cusines.values()[0].toStdString();
 	}
 	std::set<std::string> ingredients;
 	for(auto ingredient : this->ingredients){

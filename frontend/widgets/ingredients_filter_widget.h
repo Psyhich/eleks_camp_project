@@ -7,22 +7,25 @@
 #include <QPushButton>
 #include <QSharedPointer>
 
+class IngredientRowFilter : public QWidget {
+	Q_OBJECT
+private:
+	QComboBox *ingredientFilter;
+	void emitDeletePressed();
+public:
+	IngredientRowFilter(QSharedPointer<QSet<QString>> availableVariants, QWidget *parrent=nullptr);
+	QString getFilter();
+	void updateVariants(QSharedPointer<QSet<QString>> newVariants);
+signals:
+	void deletePressed(IngredientRowFilter *current);
+};
 
 class IngredientsFilterWidget : public QScrollArea {
+	Q_OBJECT
 private:
-	class IngredientRowFilter : public QWidget {
-	private:
-		QComboBox *ingredientFilter;
-		void emitDeletePressed();
-	public:
-		IngredientRowFilter(QSharedPointer<QSet<QString>> availableVariants, QWidget *parrent=nullptr);
-		QString getFilter();
-		void updateVariants(QSharedPointer<QSet<QString>> newVariants);
-	signals:
-		void deletePressed(IngredientRowFilter *current);
-	};
 
 	QPushButton* addButton;
+	QVector<IngredientRowFilter *> rows;
 	QSharedPointer<QSet<QString>> filterVariants;
 
 private slots:
