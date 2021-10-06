@@ -60,7 +60,7 @@ namespace dbAPI {
             return searcher::Results(recipeSet);
         }
         catch (std::exception& e) {
-            std::cout << e.what() << std::endl;
+            std::cerr << e.what() << std::endl;
             return std::nullopt;
         }
     }
@@ -376,7 +376,7 @@ namespace dbAPI {
                 }
                 query += ")\n";
             }
-            if (searchCriteria.getExclusiveIngredients()) {
+            if (!searchCriteria.getIngredientsSubset().empty() && searchCriteria.getExclusiveIngredients()) {
                 query += "AND ingredient_count.ingredient_count = ids.ingredient_count";
             }
 
