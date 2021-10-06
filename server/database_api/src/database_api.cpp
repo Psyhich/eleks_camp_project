@@ -338,25 +338,27 @@ namespace dbAPI {
             if (!searchCriteria.getIngredientsSubset().empty()) {
                 auto ingredientSubset = searchCriteria.getIngredientsSubset();
                 query += "INNER JOIN (\n"
-                         "SELECT recipe_id, COUNT(recipe_id) as ingredient_count\n"
-                         "FROM recipe_ingredients\n"
-                         "INNER JOIN ingredients ON recipe_ingredients.ingredient_id = ingredients.ingredient_id\n"
-                         "WHERE ingredients.ingredient_name IN (";
+                         "\tSELECT recipe_id, COUNT(recipe_id) as ingredient_count\n"
+                         "\tFROM recipe_ingredients\n"
+                         "\tINNER JOIN ingredients ON recipe_ingredients.ingredient_id = ingredients.ingredient_id\n"
+                         "\tWHERE ingredients.ingredient_name IN (";
                 for (auto it = ingredientSubset.begin(); it != ingredientSubset.end(); ++it) {
                     query += "?";
                     query += (it != --ingredientSubset.end()) ? ", " : "";
                     itemsToBind.push_back(*it);
                 }
                 query += ")\n"
-                         "GROUP BY recipe_id\n";
+                         "\tGROUP BY recipe_id\n";
                 unsigned int criteriaIngredientsCount = searchCriteria.getIngredientsSubset().size();
-                query += "HAVING ingredient_count = " + std::to_string(criteriaIngredientsCount) + "\n";
-                query += ") ids ON recipes.recipe_id = ids.recipe_id\n"
-                         "INNER JOIN (\n"
-                         "SELECT recipe_id, COUNT(recipe_id) as ingredient_count\n"
-                         "FROM recipe_ingredients\n"
-                         "GROUP BY recipe_id\n"
-                         ") ingredient_count\n";
+                query += "\tHAVING ingredient_count = " + std::to_string(criteriaIngredientsCount);
+                query += "\n)ids ON recipes.recipe_id = ids.recipe_id\n";
+            }
+            if (!searchCriteria.getIngredientsSubset().empty() && searchCriteria.getExclusiveIngredients()) {
+                query += "INNER JOIN (\n"
+                         "\tSELECT recipe_id, COUNT(recipe_id) as ingredient_count\n"
+                         "\tFROM recipe_ingredients\n"
+                         "\tGROUP BY recipe_id\n"
+                         ") ingredient_count ON recipes.recipe_id = ingredient_count.recipe_id\n";
             }
             query +=     "WHERE recipes.recipe_id = recipes.recipe_id\n";
             if (!searchCriteria.getNameSubstring().empty()) {
