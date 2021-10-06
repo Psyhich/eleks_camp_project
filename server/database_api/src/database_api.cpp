@@ -330,12 +330,10 @@ namespace dbAPI {
             string query = "SELECT recipes.recipe_id\n"
                            "FROM recipes \n";
             if (!searchCriteria.getCourse().empty()) {
-                query += "INNER JOIN courses ON courses.course_name = ?\n";
-                itemsToBind.push_back(searchCriteria.getCourse());
+                query += "INNER JOIN courses ON courses.course_id = recipes.recipe_course_id\n";
             }
             if (!searchCriteria.getCuisine().empty()) {
-                query += "INNER JOIN cuisines ON cuisines.cuisine_name = ?\n";
-                itemsToBind.push_back(searchCriteria.getCuisine());
+                query += "INNER JOIN cuisines ON cuisines.cuisine_id = recipes.recipe_cuisine_id\n";
             }
             if (!searchCriteria.getIngredientsSubset().empty()) {
                 auto ingredientSubset = searchCriteria.getIngredientsSubset();
@@ -377,7 +375,15 @@ namespace dbAPI {
                 query += ")\n";
             }
             if (!searchCriteria.getIngredientsSubset().empty() && searchCriteria.getExclusiveIngredients()) {
-                query += "AND ingredient_count.ingredient_count = ids.ingredient_count";
+                query += "AND ingredient_count.ingredient_count = ids.ingredient_count\n";
+            }
+            if (!searchCriteria.getCourse().empty()) {
+                query += "AND courses.course_name = ?\n";
+                itemsToBind.push_back(searchCriteria.getCourse());
+            }
+            if (!searchCriteria.getCuisine().empty()) {
+                query += "AND cuisines.cuisine_name = ?\n";
+                itemsToBind.push_back(searchCriteria.getCuisine());
             }
 
             SQLite::Statement fetchQuery{db, query};
