@@ -17,7 +17,7 @@ public:
 signals:
 	void requestOpenRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
 	void requestEditRecipe(QSharedPointer<BaseTypes::Recipe> recipeToEdit);
-	void requestFavoriteRecipe(QSharedPointer<BaseTypes::Recipe> recipeToEdit);
+	void requestFavoriteRecipe(unsigned int recipeID);
 	void recipeUpdated(unsigned int recipeID);
 
 public slots:

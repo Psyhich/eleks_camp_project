@@ -14,12 +14,11 @@
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent), ui(new Ui::MainWindow) {
 	ui->setupUi(this);
+
 	// Hiding close button for search tab
-	ui->RecipeTabs->tabBar()->tabButton(0, QTabBar::RightSide)->resize(0, 0);
-	ui->RecipeTabs->tabBar()->tabButton(0, QTabBar::RightSide)->hide();
-
-	// Connecting more button with filters
-
+	QWidget *tabButton = ui->RecipeTabs->tabBar()->tabButton(0, QTabBar::RightSide);
+	tabButton->resize(0, 0);
+	tabButton->hide();
 
 }
 

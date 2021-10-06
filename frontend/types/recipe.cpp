@@ -16,12 +16,12 @@ const unsigned int* Recipe::getID() const {
 server::recipe::Recipe Recipe::translateToServer() const {
 	std::string course;
 	if(courses.size() > 0) {
-	  course = courses.values()[0].toStdString();
+	  course = courses.values()[0].toLower().toStdString();
 	}
 
 	std::string cusine;
 	if(cusines.size() > 0) {
-	  cusine = cusines.values()[0].toStdString();
+	  cusine = cusines.values()[0].toLower().toStdString();
 	}
 
 	server::recipe::IngredientsList ingredients;
@@ -29,9 +29,9 @@ server::recipe::Recipe Recipe::translateToServer() const {
 		server::recipe::IngredientAmount amount;
 		const Recipe::IngredientAmount &my_amount = this->ingredients.value(key);
 		amount.quantity = my_amount.quantity;
-		amount.unit = my_amount.unit.toStdString();
+		amount.unit = my_amount.unit.toLower().toStdString();
 
-		ingredients.insert(std::pair<std::string, server::recipe::IngredientAmount>(key.toStdString(), amount));
+		ingredients.insert(std::pair<std::string, server::recipe::IngredientAmount>(key.toLower().toStdString(), amount));
 	}
 
 	return server::recipe::Recipe(this->hasInitializedID ? *this->getID() : 0,

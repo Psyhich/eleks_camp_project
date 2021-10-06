@@ -4,11 +4,13 @@
 #include <QTabWidget>
 #include <QWidget>
 #include <QSharedPointer>
-#include "types/requests.h"
-#include "types/responses.h"
+
+#include "search_tab.h"
+#include "types/recipe.h"
 
 class TabManager : public QTabWidget {
 private:
+	SearchTab *searchTab;
 
 	//QMap<unsigned int, QSharedPointer<BaseTypes::Recipe>> openedCache; // TODO implement recipe cache that will update all widgets that contain opened recipes
 public:
@@ -19,7 +21,9 @@ public slots:
 	void openRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
 	void editRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
 	void toggleFavoriteRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
-
+	void addToFavorites(unsigned int recipeID);
+private slots:
+	void closeRecipe(int tabID);
 };
 
 #endif // TABMANAGER_H

@@ -54,12 +54,14 @@ CriteriaWidget::NotFullRequest CriteriaWidget::getNotFullRequest(){
 void CriteriaWidget::updateTags(BaseTypes::Responses::TagsResponse tagsToUpdate){
 
 	courseSetter->clear();
-	tagsToUpdate.getCourses()->insert("");
-	courseSetter->insertItems(0, tagsToUpdate.getCourses()->values());
+	QList<QString> courseValues = tagsToUpdate.getCourses()->values();
+	courseValues.push_front("");
+	courseSetter->insertItems(0, courseValues);
 
 	cusineSetter->clear();
-	tagsToUpdate.getCusines()->insert("");
-	cusineSetter->insertItems(0, tagsToUpdate.getCusines()->values());
+	QList<QString> cusineValues = tagsToUpdate.getCusines()->values();
+	cusineValues.push_front("");
+	cusineSetter->insertItems(0, cusineValues);
 
 	ingredientFilters->updateFilters(tagsToUpdate.getIngredients());
 

@@ -23,11 +23,6 @@
       <property name="tabsClosable">
        <bool>true</bool>
       </property>
-      <widget class="SearchTab" name="SearchPage">
-       <attribute name="title">
-        <string>Search</string>
-       </attribute>
-      </widget>
      </widget>
     </item>
    </layout>
@@ -66,12 +61,6 @@
    <class>TabManager</class>
    <extends>QTabWidget</extends>
    <header>widgets/tab_manager.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>SearchTab</class>
-   <extends>QWidget</extends>
-   <header>widgets/search_tab.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

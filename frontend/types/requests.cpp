@@ -15,20 +15,20 @@ server::requests::RequestVar SearchQuery::translate() {
 
 	std::string course;
 	if(courses.size() > 0) {
-	  course = courses.values()[0].toStdString();
+	  course = courses.values()[0].toLower().toStdString();
 	}
 	std::string cusine;
 	if(cusines.size() > 0) {
-	  cusine = cusines.values()[0].toStdString();
+	  cusine = cusines.values()[0].toLower().toStdString();
 	}
 	std::set<std::string> ingredients;
 	for(auto ingredient : this->ingredients){
-		ingredients.insert(ingredient.toStdString());
+		ingredients.insert(ingredient.toLower().toStdString());
 	}
 
 	return server::requests::Find(server::searcher::Criteria(
 					favoriteIDs,
-					searchSubtring.toStdString(),
+					searchSubtring.toLower().toStdString(),
 					course,
 					cusine,
 					ingredients,
