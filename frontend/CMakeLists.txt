@@ -54,6 +54,9 @@ set(PROJECT_SOURCES
 
 	widgets/ingredients_filter_widget.h
 	widgets/ingredients_filter_widget.cpp
+
+	widgets/recipe_edit_tab.h
+	widgets/recipe_edit_tab.cpp
 	# Base data types
 	types/recipe.h
 	types/recipe.cpp
