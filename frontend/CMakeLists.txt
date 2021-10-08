@@ -57,6 +57,12 @@ set(PROJECT_SOURCES
 
 	widgets/recipe_edit_tab.h
 	widgets/recipe_edit_tab.cpp
+
+	widgets/ingredients_edit_widget.h
+	widgets/ingredients_edit_widget.cpp
+
+	widgets/row_holder.h
+	widgets/row_holder.cpp
 	# Base data types
 	types/recipe.h
 	types/recipe.cpp

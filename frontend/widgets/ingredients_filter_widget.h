@@ -1,45 +1,37 @@
 #ifndef INGREDIENTS_FILTER_WIDGET_H
 #define INGREDIENTS_FILTER_WIDGET_H
 
+#include "row_holder.h"
+
 #include <QScrollArea>
 #include <QSet>
 #include <QComboBox>
 #include <QPushButton>
 #include <QSharedPointer>
 
-class IngredientRowFilter : public QWidget {
-	Q_OBJECT
+class IngredientRowFilter : public RowDisplay {
+Q_OBJECT
 private:
 	QComboBox *ingredientFilter;
-	void emitDeletePressed();
 public:
-	IngredientRowFilter(QSharedPointer<QSet<QString>> availableVariants, QWidget *parrent=nullptr);
-	QString getFilter();
 	void updateVariants(QSharedPointer<QSet<QString>> newVariants);
+	QVector<QString> getStrings() override;
+	IngredientRowFilter(QSharedPointer<QSet<QString>> variants, QWidget *parrent=nullptr);
 signals:
-	void deletePressed(IngredientRowFilter *current);
 };
 
-class IngredientsFilterWidget : public QScrollArea {
-	Q_OBJECT
+class IngredientsFilterWidget : public RowHolder {
+Q_OBJECT
 private:
-
-	QPushButton* addButton;
-	QVector<IngredientRowFilter *> rows;
 	QSharedPointer<QSet<QString>> filterVariants;
-
-private slots:
-	// This object will bind itself with RowFilters and when their delete button is clicked,
-	// they will be deleted
-	void deleteFilter(IngredientRowFilter *filterToDelete);
-	void addRow();
 public slots:
 	void updateFilters(QSharedPointer<QSet<QString>> newVariants);
 
 public:
 	IngredientsFilterWidget(QSharedPointer<QSet<QString>> variants, QWidget *parrent = nullptr);
 
+	RowDisplay *createRow() override;
+
 	QSet<QString> getIngredientFilter();
 };
-
 #endif // INGREDIENTS_FILTER_WIDGET_H
