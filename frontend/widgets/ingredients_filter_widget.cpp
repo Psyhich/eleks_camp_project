@@ -13,7 +13,7 @@ IngredientRowFilter::IngredientRowFilter(
 	rowLayout->addWidget(ingredientFilter, 1);
 
 	QPushButton *closeButton = new QPushButton(this);
-	QObject::connect(closeButton, SIGNAL(clicked()), this, SIGNAL(deletePressed()));
+	QObject::connect(closeButton, &QPushButton::clicked, this, &IngredientRowFilter::emitDeletePressed);
 	rowLayout->addWidget(closeButton);
 
 	setLayout(rowLayout);

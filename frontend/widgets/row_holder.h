@@ -10,7 +10,7 @@ class RowDisplay : public QWidget {
 Q_OBJECT
 private:
 protected:
-	inline void deletePressed() { emit deletePressed(this); }
+	inline void emitDeletePressed() { emit deletePressed(this); }
 public:
 	RowDisplay(QWidget *parrent = nullptr);
 

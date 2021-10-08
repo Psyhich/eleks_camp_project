@@ -21,9 +21,12 @@ RowHolder::RowHolder(QWidget *parrent) : QScrollArea(parrent) {
 void RowHolder::addRow() {
   RowDisplay* newCreatedRow = createRow();
   newCreatedRow->setParent(widget());
+  // Adding row to the end of all rows, but moving add button to the end
   widget()->layout()->removeWidget(addButton);
   widget()->layout()->addWidget(newCreatedRow);
   widget()->layout()->addWidget(addButton);
+
+  QObject::connect(newCreatedRow, &RowDisplay::deletePressed, this, &RowHolder::removeRow);
 
   rows.append(newCreatedRow);
 }
