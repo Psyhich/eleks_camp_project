@@ -22,7 +22,7 @@ namespace dbAPI {
         try {
             string selectQuery = "SELECT * FROM %tableName%";
 
-            std::vector<string> tableNames{coursesTableName, cuisinesTableName, ingredientsTableName};
+            std::vector<string> tableNames{coursesTableName, cuisinesTableName, ingredientsTableName, unitsTableName};
             std::vector<std::set<string>> setsToInitialize(tableNames.size(), std::set<string>{});
 
             for (int i = 0; i < tableNames.size(); i++) {
@@ -35,7 +35,7 @@ namespace dbAPI {
                 }
             }
 
-            initializer::DataContainers container{setsToInitialize[0], setsToInitialize[1], setsToInitialize[2]};
+            initializer::DataContainers container{setsToInitialize[0], setsToInitialize[1], setsToInitialize[2], setsToInitialize[3]};
             return container;
         }
         catch (std::exception& e) {
