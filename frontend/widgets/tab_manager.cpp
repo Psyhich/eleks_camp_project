@@ -42,6 +42,7 @@ void TabManager::editRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen){
   QObject::connect(editTab, &RecipeEditTab::requestDeleteRecipe, this, &TabManager::deleteRecipe);
 
   addTab(editTab, recipeToOpen.isNull() ? "New Recipe" : recipeToOpen->name);
+  editTab->populateInputs(Connections::ConnectionManager::getManager().getTags());
 }
 
 void TabManager::saveRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSave){

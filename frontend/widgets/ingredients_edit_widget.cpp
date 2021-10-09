@@ -9,17 +9,19 @@ IngredientEditRow::IngredientEditRow(
 	QHBoxLayout *mainLayout = new QHBoxLayout(this);
 
 	ingredientEdit = new QComboBox(this);
-	ingredientEdit->setEditable(true);
+		ingredientEdit->setEditable(true);
+		ingredientEdit->setDuplicatesEnabled(false);
 	mainLayout->addWidget(ingredientEdit);
 
 
 	ingredientCountEdit = new QDoubleSpinBox(this);
-	ingredientCountEdit->setMinimum(0);
+		ingredientCountEdit->setMinimum(0);
 	mainLayout->addWidget(ingredientCountEdit);
 
 
 	unitEdit = new QComboBox(this);
-	unitEdit->setEditable(true);
+		unitEdit->setEditable(true);
+		unitEdit->setDuplicatesEnabled(false);
 	mainLayout->addWidget(unitEdit);
 
 	setLayout(mainLayout);
@@ -29,13 +31,17 @@ IngredientEditRow::IngredientEditRow(
 }
 
 void IngredientEditRow::updateIngredients(QSet<QString> newVariants){
+	QString chosenItem = ingredientEdit->currentText();
 	ingredientEdit->clear();
 	ingredientEdit->addItems(newVariants.values());
+	ingredientEdit->setCurrentText(chosenItem);
 }
 
 void IngredientEditRow::updateUnits(QSet<QString> newUnits){
+	QString chosenItem = unitEdit->currentText();
 	unitEdit->clear();
 	unitEdit->addItems(newUnits.values());
+	unitEdit->setCurrentText(chosenItem);
 }
 
 

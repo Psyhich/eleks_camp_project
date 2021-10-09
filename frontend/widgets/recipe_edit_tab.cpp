@@ -140,3 +140,17 @@ void RecipeEditTab::emitRequestSaveRecipe(){
 void RecipeEditTab::emitRequestDeleteRecipe(){
   emit requestDeleteRecipe(openedRecipe);
 }
+
+// TODO maybe think about not passing full Request values
+void RecipeEditTab::populateInputs(BaseTypes::Responses::TagsResponse values) {
+	courseEdit->clear();
+	courseEdit->addItems(values.getCourses()->values());
+	courseEdit->setCurrentText(openedRecipe->courses.values()[0]);
+
+	cusineEdit->clear();
+	cusineEdit->addItems(values.getCusines()->values());
+	cusineEdit->setCurrentText(openedRecipe->cusines.values()[0]);
+
+	ingredientsEdit->updateIngredientsSet(*values.getIngredients());
+	ingredientsEdit->updateUnitsSet(*values.getUnits());
+}

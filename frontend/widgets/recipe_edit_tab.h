@@ -9,6 +9,8 @@
 #include <QPushButton>
 
 #include "types/recipe.h"
+#include "types/requests.h"
+
 #include "ingredients_edit_widget.h"
 
 class RecipeEditTab : public QScrollArea {
@@ -44,6 +46,8 @@ private:
 public:
 	RecipeEditTab(QSharedPointer<BaseTypes::Recipe> recipeToOpen=nullptr,
 				  QWidget *parent = nullptr);
+
+	void populateInputs(BaseTypes::Responses::TagsResponse);
 
 signals:
 	void requestSaveRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSave);
