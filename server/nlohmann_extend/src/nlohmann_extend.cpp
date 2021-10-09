@@ -12,7 +12,8 @@ server::initializer::DataContainers adl_serializer<server::initializer::DataCont
     return server::initializer::DataContainers(
             j.at("fullCourseSet"),
             j.at("fullCuisineSet"),
-            j.at("fullIngredientSet")
+            j.at("fullIngredientSet"),
+            j.at("fullUnitSet")
         );
 }
 
@@ -20,6 +21,7 @@ void adl_serializer<server::initializer::DataContainers>::to_json(json& j, serve
     j["fullCourseSet"] = initData.getFullCourseSet();
     j["fullCuisineSet"] = initData.getFullCuisineSet();
     j["fullIngredientSet"] = initData.getFullIngredientSet();
+    j["fullUnitSet"] = initData.getFullUnitSet();
 }
 
 // server::searcher::Criteria converter
