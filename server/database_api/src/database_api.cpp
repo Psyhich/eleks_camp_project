@@ -60,7 +60,7 @@ namespace dbAPI {
             return searcher::Results(recipeSet);
         }
         catch (std::exception& e) {
-            std::cout << e.what() << std::endl;
+            std::cerr << e.what() << std::endl;
             return std::nullopt;
         }
     }
@@ -330,35 +330,35 @@ namespace dbAPI {
             string query = "SELECT recipes.recipe_id\n"
                            "FROM recipes \n";
             if (!searchCriteria.getCourse().empty()) {
-                query += "INNER JOIN courses ON courses.course_name = ?\n";
-                itemsToBind.push_back(searchCriteria.getCourse());
+                query += "INNER JOIN courses ON courses.course_id = recipes.recipe_course_id\n";
             }
             if (!searchCriteria.getCuisine().empty()) {
-                query += "INNER JOIN cuisines ON cuisines.cuisine_name = ?\n";
-                itemsToBind.push_back(searchCriteria.getCuisine());
+                query += "INNER JOIN cuisines ON cuisines.cuisine_id = recipes.recipe_cuisine_id\n";
             }
             if (!searchCriteria.getIngredientsSubset().empty()) {
                 auto ingredientSubset = searchCriteria.getIngredientsSubset();
                 query += "INNER JOIN (\n"
-                         "SELECT recipe_id, COUNT(recipe_id) as ingredient_count\n"
-                         "FROM recipe_ingredients\n"
-                         "INNER JOIN ingredients ON recipe_ingredients.ingredient_id = ingredients.ingredient_id\n"
-                         "WHERE ingredients.ingredient_name IN (";
+                         "\tSELECT recipe_id, COUNT(recipe_id) as ingredient_count\n"
+                         "\tFROM recipe_ingredients\n"
+                         "\tINNER JOIN ingredients ON recipe_ingredients.ingredient_id = ingredients.ingredient_id\n"
+                         "\tWHERE ingredients.ingredient_name IN (";
                 for (auto it = ingredientSubset.begin(); it != ingredientSubset.end(); ++it) {
                     query += "?";
                     query += (it != --ingredientSubset.end()) ? ", " : "";
                     itemsToBind.push_back(*it);
                 }
                 query += ")\n"
-                         "GROUP BY recipe_id\n";
+                         "\tGROUP BY recipe_id\n";
                 unsigned int criteriaIngredientsCount = searchCriteria.getIngredientsSubset().size();
-                query += "HAVING ingredient_count = " + std::to_string(criteriaIngredientsCount) + "\n";
-                query += ") ids ON recipes.recipe_id = ids.recipe_id\n"
-                         "INNER JOIN (\n"
-                         "SELECT recipe_id, COUNT(recipe_id) as ingredient_count\n"
-                         "FROM recipe_ingredients\n"
-                         "GROUP BY recipe_id\n"
-                         ") ingredient_count\n";
+                query += "\tHAVING ingredient_count = " + std::to_string(criteriaIngredientsCount);
+                query += "\n)ids ON recipes.recipe_id = ids.recipe_id\n";
+            }
+            if (!searchCriteria.getIngredientsSubset().empty() && searchCriteria.getExclusiveIngredients()) {
+                query += "INNER JOIN (\n"
+                         "\tSELECT recipe_id, COUNT(recipe_id) as ingredient_count\n"
+                         "\tFROM recipe_ingredients\n"
+                         "\tGROUP BY recipe_id\n"
+                         ") ingredient_count ON recipes.recipe_id = ingredient_count.recipe_id\n";
             }
             query +=     "WHERE recipes.recipe_id = recipes.recipe_id\n";
             if (!searchCriteria.getNameSubstring().empty()) {
@@ -376,8 +376,16 @@ namespace dbAPI {
                 }
                 query += ")\n";
             }
-            if (searchCriteria.getExclusiveIngredients()) {
-                query += "AND ingredient_count.ingredient_count = ids.ingredient_count";
+            if (!searchCriteria.getIngredientsSubset().empty() && searchCriteria.getExclusiveIngredients()) {
+                query += "AND ingredient_count.ingredient_count = ids.ingredient_count\n";
+            }
+            if (!searchCriteria.getCourse().empty()) {
+                query += "AND courses.course_name = ?\n";
+                itemsToBind.push_back(searchCriteria.getCourse());
+            }
+            if (!searchCriteria.getCuisine().empty()) {
+                query += "AND cuisines.cuisine_name = ?\n";
+                itemsToBind.push_back(searchCriteria.getCuisine());
             }
 
             SQLite::Statement fetchQuery{db, query};
