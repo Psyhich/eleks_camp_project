@@ -43,7 +43,8 @@ server::recipe::Recipe Recipe::translateToServer() const {
 					outWeight,
 					outPortions,
 					recipeText.toStdString(),
-					presentationText.toStdString());
+					presentationText.toStdString(),
+					remarks.toStdString());
 }
 
 void Recipe::translateFromServer(server::recipe::Recipe recipeToTranslate) {
@@ -67,4 +68,5 @@ void Recipe::translateFromServer(server::recipe::Recipe recipeToTranslate) {
 
 	this->recipeText = QString::fromStdString(recipeToTranslate.getPreparation());
 	this->presentationText = QString::fromStdString(recipeToTranslate.getPresentation());
+	this->remarks = QString::fromStdString(recipeToTranslate.getRemarks());
 }

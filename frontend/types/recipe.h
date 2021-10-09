@@ -21,6 +21,7 @@ public:
 	QString name{""};
 	QString recipeText{""};
 	QString presentationText{""};
+	QString remarks{""};
 
 	QSet<QString> cusines; // I use set for future use of more than one cuisines
 	QSet<QString> courses; // The same as for courses

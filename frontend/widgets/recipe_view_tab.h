@@ -25,6 +25,7 @@ private:
 
 	QTextBrowser *recipePreparationText;
 	QTextBrowser *recipePresentationText;
+	QTextBrowser *recipeRemarksText;
 
 	// This class will only have pointer to current recipe and will notify about closing it
 	// Something like cache for currently opened recipes will hold all recipes

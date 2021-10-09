@@ -85,8 +85,7 @@ RecipeEditTab::RecipeEditTab(QSharedPointer<BaseTypes::Recipe> recipeToOpen,
 	presentationEdit = new QTextEdit(openedRecipe->presentationText, inners);
 	mainLayout->addWidget(presentationEdit);
 
-	// TODO DON'T FORGET ABOUT REMARKS
-	remarksEdit = new QTextEdit(inners);
+	remarksEdit = new QTextEdit(openedRecipe->remarks, inners);
 	mainLayout->addWidget(remarksEdit);
 
 	// Button panel(save and delete)
@@ -120,7 +119,7 @@ QSharedPointer<Recipe> RecipeEditTab::collectNewRecipe() {
 
   newRecipe->recipeText = preparationEdit->toPlainText();
   newRecipe->presentationText = presentationEdit->toPlainText();
-  // TODO DONT FORGET ABOUT REMARKS
+  newRecipe->remarks = remarksEdit->toPlainText();
 
   newRecipe->outCalories = caloriesEdit->value();
   newRecipe->outWeight = weightEdit->value();

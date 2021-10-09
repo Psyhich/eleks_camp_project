@@ -117,6 +117,14 @@ RecipeViewTab::RecipeViewTab(QSharedPointer<BaseTypes::Recipe> recipeToSet, QWid
 		}
 	mainLayout->addWidget(recipePresentationText);
 
+	recipeRemarksText = new QTextBrowser(inners);
+		if(curretRecipe->remarks.length() == 0){
+			recipeRemarksText->setHidden(true);
+		}else{
+			recipeRemarksText->setText(curretRecipe->remarks);
+		}
+	mainLayout->addWidget(recipeRemarksText);
+
 	inners->setLayout(mainLayout);
 	setWidget(inners);
 }
@@ -153,6 +161,7 @@ void RecipeViewTab::updateRecipe() {
 	// Texts
 	recipePreparationText->setText(curretRecipe->recipeText);
 	recipePresentationText->setText(curretRecipe->presentationText);
+	recipePresentationText->setText(curretRecipe->remarks);
 
 	recalculateValues();
 }
