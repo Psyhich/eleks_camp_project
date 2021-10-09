@@ -11,7 +11,7 @@ namespace BaseTypes {
 class Recipe {
 private:
 	unsigned int id{0};
-  bool hasInitializedID{false};
+	bool hasInitializedID{false};
 public:
 	struct IngredientAmount{
 		double quantity;

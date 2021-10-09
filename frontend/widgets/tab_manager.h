@@ -24,6 +24,8 @@ public slots:
 	void addToFavorites(unsigned int recipeID);
 private slots:
 	void closeRecipe(int tabID);
+	void saveRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSave);
+	void deleteRecipe(QSharedPointer<BaseTypes::Recipe> recipeToDelete);
 };
 
 #endif // TABMANAGER_H

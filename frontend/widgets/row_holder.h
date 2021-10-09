@@ -15,6 +15,8 @@ public:
 	RowDisplay(QWidget *parrent = nullptr);
 
 	virtual QVector<QString> getStrings() = 0;
+	// Optional function to interact with this row
+	virtual void setStrings(const QVector<QString>& stringsToSet){}
 
 signals:
 	void deletePressed(RowDisplay *row);
@@ -30,9 +32,9 @@ protected:
 	virtual RowDisplay* createRow() = 0;
 public:
 	RowHolder(QWidget *parrent = nullptr);
-
-private slots:
+protected slots:
 	void addRow();
+private slots:
 	void removeRow(RowDisplay *rowToRemove);
 };
 
