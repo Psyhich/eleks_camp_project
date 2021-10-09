@@ -87,7 +87,8 @@
 	"initData":{
 		"fullCourseSet":["course1","course2","course3"],
 		"fullCuisineSet":["cuisine1","cuisine2","cuisine3"],
-		"fullIngredientSet":["ingredient1","ingredient2","ingredient3","ingredient4","ingredient5","ingredient6","ingredient9"]
+		"fullIngredientSet":["ingredient1","ingredient2","ingredient3","ingredient4","ingredient5","ingredient6","ingredient9"],
+		"fullUnitSet":["g"]
 	}
 }
 
