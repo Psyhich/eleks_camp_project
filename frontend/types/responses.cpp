@@ -18,11 +18,13 @@ void ErrorResponse::translateFromJSON(const QString& str) {
 
 // TagsResponse class
 TagsResponse::TagsResponse(unsigned int clientID):
-  Response(clientID), courses{new QSet<QString>()}, cusines{new QSet<QString>()}, ingredients{new QSet<QString>()}{
+  Response(clientID), courses{new QSet<QString>()}, cusines{new QSet<QString>()},
+  ingredients{new QSet<QString>()}, units{new QSet<QString>()}{
 }
 QSharedPointer<QSet<QString>> TagsResponse::getCourses() { return courses; }
 QSharedPointer<QSet<QString>> TagsResponse::getCusines() { return cusines; }
 QSharedPointer<QSet<QString>> TagsResponse::getIngredients() { return ingredients; }
+QSharedPointer<QSet<QString>> TagsResponse::getUnits() { return units; }
 
 void TagsResponse::translate(const server::responses::ResponseVar&& response) {
 	auto tags = Response::extractType<server::responses::GetInitDataResult>(response);
@@ -36,7 +38,9 @@ void TagsResponse::translate(const server::responses::ResponseVar&& response) {
 	for(auto ingredient : tags.getInitData().getFullIngredientSet()){
 	  ingredients->insert(QString::fromStdString(ingredient));
 	}
-	// Shrinking vectors, because we won't change them
+	for(auto unit : tags.getInitData().getFullUnitSet()){
+	  units->insert(QString::fromStdString(unit));
+	}
 }
 void TagsResponse::translateFromJSON(const QString& str) {
 	throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement

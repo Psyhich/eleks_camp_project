@@ -59,12 +59,14 @@ private:
 	QSharedPointer<QSet<QString>> courses;
 	QSharedPointer<QSet<QString>> cusines;
 	QSharedPointer<QSet<QString>> ingredients;
+	QSharedPointer<QSet<QString>> units;
 public:
 	TagsResponse(unsigned int clientID);
 
 	QSharedPointer<QSet<QString>> getCourses();
 	QSharedPointer<QSet<QString>> getCusines();
 	QSharedPointer<QSet<QString>> getIngredients();
+	QSharedPointer<QSet<QString>> getUnits();
 
 	void translate(const server::responses::ResponseVar&&) override;
 	void translateFromJSON(const QString& str) override;
