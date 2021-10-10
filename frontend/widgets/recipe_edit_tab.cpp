@@ -144,11 +144,15 @@ void RecipeEditTab::emitRequestDeleteRecipe(){
 void RecipeEditTab::populateInputs(BaseTypes::Responses::TagsResponse values) {
 	courseEdit->clear();
 	courseEdit->addItems(values.getCourses()->values());
-	courseEdit->setCurrentText(openedRecipe->courses.values()[0]);
+	if(openedRecipe->courses.values().count() > 0){
+		courseEdit->setCurrentText(openedRecipe->courses.values()[0]);
+	}
 
 	cusineEdit->clear();
 	cusineEdit->addItems(values.getCusines()->values());
-	cusineEdit->setCurrentText(openedRecipe->cusines.values()[0]);
+	if(openedRecipe->cusines.values().count() > 0){
+		cusineEdit->setCurrentText(openedRecipe->cusines.values()[0]);
+	}
 
 	ingredientsEdit->updateIngredientsSet(*values.getIngredients());
 	ingredientsEdit->updateUnitsSet(*values.getUnits());

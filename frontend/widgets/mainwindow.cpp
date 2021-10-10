@@ -20,6 +20,10 @@ MainWindow::MainWindow(QWidget *parent)
 	tabButton->resize(0, 0);
 	tabButton->hide();
 
+	// Connecting menu button to tab manager to create new recipes
+	QObject::connect(ui->actionCreate, &QAction::triggered, ui->RecipeTabs,
+					 [&](){ ui->RecipeTabs->editRecipe(QSharedPointer<BaseTypes::Recipe>()); });
+
 }
 
 MainWindow::~MainWindow() { delete ui; }
