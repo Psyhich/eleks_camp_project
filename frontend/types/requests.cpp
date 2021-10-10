@@ -56,7 +56,7 @@ QJsonObject SearchQuery::toJSON() {
 
 		criteria["nameSubstring"] = searchSubtring;
 		criteria["course"] = courses.values()[0];
-		criteria["cusine"] = cusines.values()[0];
+		criteria["cuisine"] = cusines.values()[0];
 
 		QJsonArray ingredientsSubset;
 		for(auto ingredient : ingredients) {

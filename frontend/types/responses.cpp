@@ -51,15 +51,15 @@ void ErrorResponse::translate(const server::responses::ResponseVar&& response) {
 }
 void ErrorResponse::translateFromJSON(const QJsonObject& json) {
   if(json["responseTag"] != responseTag) {
-	throw std::runtime_error("Tried to parse into wrong type");
+	return;
   }
+  setClientID(1); // Setting new client id to show that request is succesfull
 }
 
 // TagsResponse class
 TagsResponse::TagsResponse(unsigned int clientID):
   Response(clientID), courses{new QSet<QString>()}, cusines{new QSet<QString>()},
-  ingredients{new QSet<QString>()}, units{new QSet<QString>()}{
-}
+  ingredients{new QSet<QString>()}, units{new QSet<QString>()}{ }
 QSharedPointer<QSet<QString>> TagsResponse::getCourses() { return courses; }
 QSharedPointer<QSet<QString>> TagsResponse::getCusines() { return cusines; }
 QSharedPointer<QSet<QString>> TagsResponse::getIngredients() { return ingredients; }
@@ -83,7 +83,7 @@ void TagsResponse::translate(const server::responses::ResponseVar&& response) {
 }
 void TagsResponse::translateFromJSON(const QJsonObject& json) {
   if(json["responseTag"] != responseTag) {
-	throw std::runtime_error("Tried to parse into wrong type");
+	return;
   }
   QJsonArray currentArray = json["initData"]["fullCourseSet"].toArray();
   for(auto course : currentArray){
@@ -104,6 +104,7 @@ void TagsResponse::translateFromJSON(const QJsonObject& json) {
   for(auto ingredient : currentArray){
 	ingredients->insert(ingredient.toString());
   }
+  setClientID(1); // Setting new client id to show that request is succesfull
 
 }
 
@@ -127,8 +128,8 @@ void SearchResponse::translate(const server::responses::ResponseVar&& responseTo
 	foundRecipes->shrink_to_fit();
 }
 void SearchResponse::translateFromJSON(const QJsonObject& json) {
-  if(json["responseTag"] != responseTag) {
-	throw std::runtime_error("Tried to parse into wrong type");
+  if(json["responseTag"].toInt() != responseTag) {
+	return;
   }
   QJsonArray recipesArray = json["searchResults"]["foundRecipeArray"].toArray();
 
@@ -136,6 +137,8 @@ void SearchResponse::translateFromJSON(const QJsonObject& json) {
 	foundRecipes->append(
 		  QSharedPointer<BaseTypes::Recipe>(translateToRecipeFromJson(recipe.toObject())));
   }
+  foundRecipes->shrink_to_fit();
+  setClientID(1); // Setting new client id to show that request is succesfull
 }
 
 // AddResponse class
@@ -145,9 +148,10 @@ void AddResponse::translate(const server::responses::ResponseVar&& responseToTra
 	setClientID(addResp.getClientID());
 }
 void AddResponse::translateFromJSON(const QJsonObject& json) {
-  if(json["responseTag"] != responseTag) {
-	throw std::runtime_error("Tried to parse into wrong type");
+  if(json["responseTag"].toInt() != responseTag) {
+	return;
   }
+  setClientID(1); // Setting new client id to show that request is succesfull
 }
 
 // EditResponse class
@@ -158,9 +162,10 @@ void EditResponse::translate(const server::responses::ResponseVar&& responseToTr
 	setClientID(addResp.getClientID());
 }
 void EditResponse::translateFromJSON(const QJsonObject& json) {
-  if(json["responseTag"] != responseTag) {
-	throw std::runtime_error("Tried to parse into wrong type");
+  if(json["responseTag"].toInt() != responseTag) {
+	return;
   }
+  setClientID(1); // Setting new client id to show that request is succesfull
 }
 
 // RemoveResponse class
@@ -171,7 +176,8 @@ void RemoveResponse::translate(const server::responses::ResponseVar&& responseTo
 	setClientID(addResp.getClientID());
 }
 void RemoveResponse::translateFromJSON(const QJsonObject& json) {
-  if(json["responseTag"] != responseTag) {
-	throw std::runtime_error("Tried to parse into wrong type");
+  if(json["responseTag"].toInt() != responseTag) {
+	return;
   }
+  setClientID(1); // Setting new client id to show that request is succesfull
 }
