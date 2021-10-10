@@ -11,6 +11,7 @@ ConnectionManager& ConnectionManager::getManager(){
 ConnectionManager::ConnectionManager() {
 	// Enabling local connection by default
 	currentConnection = localConnection = QSharedPointer<IConnector>(new LocalConnector());
+	remoteConnection = QSharedPointer<IConnector>(new RemoteConnector("0.0.0",0));
 }
 
 void ConnectionManager::toggleToLocal() {
@@ -19,8 +20,9 @@ void ConnectionManager::toggleToLocal() {
 	}
 }
 
-void ConnectionManager::toggleToRemote() {
+void ConnectionManager::toggleToRemote(QString address, quint16 port) {
 	if(!remoteConnection.isNull()){
+		remoteConnection = QSharedPointer<IConnector>(new RemoteConnector(address, port));
 		currentConnection = remoteConnection;
 	}
 }

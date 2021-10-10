@@ -83,6 +83,7 @@ set(PROJECT_SOURCES
 
 	connections/connectors.h
 	connections/local_connector.cpp
+	connections/remote_connector.cpp
 	# Resources
 	icon_favorite.qrc
 )

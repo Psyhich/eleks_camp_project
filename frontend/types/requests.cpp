@@ -11,7 +11,7 @@ QJsonObject translateRecipToJson(const BaseTypes::Recipe& recipeToTranslate){
 
 	recipe["name"] = recipeToTranslate.name;
 	recipe["course"] = recipeToTranslate.courses.values()[0];
-	recipe["cuisines"] = recipeToTranslate.cusines.values()[0];
+	recipe["cuisine"] = recipeToTranslate.cusines.values()[0];
 
 	recipe["outCalories"] = recipeToTranslate.outCalories;
 	recipe["outWeight"] = recipeToTranslate.outWeight;

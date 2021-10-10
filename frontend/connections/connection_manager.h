@@ -23,9 +23,7 @@ namespace Connections {
 		static ConnectionManager& getManager();
 
 		void toggleToLocal();
-		void toggleToRemote();
-
-		void openRemoteConnection(QString address);
+		void toggleToRemote(QString address, quint16 port);
 
 		BaseTypes::Responses::TagsResponse getTags();
 

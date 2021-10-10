@@ -115,7 +115,7 @@ QSharedPointer<Recipe> RecipeEditTab::collectNewRecipe() {
   newRecipe->name = nameEdit->text();
 
   newRecipe->courses.insert(courseEdit->currentText());
-  newRecipe->cusines.insert(courseEdit->currentText());
+  newRecipe->cusines.insert(cusineEdit->currentText());
 
   newRecipe->recipeText = preparationEdit->toPlainText();
   newRecipe->presentationText = presentationEdit->toPlainText();
