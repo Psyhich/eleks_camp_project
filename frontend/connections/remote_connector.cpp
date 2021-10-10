@@ -72,8 +72,6 @@ AddResponse RemoteConnector::postRecipe(QSharedPointer<AddRecipeRequest> request
 
   response.translateFromJSON(postJson(request->toJSON()));
 
-  qDebug() << QJsonDocument(request->toJSON()).toJson(QJsonDocument::Compact);
-
   return response;
 }
 
