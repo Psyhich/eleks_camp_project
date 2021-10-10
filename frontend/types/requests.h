@@ -5,6 +5,8 @@
 #include <QList>
 #include <QSet>
 #include <QSharedPointer>
+#include <QJsonObject>
+
 #include "../server/requests/include/requests.h"
 #include "responses.h"
 
@@ -14,7 +16,7 @@ namespace BaseTypes::Requests {
 
 class Request {
 public:
-	virtual QString toJSONString() = 0;
+	virtual QJsonObject toJSON() = 0;
 	virtual server::requests::RequestVar translate() = 0;
 
 	virtual ~Request(){}
@@ -27,6 +29,8 @@ class SearchQuery : public Request {
 	QSet<QString> cusines;
 	QList<QString> ingredients;
 	bool searchExclusively;
+
+	static const int requestTag = 2;
 public:
 	SearchQuery(QSet<unsigned int> _favoriteIDs, QString _name, QSet<QString> _courses,
 				 QSet<QString> _cuisines, QList<QString> _ingredients, bool _searchExclusively) :
@@ -35,7 +39,7 @@ public:
 	  ingredients(_ingredients), searchExclusively(_searchExclusively) {
 	}
 
-	QString toJSONString() override;
+	QJsonObject toJSON() override;
 	server::requests::RequestVar translate() override;
 
 	~SearchQuery() override {}
@@ -44,10 +48,12 @@ public:
 class AddRecipeRequest : public Request {
 private:
 	QSharedPointer<Recipe> recipeToAdd;
+
+	static const int requestTag = 3;
 public:
 	AddRecipeRequest(QSharedPointer<Recipe> _recipeToAdd) : recipeToAdd(_recipeToAdd) {}
 
-	QString toJSONString() override;
+	QJsonObject toJSON() override;
 	server::requests::RequestVar translate() override;
 
 	~AddRecipeRequest() override {}
@@ -55,10 +61,12 @@ public:
 
 class EditRecipeRequest : public Request {
 	QSharedPointer<Recipe> editedRecipe;
+
+	static const int requestTag = 4;
   public:
 	EditRecipeRequest(QSharedPointer<Recipe> _editedRecipe) : editedRecipe(_editedRecipe) {}
 
-	QString toJSONString() override;
+	QJsonObject toJSON() override;
 	server::requests::RequestVar translate() override;
 
 	~EditRecipeRequest() override {}
@@ -66,29 +74,33 @@ class EditRecipeRequest : public Request {
 
 class RemoveRecipeRequest : public Request {
 	unsigned int recipeIDToRemove;
+
+	const static int requestTag = 5;
 public:
 	RemoveRecipeRequest(unsigned int _recipeIDToRemove) : recipeIDToRemove(_recipeIDToRemove) {}
 
-	QString toJSONString() override;
+	QJsonObject toJSON() override;
 	server::requests::RequestVar translate() override;
 
 	~RemoveRecipeRequest() override {}
 };
 
 class GetInitDataRequest : public Request {
+	static const int requestTag = 1;
 public:
-	QString toJSONString() override;
+	QJsonObject toJSON() override;
 	server::requests::RequestVar translate() override;
 
 	~GetInitDataRequest() override {}
 };
 
 class Error : public Request {
+	static const int requestTag = 0;
 public:
 	QString errorMessage;
 	Error(QString msg="") : errorMessage(msg){ }
 
-	QString toJSONString() override;
+	QJsonObject toJSON() override;
 	server::requests::RequestVar translate() override;
 
 	~Error() override {}

@@ -1,7 +1,44 @@
 #include <QVector>
+#include <QJsonArray>
+
 #include "responses.h"
 
 using namespace BaseTypes::Responses;
+
+BaseTypes::Recipe* translateToRecipeFromJson(const QJsonObject &json){
+	BaseTypes::Recipe *recipe = new BaseTypes::Recipe(json["id"].toInt());
+	recipe->name = json["name"].toString();
+
+	recipe->courses = {json["course"].toString()};
+	recipe->cusines = {json["cuisine"].toString()};
+
+	recipe->outCalories = json["outCalories"].toDouble();
+	recipe->outWeight = json["outWeight"].toDouble();
+	recipe->outPortions = json["outPortions"].toInt();
+
+	recipe->recipeText = json["preparation"].toString();
+	recipe->presentationText = json["presentation"].toString();
+	recipe->remarks = json["remarks"].toString();
+
+	// Ingredients
+	QJsonArray ingredients = json["ingredients"]["ingredientNameArray"].toArray();
+	QJsonArray ingredientCounts = json["ingredients"]["ingredientQuantityArray"].toArray();
+	QJsonArray ingredientUnits = json["ingredients"]["ingredientUnitArray"].toArray();
+	if(ingredients.count() == ingredientCounts.count() &&
+	   ingredients.count() == ingredientUnits.count()){
+	  for(int index = 0; index < ingredients.count(); index++){
+		recipe->ingredients.insert({{
+			ingredients[index].toString(),
+			BaseTypes::Recipe::IngredientAmount{
+							ingredientCounts[index].toDouble(),
+							ingredientUnits[index].toString()}
+		}});
+	  }
+
+	}
+
+	return recipe;
+}
 
 // Response class
 Response::~Response(){ }
@@ -12,8 +49,10 @@ void ErrorResponse::translate(const server::responses::ResponseVar&& response) {
 	setClientID(err.getClientID());
 	this->message = QString::fromStdString(err.getMessage());
 }
-void ErrorResponse::translateFromJSON(const QString& str) {
-	throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement
+void ErrorResponse::translateFromJSON(const QJsonObject& json) {
+  if(json["responseTag"] != responseTag) {
+	throw std::runtime_error("Tried to parse into wrong type");
+  }
 }
 
 // TagsResponse class
@@ -42,8 +81,30 @@ void TagsResponse::translate(const server::responses::ResponseVar&& response) {
 	  units->insert(QString::fromStdString(unit));
 	}
 }
-void TagsResponse::translateFromJSON(const QString& str) {
-	throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement
+void TagsResponse::translateFromJSON(const QJsonObject& json) {
+  if(json["responseTag"] != responseTag) {
+	throw std::runtime_error("Tried to parse into wrong type");
+  }
+  QJsonArray currentArray = json["initData"]["fullCourseSet"].toArray();
+  for(auto course : currentArray){
+	courses->insert(course.toString());
+  }
+
+  currentArray = json["initData"]["fullCuisineSet"].toArray();
+  for(auto cusine : currentArray){
+	cusines->insert(cusine.toString());
+  }
+
+  currentArray = json["initData"]["fullUnitSet"].toArray();
+  for(auto unit : currentArray){
+	units->insert(unit.toString());
+  }
+
+  currentArray = json["initData"]["fullIngredientSet"].toArray();
+  for(auto ingredient : currentArray){
+	ingredients->insert(ingredient.toString());
+  }
+
 }
 
 // SearchResponse class
@@ -65,8 +126,16 @@ void SearchResponse::translate(const server::responses::ResponseVar&& responseTo
 	// Shrinking recipes because we wont add more
 	foundRecipes->shrink_to_fit();
 }
-void SearchResponse::translateFromJSON(const QString& str) {
-	throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement
+void SearchResponse::translateFromJSON(const QJsonObject& json) {
+  if(json["responseTag"] != responseTag) {
+	throw std::runtime_error("Tried to parse into wrong type");
+  }
+  QJsonArray recipesArray = json["searchResults"]["foundRecipeArray"].toArray();
+
+  for(auto recipe : recipesArray){
+	foundRecipes->append(
+		  QSharedPointer<BaseTypes::Recipe>(translateToRecipeFromJson(recipe.toObject())));
+  }
 }
 
 // AddResponse class
@@ -75,8 +144,10 @@ void AddResponse::translate(const server::responses::ResponseVar&& responseToTra
 	auto addResp = Response::extractType<server::responses::AddSuccess>(responseToTranslate);
 	setClientID(addResp.getClientID());
 }
-void AddResponse::translateFromJSON(const QString& str) {
-	throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement
+void AddResponse::translateFromJSON(const QJsonObject& json) {
+  if(json["responseTag"] != responseTag) {
+	throw std::runtime_error("Tried to parse into wrong type");
+  }
 }
 
 // EditResponse class
@@ -86,8 +157,10 @@ void EditResponse::translate(const server::responses::ResponseVar&& responseToTr
 	auto addResp = Response::extractType<server::responses::EditSuccess>(responseToTranslate);
 	setClientID(addResp.getClientID());
 }
-void EditResponse::translateFromJSON(const QString& str) {
-	throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement
+void EditResponse::translateFromJSON(const QJsonObject& json) {
+  if(json["responseTag"] != responseTag) {
+	throw std::runtime_error("Tried to parse into wrong type");
+  }
 }
 
 // RemoveResponse class
@@ -97,6 +170,8 @@ void RemoveResponse::translate(const server::responses::ResponseVar&& responseTo
 	auto addResp = Response::extractType<server::responses::RemoveSuccess>(responseToTranslate);
 	setClientID(addResp.getClientID());
 }
-void RemoveResponse::translateFromJSON(const QString& str) {
-	throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement
+void RemoveResponse::translateFromJSON(const QJsonObject& json) {
+  if(json["responseTag"] != responseTag) {
+	throw std::runtime_error("Tried to parse into wrong type");
+  }
 }

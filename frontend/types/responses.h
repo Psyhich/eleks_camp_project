@@ -7,6 +7,8 @@
 #include <QVector>
 #include <QSharedPointer>
 #include <QDebug>
+#include <QJsonObject>
+
 #include "recipe.h"
 #include "../server/recipe/include/recipe.h"
 #include "../server/responses/include/responses.h"
@@ -24,7 +26,7 @@ public:
 
 	bool isSuccessfull() { return clientID != 0; }
 	virtual void translate(const server::responses::ResponseVar&& response) = 0;
-	virtual void translateFromJSON(const QString& str) = 0;
+	virtual void translateFromJSON(const QJsonObject& json) = 0;
 
 	template<class T> static const T& extractType(server::responses::ResponseVar response){
 		try {
@@ -42,19 +44,21 @@ public:
 
 class ErrorResponse : Response {
 private:
+	static const int responseTag = 0;
 	QString message{""};
 public:
 	ErrorResponse(unsigned int clientID) : Response(clientID) {}
 
 	inline const QString& getMessage() const { return message; }
 	void translate(const server::responses::ResponseVar&& response) override;
-	void translateFromJSON(const QString& str) override;
+	void translateFromJSON(const QJsonObject& json) override;
 
 	~ErrorResponse() override {}
 };
 
 class TagsResponse : public Response {
 private:
+	static const int responseTag = 1;
 	// I use pointers here to easily move values and not copy them
 	QSharedPointer<QSet<QString>> courses;
 	QSharedPointer<QSet<QString>> cusines;
@@ -69,13 +73,14 @@ public:
 	QSharedPointer<QSet<QString>> getUnits();
 
 	void translate(const server::responses::ResponseVar&&) override;
-	void translateFromJSON(const QString& str) override;
+	void translateFromJSON(const QJsonObject& json) override;
 
 	~TagsResponse() override {}
 };
 
 class SearchResponse : public Response {
 private:
+	static const int responseTag = 2;
 	// It kinda looks awfull but I use pointers to move less data in function calls
 	QSharedPointer<QVector<QSharedPointer<BaseTypes::Recipe>>> foundRecipes;
 public:
@@ -83,13 +88,14 @@ public:
 
 	QSharedPointer<QVector<QSharedPointer<BaseTypes::Recipe>>> getRecipes();
 	void translate(const server::responses::ResponseVar&& responseToTranslate);
-	void translateFromJSON(const QString& str) override;
+	void translateFromJSON(const QJsonObject& json) override;
 
 	~SearchResponse() override {}
 };
 
 class AddResponse : public Response {
 private:
+	static const int responseTag = 3;
 	// TODO ask server for returning newly created ID
 	unsigned int settedID{0};
 	inline unsigned int getID() const { return settedID; }
@@ -97,27 +103,31 @@ public:
 	AddResponse(unsigned int clientID, unsigned newRecipeID);
 
 	void translate(const server::responses::ResponseVar&& responseToTranslate) override;
-	void translateFromJSON(const QString& str) override;
+	void translateFromJSON(const QJsonObject& json) override;
 
 	~AddResponse() override {}
 };
 
 class EditResponse : public Response {
+private:
+	static const int responseTag = 4;
 public:
 	EditResponse(unsigned int clientID);
 
 	void translate(const server::responses::ResponseVar&& responseToTranslate) override;
-	void translateFromJSON(const QString& str) override;
+	void translateFromJSON(const QJsonObject& json) override;
 
 	~EditResponse() override {}
 };
 
 class RemoveResponse : public Response {
+private:
+	static const int responseTag = 5;
 public:
 	RemoveResponse(unsigned int clientID);
 
 	void translate(const server::responses::ResponseVar&& responseToTranslate) override;
-	void translateFromJSON(const QString& str) override;
+	void translateFromJSON(const QJsonObject& json) override;
 
 	~RemoveResponse() override {}
 };

@@ -1,10 +1,74 @@
+#include <QJsonArray>
+
 #include "requests.h"
 
 using namespace BaseTypes::Requests;
 
+// Recipe translation functions
+QJsonObject translateRecipToJson(const BaseTypes::Recipe& recipeToTranslate){
+	QJsonObject recipe;
+	recipe["id"] = (qint64)*recipeToTranslate.getID();
+
+	recipe["name"] = recipeToTranslate.name;
+	recipe["course"] = recipeToTranslate.courses.values()[0];
+	recipe["cuisines"] = recipeToTranslate.cusines.values()[0];
+
+	recipe["outCalories"] = recipeToTranslate.outCalories;
+	recipe["outWeight"] = recipeToTranslate.outWeight;
+	recipe["outPortions"] = (qint64)recipeToTranslate.outPortions;
+
+	recipe["preparation"] = recipeToTranslate.recipeText;
+	recipe["presentation"] = recipeToTranslate.presentationText;
+	recipe["remarks"] = recipeToTranslate.remarks;
+
+	QJsonArray ingredientNameArr;
+	QJsonArray ingredientCountArr;
+	QJsonArray ingredientUnitArr;
+
+	for(auto key : recipeToTranslate.ingredients.keys()){
+	  ingredientNameArr.append(key);
+	  BaseTypes::Recipe::IngredientAmount amount = recipeToTranslate.ingredients.value(key);
+	  ingredientCountArr.append(amount.quantity);
+	  ingredientUnitArr.append(amount.quantity);
+	}
+
+	recipe["ingredients"] = QJsonObject{
+		{"ingredientNameArray", ingredientNameArr},
+		{"ingredientQuantityArray", ingredientCountArr},
+		{"ingredientUnitArray", ingredientUnitArr}
+	};
+
+	return recipe;
+}
+
+
 // SearchQueryRequest class
-QString SearchQuery::toJSONString() {
-  throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement
+QJsonObject SearchQuery::toJSON() {
+	QJsonObject request{{"requestTag", requestTag}}; // Initializing with requestTag
+	// Creating another Object for criteria
+		QJsonObject criteria;
+
+		QJsonArray favoriteIDs;
+		for(auto id : favoriteIDs) {
+		  favoriteIDs.append(id);
+		}
+		criteria["favoriteIDs"] = favoriteIDs;
+
+		criteria["nameSubstring"] = searchSubtring;
+		criteria["course"] = courses.values()[0];
+		criteria["cusine"] = cusines.values()[0];
+
+		QJsonArray ingredientsSubset;
+		for(auto ingredient : ingredients) {
+		  ingredientsSubset.append(ingredient);
+		}
+		criteria["ingredientsSubset"] = ingredientsSubset;
+
+		criteria["exclusiveIngredients"] = searchExclusively;
+
+	request["searchCriteria"] = criteria;
+
+	return request;
 }
 
 server::requests::RequestVar SearchQuery::translate() {
@@ -37,8 +101,10 @@ server::requests::RequestVar SearchQuery::translate() {
 }
 
 // AddRecipeRequest class
-QString AddRecipeRequest::toJSONString(){
-  throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement
+QJsonObject AddRecipeRequest::toJSON() {
+  QJsonObject request{{"requestTag", requestTag}};
+  request["newRecipe"] = translateRecipToJson(*recipeToAdd);
+  return request;
 }
 
 server::requests::RequestVar AddRecipeRequest::translate() {
@@ -46,8 +112,10 @@ server::requests::RequestVar AddRecipeRequest::translate() {
 }
 
 // EditRecipeRequest class
-QString EditRecipeRequest::toJSONString() {
-  throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement
+QJsonObject EditRecipeRequest::toJSON() {
+  QJsonObject request{{"requestTag", requestTag}};
+  request["newRecipe"] = translateRecipToJson(*editedRecipe);
+  return request;
 }
 
 server::requests::RequestVar EditRecipeRequest::translate() {
@@ -55,8 +123,11 @@ server::requests::RequestVar EditRecipeRequest::translate() {
 }
 
 // RemoveRecipeRequest class
-QString RemoveRecipeRequest::toJSONString(){
-  throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement
+QJsonObject RemoveRecipeRequest::toJSON() {
+  return {
+	{"requestTag", requestTag},
+	{"recipeID", (qint64)recipeIDToRemove}
+  };
 }
 
 server::requests::RequestVar RemoveRecipeRequest::translate() {
@@ -64,16 +135,16 @@ server::requests::RequestVar RemoveRecipeRequest::translate() {
 }
 
 // GetInitDataRequest
-QString GetInitDataRequest::toJSONString() {
-  throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement
+QJsonObject GetInitDataRequest::toJSON() {
+  return {{"requestTag", requestTag}};
 }
 server::requests::RequestVar GetInitDataRequest::translate() {
   return server::requests::GetInitData(1);
 }
 
 //Error class
-QString Error::toJSONString() {
-  throw std::runtime_error("NOT IMPLEMENTED"); // TODO implement
+QJsonObject Error::toJSON() {
+  return {{"requestTag", requestTag}};
 }
 
 server::requests::RequestVar Error::translate() {
