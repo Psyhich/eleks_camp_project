@@ -797,5 +797,40 @@ namespace dbAPI {
         }
     }
 
+    bool Database::addItem(ItemType type, string name) {
+        if (!checkItem(type, name)) {
+            string table{};
+            switch (type) {
+                case ItemType::COURSE:
+                    table = coursesTableName;
+                    break;
+                case ItemType::CUISINE:
+                    table = cuisinesTableName;
+                    break;
+                case ItemType::INGREDIENT:
+                    table = ingredientsTableName;
+                    break;
+                case ItemType::UNIT:
+                    table = unitsTableName;
+                    break;
+            }
+            try {
+                string query = "INSERT INTO " + table + "\n"
+                               "VALUES (NULL, :name)";
+                SQLite::Statement insertQuery(db, query);
+                insertQuery.bind(":name", name);
+                return insertQuery.exec();
+            }
+            catch (std::exception& e) {
+                std::cerr << "error: cannot add item to " << table << std::endl;
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+
 }   // dbAPI 
 }   // server

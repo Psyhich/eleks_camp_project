@@ -75,6 +75,7 @@ private:
         COURSE, CUISINE, INGREDIENT, UNIT
     };
     bool checkItem(ItemType type, string name);
+    bool addItem(ItemType type, string name);
 
     void removeUnusedElements();
 
