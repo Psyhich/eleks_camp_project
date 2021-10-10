@@ -764,5 +764,38 @@ namespace dbAPI {
                     "HAVING count(recipe_ingredients.ingredient_id) = 0)");
     }
 
+    bool Database::checkItem(Database::ItemType type, string name) {
+        string table{};
+        string field{};
+        switch (type) {
+            case ItemType::COURSE:
+                table = field = coursesTableName;
+                break;
+            case ItemType::CUISINE:
+                table = field = cuisinesTableName;
+                break;
+            case ItemType::INGREDIENT:
+                table = field = ingredientsTableName;
+                break;
+            case ItemType::UNIT:
+                table = field = unitsTableName;
+                break;
+        }
+        field.back() = '_';
+        field.append("name");
+        try {
+            string query = "SELECT * FROM " + table + "\n"
+                           "WHERE " + field + " = :name";
+            SQLite::Statement checkQuery(db, query);
+            checkQuery.bind(":name", name);
+            return checkQuery.executeStep();
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot check " << field << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
+    }
+
 }   // dbAPI 
 }   // server
