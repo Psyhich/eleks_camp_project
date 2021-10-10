@@ -15,6 +15,7 @@ private:
 	QComboBox *cusineSetter;
 	QCheckBox *searchWithIngredients;
 	QCheckBox *searchExact;
+	QCheckBox *searchByFavorites;
 
 	IngredientsFilterWidget* ingredientFilters;
 public:
@@ -23,6 +24,7 @@ public:
 		QString cusine{""};
 		QSet<QString> ingredients{};
 		bool serchExact{false};
+		bool searchByFavorites;
 	};
 
 	CriteriaWidget(QWidget *parent = nullptr);

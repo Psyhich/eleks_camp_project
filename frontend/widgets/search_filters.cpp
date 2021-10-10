@@ -27,8 +27,10 @@ QSharedPointer<BaseTypes::Requests::SearchQuery> SearchFilters::getFilters(){
 	CriteriaWidget::NotFullRequest notFull = searchCriterias->getNotFullRequest();
 	QString searchSubstring = searchBar->getSearchSubstring();
 	QSet<unsigned int> favoriteIDs;
-	for(unsigned int id : FavoritesManager::getManager().getFavorites()){
-	  favoriteIDs.insert(id);
+	if(notFull.searchByFavorites){
+		for(unsigned int id : FavoritesManager::getManager().getFavorites()){
+		  favoriteIDs.insert(id);
+		}
 	}
 
 	return QSharedPointer<BaseTypes::Requests::SearchQuery>(

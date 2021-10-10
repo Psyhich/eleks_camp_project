@@ -28,6 +28,10 @@ CriteriaWidget::CriteriaWidget(QWidget *parent) : QWidget(parent) {
 		searchExact = new QCheckBox("Exact", this);
 		searchExact->setDisabled(true);
 		gridLayout->addWidget(searchExact, 1, 2);
+
+		searchByFavorites = new QCheckBox("Use favorites", this);
+		gridLayout->addWidget(searchByFavorites, 1, 3);
+
 	currentLayout->addLayout(gridLayout);
 
 	ingredientFilters = new IngredientsFilterWidget(QSharedPointer<QSet<QString>>(new QSet<QString>()), this);
@@ -48,6 +52,7 @@ CriteriaWidget::NotFullRequest CriteriaWidget::getNotFullRequest(){
 		requestToReturn.ingredients = ingredientFilters->getIngredientFilter();
 		requestToReturn.serchExact = searchExact->isChecked();
 	}
+	requestToReturn.searchByFavorites = searchByFavorites->isChecked();
 	return requestToReturn;
 }
 
