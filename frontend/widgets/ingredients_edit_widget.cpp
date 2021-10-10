@@ -46,7 +46,7 @@ void IngredientEditRow::updateUnits(QSet<QString> newUnits){
 
 
 QVector<QString> IngredientEditRow::getStrings(){
-	return {ingredientEdit->itemText(0), ingredientCountEdit->text(), unitEdit->itemText(0)};
+	return {ingredientEdit->currentText(), ingredientCountEdit->text(), unitEdit->currentText()};
 }
 
 void IngredientEditRow::setStrings(const QVector<QString> &tupleToset) {
