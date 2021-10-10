@@ -67,8 +67,8 @@ namespace dbAPI {
 
     unsigned int Database::add(const recipe::Recipe& newRecipe) {
         try {
-            addCourse(newRecipe.getCourse());
-            addCuisine(newRecipe.getCuisine());
+            addItem(ItemType::COURSE, newRecipe.getCourse());
+            addItem(ItemType::CUISINE, newRecipe.getCuisine());
 
             string query = "INSERT INTO recipes(recipe_name, recipe_preparation, recipe_presentation, recipe_weight, recipe_portion_amount,\n"
                            "recipe_portion_nutritional_value, recipe_cuisine_id, recipe_course_id, recipe_remarks)\n"
@@ -106,8 +106,8 @@ namespace dbAPI {
 
     bool Database::edit(const recipe::Recipe& changedRecipe) {
         try {
-            addCourse(changedRecipe.getCourse());
-            addCuisine(changedRecipe.getCuisine());
+            addItem(ItemType::COURSE, changedRecipe.getCourse());
+            addItem(ItemType::CUISINE, changedRecipe.getCuisine());
 
             string query = "UPDATE recipes\n"
                            "SET recipe_name = :name, recipe_preparation = :preparation, recipe_presentation = :presentation,\n"
@@ -266,32 +266,11 @@ namespace dbAPI {
     }
 
     void Database::insertDefaultUnit() {
-        try {
-            string insertDefaultUnitQuery = "INSERT INTO units VALUES (NULL, :defaultUnit);";
-
-            SQLite::Statement insertQuery(db, insertDefaultUnitQuery);
-            insertQuery.bind(":defaultUnit", defaultUnit);
-            insertQuery.exec();
-        }
-        catch (std::exception& e) {
-            std::cerr << "error: cannot insert default unit" << std::endl;
-            std::cerr << e.what() << std::endl;
-        }
+        addItem(ItemType::UNIT, defaultUnit);
     }
 
     bool Database::containsDefaultUnit() {
-        try {
-            string checkDefaultUnitQuery = "SELECT * FROM units WHERE unit_name = :unitName";
-
-            SQLite::Statement checkQuery(db, checkDefaultUnitQuery);
-            checkQuery.bind(":unitName", defaultUnit);
-            return checkQuery.executeStep();
-        }
-        catch (std::exception& e) {
-            std::cerr << "error: cannot check containing default unit" << std::endl;
-            std::cerr << e.what() << std::endl;
-            return false;
-        }
+        return checkItem(ItemType::UNIT, defaultUnit);
     }
 
     void Database::bindTableName(string& query, string tableName) {
@@ -475,237 +454,10 @@ namespace dbAPI {
         }
     }
 
-    bool Database::addCourse(string course) {
-        if (!checkCourse(course)) {
-            try {
-                string query = "INSERT INTO courses\n"
-                               "VALUES (NULL, :course)";
-                SQLite::Statement insertQuery(db, query);
-                insertQuery.bind(":course", course);
-                return insertQuery.exec();
-            }
-            catch (std::exception& e) {
-                std::cerr << "error: cannot add course" << std::endl;
-                std::cerr << e.what() << std::endl;
-                return false;
-            }
-        }
-        else {
-            return true;
-        }
-    }
-
-    bool Database::removeCourse(string course) {
-        if (checkCourse(course)) {
-            try {
-                string query = "DELETE FROM courses\n"
-                               "WHERE course_name = :course";
-                SQLite::Statement deleteQuery(db, query);
-                deleteQuery.bind(":course", course);
-                return deleteQuery.exec();
-            }
-            catch (std::exception& e) {
-                std::cerr << "error: cannot remove course" << std::endl;
-                std::cerr << e.what() << std::endl;
-                return false;
-            }
-        }
-        else {
-            return true;
-        }
-    }
-
-    bool Database::checkCourse(string course) {
-        try {
-            string query = "SELECT * FROM courses\n"
-                           "WHERE course_name = :course";
-            SQLite::Statement checkQuery(db, query);
-            checkQuery.bind(":course", course);
-            return checkQuery.executeStep();
-        }
-        catch (std::exception& e) {
-            std::cerr << "error: cannot check course" << std::endl;
-            std::cerr << e.what() << std::endl;
-            return false;
-        }
-    }
-
-    bool Database::checkCourseUsage(string course) {
-        try {
-            string query = "SELECT COUNT(recipe_id)\n"
-                           "FROM recipes\n"
-                           "INNER JOIN courses ON courses.course_id = recipes.recipe_course_id\n"
-                           "WHERE courses.course_name = :course";
-            SQLite::Statement checkQuery(db, query);
-            checkQuery.bind(":course", course);
-            int recordCount{};
-            if (checkQuery.executeStep()){
-                recordCount = checkQuery.getColumn(0);
-            }
-            return recordCount;
-        }
-        catch (std::exception& e) {
-            std::cerr << "error: cannot check course" << std::endl;
-            std::cerr << e.what() << std::endl;
-            return false;
-        }
-    }
-
-    bool Database::addCuisine(string cuisine) {
-        if (!checkCuisine(cuisine)) {
-            try {
-                string query = "INSERT INTO cuisines\n"
-                               "VALUES (NULL, :cuisine)";
-                SQLite::Statement insertQuery(db, query);
-                insertQuery.bind(":cuisine", cuisine);
-                return insertQuery.exec();
-            }
-            catch (std::exception &e) {
-                std::cerr << "error: cannot add cuisine" << std::endl;
-                std::cerr << e.what() << std::endl;
-                return false;
-            }
-        }
-        else {
-            return true;
-        }
-    }
-
-    bool Database::removeCuisine(string cuisine) {
-        if (checkCuisine(cuisine)) {
-            try {
-                string query = "DELETE FROM cuisines\n"
-                               "WHERE cuisine_name = :cuisine";
-                SQLite::Statement deleteQuery(db, query);
-                deleteQuery.bind(":cuisine", cuisine);
-                return deleteQuery.exec();
-            }
-            catch (std::exception &e) {
-                std::cerr << "error: cannot remove cuisine" << std::endl;
-                std::cerr << e.what() << std::endl;
-                return false;
-            }
-        }
-        else {
-            return true;
-        }
-    }
-
-    bool Database::checkCuisine(string cuisine) {
-        try {
-            string query = "SELECT * FROM cuisines\n"
-                           "WHERE cuisine_name = :cuisine";
-            SQLite::Statement checkQuery(db, query);
-            checkQuery.bind(":cuisine", cuisine);
-            return checkQuery.executeStep();
-        }
-        catch (std::exception& e) {
-            std::cerr << "error: cannot check cuisine" << std::endl;
-            std::cerr << e.what() << std::endl;
-            return false;
-        }
-    }
-
-    bool Database::checkCuisineUsage(string cuisine) {
-        try {
-            string query = "SELECT COUNT(recipe_id)\n"
-                           "FROM recipes\n"
-                           "INNER JOIN cuisines ON cuisines.cuisine_id = recipes.recipe_cuisine_id\n"
-                           "WHERE cuisines.cuisine_name = :cuisine";
-            SQLite::Statement checkQuery(db, query);
-            checkQuery.bind(":cuisine", cuisine);
-            int recordCount{};
-            if (checkQuery.executeStep()){
-                recordCount = checkQuery.getColumn(0);
-            }
-            return recordCount;
-        }
-        catch (std::exception& e) {
-            std::cerr << "error: cannot check cuisine" << std::endl;
-            std::cerr << e.what() << std::endl;
-            return false;
-        }
-    }
-
-    bool Database::addIngredient(string ingredient) {
-        if (!checkIngredient(ingredient)) {
-            try {
-                string query = "INSERT INTO ingredients\n"
-                               "VALUES (NULL, :ingredient)";
-                SQLite::Statement insertQuery(db, query);
-                insertQuery.bind(":ingredient", ingredient);
-                return insertQuery.exec();
-            }
-            catch (std::exception& e) {
-                std::cerr << "error: cannot add ingredient" << std::endl;
-                std::cerr << e.what() << std::endl;
-                return false;
-            }
-        }
-        else {
-            return true;
-        }
-    }
-
-    bool Database::removeIngredient(string ingredient) {
-        if (checkIngredient(ingredient)) {
-            try {
-                string query = "DELETE FROM ingredients\n"
-                               "WHERE ingredient_name = :ingredient";
-                SQLite::Statement deleteQuery(db, query);
-                deleteQuery.bind(":ingredient", ingredient);
-                return deleteQuery.exec();
-            }
-            catch (std::exception& e) {
-                std::cerr << "error: cannot remove ingredient" << std::endl;
-                std::cerr << e.what() << std::endl;
-                return false;
-            }
-        }
-        else {
-            return true;
-        }
-    }
-
-    bool Database::checkIngredient(string ingredient) {
-        try {
-            string query = "SELECT * FROM ingredients\n"
-                           "WHERE ingredient_name = :ingredient";
-            SQLite::Statement checkQuery(db, query);
-            checkQuery.bind(":ingredient", ingredient);
-            return checkQuery.executeStep();
-        }
-        catch (std::exception& e) {
-            std::cerr << "error: cannot check course" << std::endl;
-            std::cerr << e.what() << std::endl;
-            return false;
-        }
-    }
-
-    bool Database::checkIngredientUsage(string ingredient) {
-        try {
-            string query = "SELECT COUNT(record_id)\n"
-                           "FROM recipe_ingredients\n"
-                           "INNER JOIN ingredients ON ingredients.ingredient_id = recipe_ingredients.ingredient_id\n"
-                           "WHERE ingredients.ingredient_name = :ingredient";
-            SQLite::Statement checkQuery(db, query);
-            checkQuery.bind(":ingredient", ingredient);
-            int recordCount{};
-            if (checkQuery.executeStep()){
-                recordCount = checkQuery.getColumn(0);
-            }
-            return recordCount;
-        }
-        catch (std::exception& e) {
-            std::cerr << "error: cannot check ingredient" << std::endl;
-            std::cerr << e.what() << std::endl;
-            return false;
-        }
-    }
-
     void Database::insertIngredientsForRecipe(recipe::IngredientsList ingredients, unsigned int id) {
         for (auto item : ingredients) {
-            addIngredient(item.first);
+            addItem(ItemType::INGREDIENT, item.first);
+            addItem(ItemType::UNIT, item.second.unit);
 
             string query = "INSERT INTO recipe_ingredients (recipe_id, ingredient_id, unit_id, ingredient_amount)\n"
                            "SELECT :id, ingredients.ingredient_id, units.unit_id, :amount\n"
@@ -762,6 +514,82 @@ namespace dbAPI {
                     "LEFT JOIN recipe_ingredients ON recipe_ingredients.ingredient_id = ingredients.ingredient_id\n"
                     "GROUP BY ingredient_name\n"
                     "HAVING count(recipe_ingredients.ingredient_id) = 0)");
+
+        db.exec("DELETE FROM units\n"
+                "WHERE unit_name IN (\n"
+                "SELECT unit_name\n"
+                "FROM units\n"
+                "LEFT JOIN recipe_ingredients ON recipe_ingredients.unit_id = units.unit_id\n"
+                "GROUP BY unit_name\n"
+                "HAVING count(recipe_ingredients.unit_id) = 0)");
+    }
+
+    bool Database::checkItem(Database::ItemType type, string name) {
+        string table{};
+        string field{};
+        switch (type) {
+            case ItemType::COURSE:
+                table = field = coursesTableName;
+                break;
+            case ItemType::CUISINE:
+                table = field = cuisinesTableName;
+                break;
+            case ItemType::INGREDIENT:
+                table = field = ingredientsTableName;
+                break;
+            case ItemType::UNIT:
+                table = field = unitsTableName;
+                break;
+        }
+        field.back() = '_';
+        field.append("name");
+        try {
+            string query = "SELECT * FROM " + table + "\n"
+                           "WHERE " + field + " = :name";
+            SQLite::Statement checkQuery(db, query);
+            checkQuery.bind(":name", name);
+            return checkQuery.executeStep();
+        }
+        catch (std::exception& e) {
+            std::cerr << "error: cannot check " << field << std::endl;
+            std::cerr << e.what() << std::endl;
+            return false;
+        }
+    }
+
+    bool Database::addItem(ItemType type, string name) {
+        if (!checkItem(type, name)) {
+            string table{};
+            switch (type) {
+                case ItemType::COURSE:
+                    table = coursesTableName;
+                    break;
+                case ItemType::CUISINE:
+                    table = cuisinesTableName;
+                    break;
+                case ItemType::INGREDIENT:
+                    table = ingredientsTableName;
+                    break;
+                case ItemType::UNIT:
+                    table = unitsTableName;
+                    break;
+            }
+            try {
+                string query = "INSERT INTO " + table + "\n"
+                               "VALUES (NULL, :name)";
+                SQLite::Statement insertQuery(db, query);
+                insertQuery.bind(":name", name);
+                return insertQuery.exec();
+            }
+            catch (std::exception& e) {
+                std::cerr << "error: cannot add item to " << table << std::endl;
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+        }
+        else {
+            return true;
+        }
     }
 
 }   // dbAPI 

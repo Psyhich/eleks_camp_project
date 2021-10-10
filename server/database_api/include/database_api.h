@@ -51,28 +51,18 @@ private:
 
     //default ingredient unit
     static constexpr char defaultUnit[] = "g";
-
-    //remove functions delete record only it is not used
-    //add functions add only if it is not exist
-    bool addCourse(string course);
-    bool removeCourse(string course);
-    bool checkCuisine(string cuisine);
-    bool checkCuisineUsage(string cuisine);
-
-    bool addCuisine(string cuisine);
-    bool removeCuisine(string cuisine);
-    bool checkCourse(string course);
-    bool checkCourseUsage(string course);
-
-    bool addIngredient(string ingredient);
-    bool removeIngredient(string ingredient);
-    bool checkIngredient(string ingredient);
-    bool checkIngredientUsage(string ingredient);
-
-    void removeUnusedElements();
-
     void insertDefaultUnit();
     bool containsDefaultUnit();
+
+    enum class ItemType {
+        COURSE, CUISINE, INGREDIENT, UNIT
+    };
+    //add functions add only if it is not exist
+    //return true if exists or added
+    bool addItem(ItemType type, string name);
+    bool checkItem(ItemType type, string name);
+
+    void removeUnusedElements();
 
     std::set<unsigned int> fetchIDs(const searcher::Criteria& searchCriteria);
     std::optional<recipe::Recipe> fetchRecipe(unsigned int id);
