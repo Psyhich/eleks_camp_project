@@ -514,6 +514,14 @@ namespace dbAPI {
                     "LEFT JOIN recipe_ingredients ON recipe_ingredients.ingredient_id = ingredients.ingredient_id\n"
                     "GROUP BY ingredient_name\n"
                     "HAVING count(recipe_ingredients.ingredient_id) = 0)");
+
+        db.exec("DELETE FROM units\n"
+                "WHERE unit_name IN (\n"
+                "SELECT unit_name\n"
+                "FROM units\n"
+                "LEFT JOIN recipe_ingredients ON recipe_ingredients.unit_id = units.unit_id\n"
+                "GROUP BY unit_name\n"
+                "HAVING count(recipe_ingredients.unit_id) = 0)");
     }
 
     bool Database::checkItem(Database::ItemType type, string name) {
