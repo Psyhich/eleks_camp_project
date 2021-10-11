@@ -133,13 +133,14 @@ namespace dbAPI {
             int recordsCount = updateRecipeQuery.exec();
             if (!recordsCount) {
                 std::cerr << "error: cannot edit recipe. no recipe with ID: " << changedRecipe.getId() << std::endl;
-                return false;
             }
-            removeIngredientsForRecipe(changedRecipe.getId());
-            insertIngredientsForRecipe(changedRecipe.getIngredients(), changedRecipe.getId());
-
+            else {
+                removeIngredientsForRecipe(changedRecipe.getId());
+                insertIngredientsForRecipe(changedRecipe.getIngredients(), changedRecipe.getId());
+                status = true;
+            }
             removeUnusedElements();
-            return true;
+            return status;
         }
         catch (std::exception& e) {
             std::cerr << "error: cannot update recipe with ID: " << changedRecipe.getId() << std::endl;
