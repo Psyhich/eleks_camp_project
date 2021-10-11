@@ -75,17 +75,17 @@ RecipeEditTab::RecipeEditTab(QSharedPointer<BaseTypes::Recipe> recipeToOpen,
 	// Ingredients panel
 	ingredientsEdit = new IngredientsEditWidget(inners);
 		ingredientsEdit->loadIngredients(openedRecipe->ingredients);
-	mainLayout->addWidget(ingredientsEdit);
+	mainLayout->addWidget(ingredientsEdit, 2);
 
 	// Text panels
 	preparationEdit = new QTextEdit(openedRecipe->recipeText, inners);
-	mainLayout->addWidget(preparationEdit);
+	mainLayout->addWidget(preparationEdit, 1);
 
 	presentationEdit = new QTextEdit(openedRecipe->presentationText, inners);
-	mainLayout->addWidget(presentationEdit);
+	mainLayout->addWidget(presentationEdit, 1);
 
 	remarksEdit = new QTextEdit(openedRecipe->remarks, inners);
-	mainLayout->addWidget(remarksEdit);
+	mainLayout->addWidget(remarksEdit, 1);
 
 	// Button panel(save and delete)
 	QHBoxLayout *pannelLayout = new QHBoxLayout();
@@ -103,7 +103,6 @@ RecipeEditTab::RecipeEditTab(QSharedPointer<BaseTypes::Recipe> recipeToOpen,
 
 	QObject::connect(deleteButon, &QPushButton::clicked, this, &RecipeEditTab::emitRequestDeleteRecipe);
 	QObject::connect(saveButon, &QPushButton::clicked, this, &RecipeEditTab::emitRequestSaveRecipe);
-
 
 	inners->setLayout(mainLayout);
 	setWidget(inners);

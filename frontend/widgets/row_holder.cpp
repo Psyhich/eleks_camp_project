@@ -7,8 +7,8 @@ RowDisplay::RowDisplay(QWidget *parrent) : QWidget(parrent){ }
 
 RowHolder::RowHolder(QWidget *parrent) : QScrollArea(parrent) {
 	setWidgetResizable(true);
-	setWidget(new QWidget());
 
+	setWidget(new QWidget(this));
 	QVBoxLayout *mainLayout = new QVBoxLayout(widget());
 
 	addButton = new QPushButton("+", widget());

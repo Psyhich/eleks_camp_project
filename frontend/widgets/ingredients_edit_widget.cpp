@@ -11,18 +11,22 @@ IngredientEditRow::IngredientEditRow(
 	ingredientEdit = new QComboBox(this);
 		ingredientEdit->setEditable(true);
 		ingredientEdit->setDuplicatesEnabled(false);
-	mainLayout->addWidget(ingredientEdit);
+	mainLayout->addWidget(ingredientEdit, 3);
 
 
 	ingredientCountEdit = new QDoubleSpinBox(this);
 		ingredientCountEdit->setMinimum(0);
-	mainLayout->addWidget(ingredientCountEdit);
+	mainLayout->addWidget(ingredientCountEdit, 3);
 
 
 	unitEdit = new QComboBox(this);
 		unitEdit->setEditable(true);
 		unitEdit->setDuplicatesEnabled(false);
-	mainLayout->addWidget(unitEdit);
+	mainLayout->addWidget(unitEdit, 3);
+
+	QPushButton *closeButton = new QPushButton("-", this);
+		QObject::connect(closeButton, &QPushButton::clicked, this, &IngredientEditRow::emitDeletePressed);
+	mainLayout->addWidget(closeButton);
 
 	setLayout(mainLayout);
 
