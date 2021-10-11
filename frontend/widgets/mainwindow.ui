@@ -53,11 +53,20 @@
    <addaction name="menuConnection"/>
   </widget>
   <action name="actionConnect_to_database">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Connect to remote database</string>
    </property>
   </action>
   <action name="actionConnect_to_local">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Connect to local</string>
    </property>
