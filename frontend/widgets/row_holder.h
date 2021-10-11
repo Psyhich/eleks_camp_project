@@ -7,7 +7,7 @@
 #include <QAbstractItemView>
 
 class RowDisplay : public QWidget {
-Q_OBJECT
+	Q_OBJECT
 private:
 protected:
 	inline void emitDeletePressed() { emit deletePressed(this); }
@@ -23,7 +23,7 @@ signals:
 };
 
 class RowHolder : public QScrollArea {
-Q_OBJECT
+	Q_OBJECT
 private:
 	QList<RowDisplay*> rows;
 	QPushButton* addButton;

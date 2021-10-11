@@ -4,10 +4,12 @@
 #include <QScrollArea>
 #include <QSharedPointer>
 #include <QWidget>
+
 #include "recipe_row_view.h"
 
 class RecipesListView : public QWidget {
-Q_OBJECT
+	Q_OBJECT
+private:
 	//QSet<QSharedPointer<BaseTypes::Recipe>> recipeCache; // TODO implement recipe cache to update all widgets that contain opened recipe
 	QList<RecipeRowView *> rows;
 

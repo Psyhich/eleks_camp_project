@@ -1,6 +1,6 @@
-#include "search_widget.h"
 #include <QHBoxLayout>
-#include <QDebug>
+
+#include "search_widget.h"
 
 MySearchWidget::MySearchWidget(QWidget *parent) : QWidget(parent) {
 	QHBoxLayout* hLayout = new QHBoxLayout(this);

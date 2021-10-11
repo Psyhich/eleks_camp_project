@@ -1,5 +1,5 @@
-#ifndef TABMANAGER_H
-#define TABMANAGER_H
+#ifndef TAB_MANAGER_H
+#define TAB_MANAGER_H
 
 #include <QTabWidget>
 #include <QWidget>

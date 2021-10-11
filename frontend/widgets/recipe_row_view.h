@@ -1,13 +1,10 @@
 #ifndef RECIPE_ROW_VIEW_H
 #define RECIPE_ROW_VIEW_H
 
-#include "types/responses.h"
 #include <QSharedPointer>
-#include <QToolButton>
-#include <QIcon>
-#include <QWidget>
-#include <QDebug>
 #include <QFrame>
+
+#include "types/responses.h"
 
 // Class that represents single row view for one recipe
 class RecipeRowView : public QFrame {

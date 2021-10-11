@@ -3,14 +3,13 @@
 
 #include "row_holder.h"
 
-#include <QScrollArea>
 #include <QSet>
 #include <QComboBox>
 #include <QPushButton>
 #include <QSharedPointer>
 
 class IngredientRowFilter : public RowDisplay {
-Q_OBJECT
+	Q_OBJECT
 private:
 	QComboBox *ingredientFilter;
 public:

@@ -1,6 +1,7 @@
-﻿#include "recipes_list_view.h"
-#include <QLabel>
+﻿#include <QLabel>
 #include <QVBoxLayout>
+
+#include "recipes_list_view.h"
 
 RecipesListView::RecipesListView(QWidget *parrent) : QWidget(parrent) {
 	this->setLayout(new QVBoxLayout(this));

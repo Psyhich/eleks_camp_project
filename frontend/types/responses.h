@@ -6,11 +6,9 @@
 #include <QSet>
 #include <QVector>
 #include <QSharedPointer>
-#include <QDebug>
 #include <QJsonObject>
 
 #include "recipe.h"
-#include "../server/recipe/include/recipe.h"
 #include "../server/responses/include/responses.h"
 
 namespace BaseTypes::Responses {
@@ -40,7 +38,6 @@ public:
 
 	virtual ~Response();
 };
-
 
 class ErrorResponse : Response {
 private:

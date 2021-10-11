@@ -11,7 +11,6 @@
 #include "responses.h"
 
 
-// TODO remake Request type to have 2 virtual methods: toString() - for JSON, translate() - for local protocols
 namespace BaseTypes::Requests {
 
 class Request {
@@ -45,6 +44,7 @@ public:
 	~SearchQuery() override {}
 
 };
+
 class AddRecipeRequest : public Request {
 private:
 	QSharedPointer<Recipe> recipeToAdd;

@@ -2,6 +2,7 @@
 #include <QJsonArray>
 
 #include "responses.h"
+#include "../server/recipe/include/recipe.h"
 
 using namespace BaseTypes::Responses;
 
@@ -36,6 +37,32 @@ BaseTypes::Recipe* translateToRecipeFromJson(const QJsonObject &json){
 	  }
 
 	}
+
+	return recipe;
+}
+
+BaseTypes::Recipe* translateRecipeFromServer(const server::recipe::Recipe &response){
+	BaseTypes::Recipe *recipe = new BaseTypes::Recipe(response.getId());
+	recipe->name = QString::fromStdString(response.getName());
+
+	recipe->courses = {QString::fromStdString(response.getCourse())};
+	recipe->cusines = {QString::fromStdString(response.getCuisine())};
+
+	// Translating ingredients
+	for(auto pair : response.getIngredients()){
+	  BaseTypes::Recipe::IngredientAmount amount;
+	  amount.quantity = pair.second.quantity;
+	  amount.unit = QString::fromStdString(pair.second.unit);
+	  recipe->ingredients.insert(QString::fromStdString(pair.first), amount);
+	}
+
+	recipe->outWeight = response.getOutWeight();
+	recipe->outCalories = response.getOutCalories();
+	recipe->outPortions = response.getOutPortions();
+
+	recipe->recipeText = QString::fromStdString(response.getPreparation());
+	recipe->presentationText = QString::fromStdString(response.getPresentation());
+	recipe->remarks = QString::fromStdString(response.getRemarks());
 
 	return recipe;
 }
@@ -120,8 +147,7 @@ void SearchResponse::translate(const server::responses::ResponseVar&& responseTo
 
 	QSharedPointer<Recipe> currentRecipe;
 	for(auto recipe : searchResult.getResults().getFoundRecipes()){
-	  currentRecipe.reset(new Recipe(0)); // Setting id to 0, because it will be reset in next line
-	  currentRecipe->translateFromServer(recipe);
+	  currentRecipe = QSharedPointer<BaseTypes::Recipe>(translateRecipeFromServer(recipe));
 	  foundRecipes->append(currentRecipe);
 	}
 	// Shrinking recipes because we wont add more

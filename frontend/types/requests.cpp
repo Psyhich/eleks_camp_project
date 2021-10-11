@@ -41,6 +41,39 @@ QJsonObject translateRecipToJson(const BaseTypes::Recipe& recipeToTranslate){
 	return recipe;
 }
 
+server::recipe::Recipe translateRecipeToServer(const BaseTypes::Recipe &recipe){
+	std::string course;
+	if(recipe.courses.size() > 0) {
+	  course = recipe.courses.values()[0].toLower().toStdString();
+	}
+
+	std::string cusine;
+	if(recipe.cusines.size() > 0) {
+	  cusine = recipe.cusines.values()[0].toLower().toStdString();
+	}
+
+	server::recipe::IngredientsList ingredients;
+	for(auto key : recipe.ingredients.keys()) {
+		server::recipe::IngredientAmount amount;
+		const BaseTypes::Recipe::IngredientAmount &my_amount = recipe.ingredients.value(key);
+		amount.quantity = my_amount.quantity;
+		amount.unit = my_amount.unit.toLower().toStdString();
+
+		ingredients.insert(std::pair<std::string, server::recipe::IngredientAmount>(key.toLower().toStdString(), amount));
+	}
+
+	return server::recipe::Recipe(recipe.getID() ? *recipe.getID() : 0,
+					recipe.name.toStdString(),
+					course,
+					cusine,
+					ingredients,
+					recipe.outCalories,
+					recipe.outWeight,
+					recipe.outPortions,
+					recipe.recipeText.toStdString(),
+					recipe.presentationText.toStdString(),
+					recipe.remarks.toStdString());
+}
 
 // SearchQueryRequest class
 QJsonObject SearchQuery::toJSON() {
@@ -108,7 +141,7 @@ QJsonObject AddRecipeRequest::toJSON() {
 }
 
 server::requests::RequestVar AddRecipeRequest::translate() {
-	return server::requests::Add(this->recipeToAdd->translateToServer(), 1);
+	return server::requests::Add(translateRecipeToServer(*this->recipeToAdd), 1);
 }
 
 // EditRecipeRequest class
@@ -119,7 +152,7 @@ QJsonObject EditRecipeRequest::toJSON() {
 }
 
 server::requests::RequestVar EditRecipeRequest::translate() {
-  return server::requests::Edit( this->editedRecipe->translateToServer(), 1);
+  return server::requests::Edit(translateRecipeToServer(*this->editedRecipe), 1);
 }
 
 // RemoveRecipeRequest class

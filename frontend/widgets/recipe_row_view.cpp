@@ -1,6 +1,9 @@
-#include "recipe_row_view.h"
+#include <QIcon>
 #include <QHBoxLayout>
+#include <QToolButton>
 #include <QLabel>
+
+#include "recipe_row_view.h"
 
 RecipeRowView::RecipeRowView(QSharedPointer<BaseTypes::Recipe> recipe, QWidget *parent) : QFrame(parent) {
 	this->recipe = recipe;

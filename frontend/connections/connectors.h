@@ -1,10 +1,7 @@
 #ifndef CONNECTORS_H
 #define CONNECTORS_H
 
-#include <QTcpSocket>
-
 #include "i_connector.h"
-#include "../server/requests/include/requests.h"
 #include "../server/server_keeper/include/local_server_keeper.h"
 #include "../server/local_exchange/include/i_frontend_exchange.h"
 

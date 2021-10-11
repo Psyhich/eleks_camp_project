@@ -1,5 +1,4 @@
 #include "connectors.h"
-#include <QDebug>
 #include "../server/recipe/include/recipe.h"
 
 using namespace Connections;
@@ -8,13 +7,8 @@ LocalConnector::LocalConnector() : currentLocal(server::LocalServerKeeper()), ex
 	// NOTE reqquest clientID should be 1!!
 }
 
-void LocalConnector::openConnection() {
-
-}
-
-void LocalConnector::closeConnection() {
-
-}
+void LocalConnector::openConnection() {}
+void LocalConnector::closeConnection() {}
 
 BaseTypes::Responses::SearchResponse LocalConnector::runSearch(QSharedPointer<BaseTypes::Requests::SearchQuery> query){
 	exchanger.sendRequest(query->translate());

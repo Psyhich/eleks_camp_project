@@ -91,9 +91,7 @@ ErrorResponse RemoteConnector::sendError(QSharedPointer<Error> error){
   return response;
 }
 
-RemoteConnector::~RemoteConnector(){
-
-}
+RemoteConnector::~RemoteConnector(){}
 
 
 

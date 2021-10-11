@@ -7,7 +7,7 @@
 #include "recipes_list_view.h"
 
 class SearchTab : public QWidget {
-Q_OBJECT
+	Q_OBJECT
 private:
 	SearchFilters *filters;
 	RecipesListView *recipesView;
