@@ -5,12 +5,8 @@ namespace dbAPI {
 
     Database::Database() : db(databaseName, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE) {
         db.setBusyTimeout(busyTime);
-        createCoursesTable();
-        createCuisinesTable();
-        createRecipesTable();
-        createIngredientsTable();
-        createUnitsTable();
-        createRecipeIngredientsTable();
+        createTables();
+        insertDefaultUnit();
     }
 
     Database::~Database() {
@@ -106,6 +102,7 @@ namespace dbAPI {
 
     bool Database::edit(const recipe::Recipe& changedRecipe) {
         try {
+            bool status{};
             addItem(ItemType::COURSE, changedRecipe.getCourse());
             addItem(ItemType::CUISINE, changedRecipe.getCuisine());
 
@@ -168,139 +165,14 @@ namespace dbAPI {
         }
     }
 
-    void Database::createCoursesTable() {
-        if (!db.tableExists(coursesTableName)) {
-            try {
-                string createCoursesTableQuery = "CREATE TABLE \"%tableName%\" (\n"
-                                                "\"course_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                                                "\"course_name\"\tTEXT NOT NULL UNIQUE\n"
-                                                ");";
-                bindTableName(createCoursesTableQuery, coursesTableName);
-                db.exec(createCoursesTableQuery);
-            }
-            catch (std::exception& e) {
-                std::cerr << "error: cannot create " << coursesTableName << " table" << std::endl;
-                std::cerr << e.what() << std::endl;
-            }
-        }
-    }
-
-    void Database::createCuisinesTable() {
-        if (!db.tableExists(cuisinesTableName)) {
-            try {
-                string createCuisinesTableQuery = "CREATE TABLE \"%tableName%\" (\n"
-                                                 "\"cuisine_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                                                 "\"cuisine_name\"\tTEXT NOT NULL UNIQUE\n"
-                                                 ");";
-                bindTableName(createCuisinesTableQuery, cuisinesTableName);
-                db.exec(createCuisinesTableQuery);
-            }
-            catch (std::exception& e) {
-                std::cerr << "error: cannot create " << cuisinesTableName << " table" << std::endl;
-                std::cerr << e.what() << std::endl;
-            }
-        }
-    }
-
-    void Database::createRecipesTable() {
-        if (!db.tableExists(recipesTableName)) {
-            try {
-                string createRecipesTableQuery = "CREATE TABLE \"%tableName%\" (\n"
-                                                 "\"recipe_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                                                 "\"recipe_name\"\tTEXT NOT NULL,\n"
-                                                 "\"recipe_preparation\"\tTEXT NOT NULL,\n"
-                                                 "\"recipe_presentation\"\tTEXT,"
-                                                 "\"recipe_weight\"\tREAL NOT NULL,\n"
-                                                 "\"recipe_portion_amount\"\tINTEGER NOT NULL DEFAULT 1,\n"
-                                                 "\"recipe_portion_nutritional_value\"\tREAL NOT NULL DEFAULT 0,\n"
-                                                 "\"recipe_cuisine_id\"\tINTEGER,\n"
-                                                 "\"recipe_course_id\"\tINTEGER,\n"
-                                                 "\"recipe_remarks\"\tTEXT,"
-                                                 "FOREIGN KEY(\"recipe_cuisine_id\") REFERENCES \"cuisines\"(\"cuisine_id\"),\n"
-                                                 "FOREIGN KEY(\"recipe_course_id\") REFERENCES \"courses\"(\"course_id\")\n"
-                                                 ");";
-                bindTableName(createRecipesTableQuery, recipesTableName);
-                db.exec(createRecipesTableQuery);
-            }
-            catch (std::exception& e) {
-                std::cerr << "error: cannot create " << recipesTableName << " table" << std::endl;
-                std::cerr << e.what() << std::endl;
-            }
-        }
-    }
-
-    void Database::createIngredientsTable() {
-        if (!db.tableExists(ingredientsTableName)) {
-            try {
-                string createIngredientsTableQuery = "CREATE TABLE \"%tableName%\" (\n"
-                                                     "\"ingredient_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                                                     "\"ingredient_name\"\tTEXT NOT NULL UNIQUE\n"
-                                                     ");";
-                bindTableName(createIngredientsTableQuery, ingredientsTableName);
-                db.exec(createIngredientsTableQuery);
-            }
-            catch (std::exception& e) {
-                std::cerr << "error: cannot create " << ingredientsTableName << " table" << std::endl;
-                std::cerr << e.what() << std::endl;
-            }
-        }
-    }
-
-    void Database::createUnitsTable() {
-        if (!db.tableExists(unitsTableName)) {
-            try {
-                string createUnitsTableQuery = "CREATE TABLE \"%tableName%\" (\n"
-                                               "\"unit_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                                               "\"unit_name\"\tTEXT NOT NULL UNIQUE\n"
-                                               ");";
-                bindTableName(createUnitsTableQuery, unitsTableName);
-                db.exec(createUnitsTableQuery);
-            }
-            catch (std::exception& e) {
-                std::cerr << "error: cannot create " << unitsTableName << " table" << std::endl;
-                std::cerr << e.what() << std::endl;
-            }
-        }
-        if (!containsDefaultUnit()) {
-            insertDefaultUnit();
-        }
-    }
-
     void Database::insertDefaultUnit() {
         addItem(ItemType::UNIT, defaultUnit);
-    }
-
-    bool Database::containsDefaultUnit() {
-        return checkItem(ItemType::UNIT, defaultUnit);
     }
 
     void Database::bindTableName(string& query, string tableName) {
         string keyword = "%tableName%";
         unsigned int startPosition = query.find(keyword);
         query.replace(startPosition, keyword.length(), tableName);
-    }
-
-    void Database::createRecipeIngredientsTable() {
-        if (!db.tableExists(recipeIngredientsTableName)) {
-            try {
-                string createRecipeIngredientsTableQuery = "CREATE TABLE \"%tableName%\" (\n"
-                                                           "\"record_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                                                           "\"recipe_id\"\tINTEGER NOT NULL,\n"
-                                                           "\"ingredient_id\"\tINTEGER NOT NULL,\n"
-                                                           "\"unit_id\"\tINTEGER NOT NULL,\n"
-                                                           "\"ingredient_amount\"\tREAL NOT NULL,\n"
-                                                           "FOREIGN KEY(\"unit_id\") REFERENCES \"units\"(\"unit_id\"),\n"
-                                                           "FOREIGN KEY(\"ingredient_id\") REFERENCES \"ingredients\"(\"ingredient_id\"),\n"
-                                                           "FOREIGN KEY(\"recipe_id\") REFERENCES \"recipes\"(\"recipe_id\")\n"
-                                                           ");";
-                bindTableName(createRecipeIngredientsTableQuery, recipeIngredientsTableName);
-                db.exec(createRecipeIngredientsTableQuery);
-            }
-            catch (std::exception& e) {
-                std::cerr << "error: cannot create " << recipeIngredientsTableName << " table" << std::endl;
-                std::cerr << e.what() << std::endl;
-            }
-        }
     }
 
     std::set<unsigned int> Database::fetchIDs(const searcher::Criteria& searchCriteria) {
@@ -491,38 +363,45 @@ namespace dbAPI {
     }
 
     void Database::removeUnusedElements() {
-        db.exec(
-                "DELETE FROM cuisines\n"
-                "WHERE cuisine_name IN(\n"
+        try {
+            db.exec(
+                    "DELETE FROM cuisines\n"
+                    "WHERE cuisine_name IN(\n"
                     "SELECT cuisine_name\n"
                     "FROM cuisines\n"
                     "LEFT JOIN recipes ON cuisines.cuisine_id = recipes.recipe_cuisine_id\n"
                     "GROUP BY cuisine_name\n"
                     "HAVING count(recipe_cuisine_id) = 0)");
 
-        db.exec("DELETE FROM courses\n"
-                "WHERE course_name IN(\n"
+            db.exec("DELETE FROM courses\n"
+                    "WHERE course_name IN(\n"
                     "SELECT course_name\n"
                     "FROM courses\n"
                     "LEFT JOIN recipes ON courses.course_id = recipes.recipe_course_id\n"
                     "GROUP BY course_name\n"
                     "HAVING count(recipe_course_id) = 0)");
 
-        db.exec("DELETE FROM ingredients\n"
-                "WHERE ingredient_name IN (\n"
+            db.exec("DELETE FROM ingredients\n"
+                    "WHERE ingredient_name IN (\n"
                     "SELECT ingredient_name\n"
                     "FROM ingredients\n"
                     "LEFT JOIN recipe_ingredients ON recipe_ingredients.ingredient_id = ingredients.ingredient_id\n"
                     "GROUP BY ingredient_name\n"
                     "HAVING count(recipe_ingredients.ingredient_id) = 0)");
 
-        db.exec("DELETE FROM units\n"
-                "WHERE unit_name IN (\n"
-                "SELECT unit_name\n"
-                "FROM units\n"
-                "LEFT JOIN recipe_ingredients ON recipe_ingredients.unit_id = units.unit_id\n"
-                "GROUP BY unit_name\n"
-                "HAVING count(recipe_ingredients.unit_id) = 0)");
+            db.exec("DELETE FROM units\n"
+                    "WHERE unit_name IN (\n"
+                    "SELECT unit_name\n"
+                    "FROM units\n"
+                    "LEFT JOIN recipe_ingredients ON recipe_ingredients.unit_id = units.unit_id\n"
+                    "GROUP BY unit_name\n"
+                    "HAVING count(recipe_ingredients.unit_id) = 0)\n"
+                    "AND unit_name <> " + string(defaultUnit));
+        }
+        catch (std::exception &e) {
+            std::cerr << "error: cannot remove unused elements" << std::endl;
+            std::cerr << e.what() << std::endl;
+        }
     }
 
     bool Database::checkItem(Database::ItemType type, string name) {
@@ -591,6 +470,73 @@ namespace dbAPI {
         else {
             return true;
         }
+    }
+
+    bool Database::createTables() {
+        std::vector<std::pair<string, string>> createQueries;
+        createQueries.push_back(std::pair(coursesTableName, "CREATE TABLE \"%tableName%\" (\n"
+                                          "\t\"course_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                                          "\t\"course_name\"\tTEXT NOT NULL UNIQUE\n"
+                                          ");"));
+
+        createQueries.push_back(std::pair(cuisinesTableName, "CREATE TABLE \"%tableName%\" (\n"
+                                           "\t\"cuisine_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                                           "\t\"cuisine_name\"\tTEXT NOT NULL UNIQUE\n"
+                                           ");"));
+
+        createQueries.push_back(std::pair(recipesTableName, "CREATE TABLE \"%tableName%\" (\n"
+                                          "\t\"recipe_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                                          "\t\"recipe_name\"\tTEXT NOT NULL,\n"
+                                          "\t\"recipe_preparation\"\tTEXT NOT NULL,\n"
+                                          "\t\"recipe_presentation\"\tTEXT,"
+                                          "\t\"recipe_weight\"\tREAL NOT NULL,\n"
+                                          "\t\"recipe_portion_amount\"\tINTEGER NOT NULL DEFAULT 1,\n"
+                                          "\t\"recipe_portion_nutritional_value\"\tREAL NOT NULL DEFAULT 0,\n"
+                                          "\t\"recipe_cuisine_id\"\tINTEGER,\n"
+                                          "\t\"recipe_course_id\"\tINTEGER,\n"
+                                          "\t\"recipe_remarks\"\tTEXT,"
+                                          "\tFOREIGN KEY(\"recipe_cuisine_id\") REFERENCES \"cuisines\"(\"cuisine_id\"),\n"
+                                          "\tFOREIGN KEY(\"recipe_course_id\") REFERENCES \"courses\"(\"course_id\")\n"
+                                          ");"));
+
+        createQueries.push_back(std::pair(ingredientsTableName, "CREATE TABLE \"%tableName%\" (\n"
+                                              "\t\"ingredient_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                                              "\t\"ingredient_name\"\tTEXT NOT NULL UNIQUE\n"
+                                              ");"));
+
+        createQueries.push_back(std::pair(unitsTableName, "CREATE TABLE \"%tableName%\" (\n"
+                                        "\t\"unit_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                                        "\t\"unit_name\"\tTEXT NOT NULL UNIQUE\n"
+                                        ");"));
+
+        createQueries.push_back(std::pair(recipeIngredientsTableName, "CREATE TABLE \"%tableName%\" (\n"
+                                                    "\t\"record_id\"\tINTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                                                    "\t\"recipe_id\"\tINTEGER NOT NULL,\n"
+                                                    "\t\"ingredient_id\"\tINTEGER NOT NULL,\n"
+                                                    "\t\"unit_id\"\tINTEGER NOT NULL,\n"
+                                                    "\t\"ingredient_amount\"\tREAL NOT NULL,\n"
+                                                    "\tFOREIGN KEY(\"unit_id\") REFERENCES \"units\"(\"unit_id\"),\n"
+                                                    "\tFOREIGN KEY(\"ingredient_id\") REFERENCES \"ingredients\"(\"ingredient_id\"),\n"
+                                                    "\tFOREIGN KEY(\"recipe_id\") REFERENCES \"recipes\"(\"recipe_id\")\n"
+                                                    ");"));
+
+        bool status{true};
+        for (auto stringQuery : createQueries) {
+            if (!db.tableExists(stringQuery.first)) {
+                try {
+                    bindTableName(stringQuery.second, stringQuery.first);
+                    status = !db.tryExec(stringQuery.second);
+                }
+                catch (std::exception& e) {
+                    std::cerr << "error: cannot create " << stringQuery.first << " table" << std::endl;
+                    std::cerr << e.what() << std::endl;
+                    status = false;
+                }
+            }
+            status = status && true;
+        }
+
+        return status;
     }
 
 }   // dbAPI 

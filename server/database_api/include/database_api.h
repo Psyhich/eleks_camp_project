@@ -34,7 +34,8 @@ private:
     static constexpr unsigned int busyTime = 100;
 
     //names are used only to create tables
-    static constexpr char databaseName[] = "cookbook.db";
+    static constexpr char databaseName[] = "../cookbook.db";
+
     static constexpr char coursesTableName[] = "courses";
     static constexpr char cuisinesTableName[] = "cuisines";
     static constexpr char recipesTableName[] = "recipes";
@@ -42,17 +43,11 @@ private:
     static constexpr char unitsTableName[] = "units";
     static constexpr char recipeIngredientsTableName[] = "recipe_ingredients";
 
-    void createCoursesTable();
-    void createCuisinesTable();
-    void createRecipesTable();
-    void createIngredientsTable();
-    void createUnitsTable();
-    void createRecipeIngredientsTable();
+    bool createTables();
 
     //default ingredient unit
     static constexpr char defaultUnit[] = "g";
     void insertDefaultUnit();
-    bool containsDefaultUnit();
 
     enum class ItemType {
         COURSE, CUISINE, INGREDIENT, UNIT
