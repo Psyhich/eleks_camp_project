@@ -32,7 +32,7 @@ void TabManager::closeRecipe(int tabID){
 }
 
 void TabManager::addToFavorites(unsigned int recipeID){
-	FavoritesManager::getManager().addToFavorites(recipeID);
+	FavoritesManager::getManager().toggleFavorite(recipeID);
 }
 
 void TabManager::editRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen){

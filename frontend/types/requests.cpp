@@ -73,7 +73,7 @@ QJsonObject SearchQuery::toJSON() {
 
 server::requests::RequestVar SearchQuery::translate() {
 	std::set<unsigned int> favoriteIDs;
-	for(auto id : favoriteIDs){
+	for(auto id : this->favoriteIDs){
 	  favoriteIDs.insert(id);
 	}
 

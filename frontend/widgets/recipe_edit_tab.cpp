@@ -2,7 +2,6 @@
 #include <QGridLayout>
 #include <QLabel>
 
-
 #include "recipe_edit_tab.h"
 
 using BaseTypes::Recipe;
@@ -126,7 +125,6 @@ QSharedPointer<Recipe> RecipeEditTab::collectNewRecipe() {
   newRecipe->outPortions = portionsEdit->value();
 
   newRecipe->ingredients = ingredientsEdit->getIngredients();
-
 
   return newRecipe;
 }

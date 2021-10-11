@@ -10,22 +10,48 @@ FavoritesManager& FavoritesManager::getManager(){
 	return manager;
 }
 
-QList<unsigned int> FavoritesManager::getFavorites(){
-	QVariant readSettings = settings.value(FAVORITE_IDS_SETTING);
-	if(!readSettings.isNull()){
-	  return readSettings.value<QList<unsigned int>>();
+void FavoritesManager::writeFavoritesArray(QSet<unsigned int> arr){
+	settings.beginWriteArray(FAVORITE_IDS_SETTING, arr.count());
+	int index = 0;
+	for(auto id : arr){
+		settings.setArrayIndex(index);
+		settings.setValue("id", id);
+		index++;
 	}
-	settings.setValue(FAVORITE_IDS_SETTING, QVariant::fromValue(QList<unsigned int>()));
+	settings.sync();
+	settings.endArray();
+}
+
+QSet<unsigned int> FavoritesManager::readFavoritesArray(){
+	QSet<unsigned int> favoritesArray;
+	int size = settings.beginReadArray(FAVORITE_IDS_SETTING);
+
+	for(int i = 0; i < size; i++){
+	  settings.setArrayIndex(i);
+	  favoritesArray.insert(settings.value("id").toUInt());
+	}
+	settings.endArray();
+
+	return favoritesArray;
+}
+
+
+
+QSet<unsigned int> FavoritesManager::getFavorites(){
+	QSet<unsigned int> favorites = readFavoritesArray();
+	if(favorites.count() > 0){
+	  return favorites;
+	}
+	writeFavoritesArray({});
 	return {};
 }
 
-void FavoritesManager::addToFavorites(unsigned int idToAdd){
-	QList<unsigned int> currentIDs = getFavorites();
-	currentIDs.push_back(idToAdd);
-	settings.setValue(FAVORITE_IDS_SETTING, QVariant::fromValue(currentIDs));
-}
-void FavoritesManager::removeFromFavorites(unsigned int idToRemove){
-	QList<unsigned int> currentIDs = getFavorites();
-	currentIDs.removeAll(idToRemove);
-	settings.setValue(FAVORITE_IDS_SETTING, QVariant::fromValue(currentIDs));
+void FavoritesManager::toggleFavorite(unsigned int idToToggle){
+  QSet<unsigned int> currentIDs = getFavorites();
+  if(currentIDs.contains(idToToggle)){
+	currentIDs.remove(idToToggle);
+  }else{
+	currentIDs.insert(idToToggle);
+  }
+  writeFavoritesArray(currentIDs);
 }
