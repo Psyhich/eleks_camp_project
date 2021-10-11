@@ -18,6 +18,7 @@ class Database : public IDatabase{
     // state members may be added if necessary
 public:
     Database();
+    Database(string path);
     virtual ~Database();
 
     std::optional<initializer::DataContainers> getInitData() override;
@@ -34,7 +35,7 @@ private:
     static constexpr unsigned int busyTime = 100;
 
     //names are used only to create tables
-    static constexpr char databaseName[] = "../cookbook.db";
+    static constexpr char databaseName[] = "cookbook.db";
 
     static constexpr char coursesTableName[] = "courses";
     static constexpr char cuisinesTableName[] = "cuisines";

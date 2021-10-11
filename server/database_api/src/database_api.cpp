@@ -3,8 +3,12 @@
 namespace server {
 namespace dbAPI {
 
-    Database::Database() : db(databaseName, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE) {
-        db.setBusyTimeout(busyTime);
+    Database::Database() : db(databaseName, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE, busyTime) {
+        createTables();
+        insertDefaultUnit();
+    }
+
+    Database::Database(string path) : db(path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE, busyTime) {
         createTables();
         insertDefaultUnit();
     }
