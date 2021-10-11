@@ -86,8 +86,12 @@ QMap<QString, BaseTypes::Recipe::IngredientAmount> IngredientsEditWidget::getIng
 	for(auto row : getRows()){
 		QVector<QString> tuple = row->getStrings();
 
-		ingredients.insert(tuple[0],
-			BaseTypes::Recipe::IngredientAmount{tuple[1].toDouble(), tuple[2]});
+		if(!tuple[0].isEmpty()){
+			if(!tuple[2].isEmpty()){
+				ingredients.insert(tuple[0],
+					BaseTypes::Recipe::IngredientAmount{tuple[1].toDouble(), tuple[2]});
+			}
+		}
 	}
 	return ingredients;
 }

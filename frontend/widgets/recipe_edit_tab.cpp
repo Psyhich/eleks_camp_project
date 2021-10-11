@@ -110,32 +110,37 @@ RecipeEditTab::RecipeEditTab(QSharedPointer<BaseTypes::Recipe> recipeToOpen,
 }
 
 QSharedPointer<Recipe> RecipeEditTab::collectNewRecipe() {
-  QSharedPointer<Recipe> newRecipe = QSharedPointer<Recipe>(new Recipe(*openedRecipe->getID()));
-  newRecipe->name = nameEdit->text();
+	if(nameEdit->text().isEmpty()){
+		return nullptr;
+	}
 
-  newRecipe->courses.insert(courseEdit->currentText());
-  newRecipe->cusines.insert(cusineEdit->currentText());
+	QSharedPointer<Recipe> newRecipe = QSharedPointer<Recipe>(new Recipe(*openedRecipe->getID()));
+	newRecipe->name = nameEdit->text();
 
-  newRecipe->recipeText = preparationEdit->toPlainText();
-  newRecipe->presentationText = presentationEdit->toPlainText();
-  newRecipe->remarks = remarksEdit->toPlainText();
+	newRecipe->courses.insert(courseEdit->currentText());
+	newRecipe->cusines.insert(cusineEdit->currentText());
 
-  newRecipe->outCalories = caloriesEdit->value();
-  newRecipe->outWeight = weightEdit->value();
-  newRecipe->outPortions = portionsEdit->value();
+	newRecipe->recipeText = preparationEdit->toPlainText();
+	newRecipe->presentationText = presentationEdit->toPlainText();
+	newRecipe->remarks = remarksEdit->toPlainText();
 
-  newRecipe->ingredients = ingredientsEdit->getIngredients();
+	newRecipe->outCalories = caloriesEdit->value();
+	newRecipe->outWeight = weightEdit->value();
+	newRecipe->outPortions = portionsEdit->value();
 
-  return newRecipe;
+	newRecipe->ingredients = ingredientsEdit->getIngredients();
+
+	return newRecipe;
 }
 
-
 void RecipeEditTab::emitRequestSaveRecipe(){
-  emit requestSaveRecipe(collectNewRecipe());
+	if(auto recipe = collectNewRecipe()){
+		emit requestSaveRecipe(recipe);
+	}
 }
 
 void RecipeEditTab::emitRequestDeleteRecipe(){
-  emit requestDeleteRecipe(openedRecipe);
+	emit requestDeleteRecipe(openedRecipe);
 }
 
 // TODO maybe think about not passing full Request values
