@@ -93,7 +93,6 @@ public:
 class AddResponse : public Response {
 private:
 	static const int responseTag = 3;
-	// TODO ask server for returning newly created ID
 	unsigned int settedID{0};
 	inline unsigned int getID() const { return settedID; }
 public:

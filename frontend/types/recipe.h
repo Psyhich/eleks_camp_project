@@ -36,10 +36,6 @@ public:
 	Recipe(unsigned int recipeID);
 
 	Recipe() : hasInitializedID(false) {}
-
-	// TODO maybe move this functions to connections namespace,
-	// TODO They only polute includes and class, but needed only in connection namespace
-
 };
 
 }
