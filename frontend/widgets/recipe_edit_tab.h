@@ -14,7 +14,7 @@
 #include "ingredients_edit_widget.h"
 
 class RecipeEditTab : public QScrollArea {
-Q_OBJECT
+	Q_OBJECT
 private:
 	QSharedPointer<BaseTypes::Recipe> openedRecipe;
 
@@ -38,10 +38,18 @@ private:
 	QPushButton *deleteButon;
 
 	// This function is needed because we don't need to mutate the original edited recipe
-	QSharedPointer<BaseTypes::Recipe> collectNewRecipe();
+	QSharedPointer<BaseTypes::Recipe> collectNewRecipe() const;
 
+	// Emitters
 	void emitRequestSaveRecipe();
 	void emitRequestDeleteRecipe();
+
+	void emitRequestCloseTab();
+
+	// Construction functions
+	QLayout* createForm() noexcept;
+	QLayout* createTextPannels() noexcept;
+	QLayout* createBottomPanel() noexcept;
 
 public:
 	RecipeEditTab(QSharedPointer<BaseTypes::Recipe> recipeToOpen=nullptr,
@@ -52,6 +60,7 @@ public:
 signals:
 	void requestSaveRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSave);
 	void requestDeleteRecipe(QSharedPointer<BaseTypes::Recipe> recipeToDelete);
+	void requestCloseTab(QWidget *tabAdress);
 
 };
 

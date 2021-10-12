@@ -20,10 +20,11 @@ signals:
 public slots:
 	void openRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
 	void editRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
-	void toggleFavoriteRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
-	void addToFavorites(unsigned int recipeID);
+
+	void toggleFavoriteRecipe(unsigned int recipeToFavorite);
 private slots:
 	void closeRecipe(int tabID);
+	void closeTab(QWidget *tabToClose);
 	void saveRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSave);
 	void deleteRecipe(QSharedPointer<BaseTypes::Recipe> recipeToDelete);
 };

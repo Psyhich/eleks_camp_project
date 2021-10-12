@@ -19,7 +19,7 @@ TabManager::TabManager(QWidget* parrent) : QTabWidget(parrent) {
 	QObject::connect(searchTab, &SearchTab::requestOpenRecipe, this, &TabManager::openRecipe);
 	QObject::connect(searchTab, &SearchTab::requestEditRecipe, this, &TabManager::editRecipe);
 	// Connecting add to favorites signal
-	QObject::connect(searchTab, &SearchTab::requestFavoriteRecipe, this, &TabManager::addToFavorites);
+	QObject::connect(searchTab, &SearchTab::requestFavoriteRecipe, this, &TabManager::toggleFavoriteRecipe);
 }
 
 void TabManager::openRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen){
@@ -31,8 +31,12 @@ void TabManager::closeRecipe(int tabID){
   removeTab(tabID);
 }
 
-void TabManager::addToFavorites(unsigned int recipeID){
-	FavoritesManager::getManager().toggleFavorite(recipeID);
+void TabManager::closeTab(QWidget *tabToClose) {
+  tabToClose->deleteLater();
+}
+
+void TabManager::toggleFavoriteRecipe(unsigned int recipeToFavorite) {
+	FavoritesManager::getManager().toggleFavorite(recipeToFavorite);
 }
 
 void TabManager::editRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen){
@@ -40,6 +44,7 @@ void TabManager::editRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen){
 
   QObject::connect(editTab, &RecipeEditTab::requestSaveRecipe, this, &TabManager::saveRecipe);
   QObject::connect(editTab, &RecipeEditTab::requestDeleteRecipe, this, &TabManager::deleteRecipe);
+  QObject::connect(editTab, &RecipeEditTab::requestCloseTab, this, &TabManager::closeTab);
 
   addTab(editTab, recipeToOpen.isNull() ? "New Recipe" : recipeToOpen->name);
   editTab->populateInputs(Connections::ConnectionManager::getManager().getTags());

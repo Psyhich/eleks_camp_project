@@ -1,5 +1,6 @@
 #include <QVBoxLayout>
 #include <QComboBox>
+#include <QScrollBar>
 
 #include "row_holder.h"
 
@@ -12,7 +13,9 @@ RowHolder::RowHolder(QWidget *parrent) : QScrollArea(parrent) {
 	QVBoxLayout *mainLayout = new QVBoxLayout(widget());
 
 	addButton = new QPushButton("+", widget());
-	mainLayout->addWidget(addButton, 0, Qt::AlignmentFlag::AlignRight);
+	mainLayout->addWidget(addButton, 1,
+						  Qt::AlignRight | Qt::AlignBottom);
+
 	widget()->setLayout(mainLayout);
 
 	QObject::connect(addButton, &QPushButton::clicked, this, &RowHolder::addRow);
@@ -24,11 +27,19 @@ void RowHolder::addRow() {
   // Adding row to the end of all rows, but moving add button to the end
   widget()->layout()->removeWidget(addButton);
   widget()->layout()->addWidget(newCreatedRow);
-  widget()->layout()->addWidget(addButton);
+  widget()->layout()->setAlignment(newCreatedRow, Qt::AlignTop);
 
-  QObject::connect(newCreatedRow, &RowDisplay::deletePressed, this, &RowHolder::removeRow);
+  // Reading addButton with proper alignment
+  widget()->layout()->addWidget(addButton);
+  widget()->layout()->setAlignment(addButton,
+							   Qt::AlignRight | Qt::AlignBottom);
+
+  QObject::connect(newCreatedRow, &RowDisplay::deletePressed,
+				   this, &RowHolder::removeRow);
 
   rows.append(newCreatedRow);
+
+ verticalScrollBar()->setValue(verticalScrollBar()->maximum() + 1000);
 }
 
 void RowHolder::removeRow(RowDisplay* rowToRemove) {

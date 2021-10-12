@@ -10,18 +10,19 @@ IngredientEditRow::IngredientEditRow(
 
 	ingredientEdit = new QComboBox(this);
 		ingredientEdit->setEditable(true);
-		ingredientEdit->setDuplicatesEnabled(false);
+		ingredientEdit->setDuplicatesEnabled(true);
 	mainLayout->addWidget(ingredientEdit, 3);
 
 
 	ingredientCountEdit = new QDoubleSpinBox(this);
 		ingredientCountEdit->setMinimum(0);
+		ingredientCountEdit->setMaximum(10000);
 	mainLayout->addWidget(ingredientCountEdit, 3);
 
 
 	unitEdit = new QComboBox(this);
 		unitEdit->setEditable(true);
-		unitEdit->setDuplicatesEnabled(false);
+		unitEdit->setDuplicatesEnabled(true);
 	mainLayout->addWidget(unitEdit, 3);
 
 	QPushButton *closeButton = new QPushButton("-", this);
