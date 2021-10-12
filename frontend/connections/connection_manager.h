@@ -27,7 +27,7 @@ namespace Connections {
 
 		BaseTypes::Responses::TagsResponse getTags();
 
-		bool sendRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSend);
+		unsigned int sendRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSend);
 		QSharedPointer<QVector<QSharedPointer<BaseTypes::Recipe>>> runSearch(QSharedPointer<BaseTypes::Requests::SearchQuery> query);
 		bool removeRecipe(unsigned int recipeID);
 		bool editRecipe(QSharedPointer<BaseTypes::Recipe> editedRecipe);

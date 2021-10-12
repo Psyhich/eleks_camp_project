@@ -26,13 +26,13 @@ void ConnectionManager::toggleToRemote(QString address, quint16 port) {
 	}
 }
 
-bool ConnectionManager::sendRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSend){
+unsigned int ConnectionManager::sendRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSend){
   if(auto connection = currentConnection.lock()){
 	QSharedPointer<BaseTypes::Requests::AddRecipeRequest>
 		request(new BaseTypes::Requests::AddRecipeRequest(recipeToSend));
-	return  connection->postRecipe(request).isSuccessfull();
+	return connection->postRecipe(request).getSettedID();
   }
-  return false;
+  return 0;
 }
 
 QSharedPointer<QVector<QSharedPointer<BaseTypes::Recipe>>> ConnectionManager::runSearch(QSharedPointer<BaseTypes::Requests::SearchQuery> query){

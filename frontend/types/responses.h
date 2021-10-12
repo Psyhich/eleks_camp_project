@@ -101,6 +101,7 @@ public:
 
 	void translate(const server::responses::ResponseVar&& responseToTranslate) override;
 	void translateFromJSON(const QJsonObject& json) override;
+	inline unsigned int getSettedID() { return settedID; }
 
 	~AddResponse() override {}
 };

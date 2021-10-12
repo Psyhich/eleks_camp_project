@@ -172,6 +172,7 @@ AddResponse::AddResponse(unsigned int clientID, unsigned newRecipeID) : Response
 void AddResponse::translate(const server::responses::ResponseVar&& responseToTranslate) {
 	auto addResp = Response::extractType<server::responses::AddSuccess>(responseToTranslate);
 	setClientID(addResp.getClientID());
+	settedID = addResp.getRecipeID();
 }
 void AddResponse::translateFromJSON(const QJsonObject& json) {
   if(json["responseTag"].toInt() != responseTag) {
