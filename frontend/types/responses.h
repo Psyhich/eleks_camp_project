@@ -8,6 +8,7 @@
 #include <QSharedPointer>
 #include <QJsonObject>
 #include <QDebug>
+#include <stdexcept>
 
 #include "recipe.h"
 #include "../server/responses/include/responses.h"

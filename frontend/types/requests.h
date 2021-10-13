@@ -8,7 +8,7 @@
 #include <QJsonObject>
 
 #include "../server/requests/include/requests.h"
-#include "responses.h"
+#include "recipe.h"
 
 
 namespace BaseTypes::Requests {

@@ -5,7 +5,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 
-#include "types/requests.h"
+#include "types/responses.h"
 #include "ingredients_filter_widget.h"
 
 class CriteriaWidget : public QWidget {

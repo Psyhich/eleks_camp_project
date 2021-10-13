@@ -9,7 +9,7 @@
 #include <QPushButton>
 
 #include "types/recipe.h"
-#include "types/requests.h"
+#include "types/responses.h"
 
 #include "ingredients_edit_widget.h"
 
