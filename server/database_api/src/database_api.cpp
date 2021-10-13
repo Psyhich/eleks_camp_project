@@ -398,9 +398,9 @@ namespace dbAPI {
                     "SELECT unit_name\n"
                     "FROM units\n"
                     "LEFT JOIN recipe_ingredients ON recipe_ingredients.unit_id = units.unit_id\n"
+                    "AND unit_name <> \'" + string(defaultUnit)) + "\'\n"
                     "GROUP BY unit_name\n"
-                    "HAVING count(recipe_ingredients.unit_id) = 0)\n"
-                    "AND unit_name <> " + string(defaultUnit));
+                    "HAVING count(recipe_ingredients.unit_id) = 0)\n";
         }
         catch (std::exception &e) {
             std::cerr << "error: cannot remove unused elements" << std::endl;
