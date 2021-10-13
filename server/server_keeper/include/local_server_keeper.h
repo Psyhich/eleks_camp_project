@@ -1,6 +1,8 @@
 #ifndef LOCAL_SERVER_KEEPER
 #define LOCAL_SERVER_KEEPER
 
+#include <string>
+
 #include "database_api.h"
 #include "handler.h"
 #include "initializer.h"
@@ -17,16 +19,17 @@ namespace server{
 
 class LocalServerKeeper {
     dbAPI::Database dataBase;
-    initializer::Initializer initializer{dataBase};
-    searcher::Searcher searcher{dataBase};
-    modifier::Modifier modifier{dataBase};
-    handler::Handler handler{initializer, searcher, modifier};
+    initializer::Initializer initializer;
+    searcher::Searcher searcher;
+    modifier::Modifier modifier;
+    handler::Handler handler;
     localex::LocalExchange localExchange;
-    receiver::LocalReceiver receiver{localExchange};
-    sender::LocalSender sender{localExchange};
-    server::Server server{handler, receiver, sender};
+    receiver::LocalReceiver receiver;
+    sender::LocalSender sender;
+    server::Server server;
 public:
     LocalServerKeeper();
+    LocalServerKeeper(const std::string& dbPath);
     LocalServerKeeper(const LocalServerKeeper&) = delete;
     ~LocalServerKeeper();
 
