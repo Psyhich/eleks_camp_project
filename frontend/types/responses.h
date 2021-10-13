@@ -1,5 +1,5 @@
-#ifndef RESPONSES_H
-#define RESPONSES_H
+#ifndef FRONT_RESPONSES_H
+#define FRONT_RESPONSES_H
 
 #include <QMap>
 #include <QString>
