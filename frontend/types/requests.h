@@ -47,7 +47,7 @@ public:
 
 class AddRecipeRequest : public Request {
 private:
-	QSharedPointer<Recipe> recipeToAdd;
+	QSharedPointer<BaseTypes::Recipe> recipeToAdd;
 
 	static const int requestTag = 3;
 public:
@@ -60,7 +60,7 @@ public:
 };
 
 class EditRecipeRequest : public Request {
-	QSharedPointer<Recipe> editedRecipe;
+	QSharedPointer<BaseTypes::Recipe> editedRecipe;
 
 	static const int requestTag = 4;
   public:

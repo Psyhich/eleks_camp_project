@@ -1,9 +1,14 @@
+#include <QStandardPaths>
+
 #include "connectors.h"
 #include "../server/recipe/include/recipe.h"
 
 using namespace Connections;
 
-LocalConnector::LocalConnector() : currentLocal(server::LocalServerKeeper()), exchanger(currentLocal.getLocalExchange()){
+LocalConnector::LocalConnector() :
+  currentLocal(server::LocalServerKeeper((QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)[0] + "/cookbook.db").toStdString())),
+  exchanger(currentLocal.getLocalExchange()){
+
 	// NOTE reqquest clientID should be 1!!
 }
 
