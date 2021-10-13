@@ -28,12 +28,12 @@ BaseTypes::Recipe* translateToRecipeFromJson(const QJsonObject &json){
 	if(ingredients.count() == ingredientCounts.count() &&
 	   ingredients.count() == ingredientUnits.count()){
 	  for(int index = 0; index < ingredients.count(); index++){
-		recipe->ingredients.insert({{
+		recipe->ingredients.insert(
 			ingredients[index].toString(),
 			BaseTypes::Recipe::IngredientAmount{
 							ingredientCounts[index].toDouble(),
 							ingredientUnits[index].toString()}
-		}});
+		);
 	  }
 
 	}

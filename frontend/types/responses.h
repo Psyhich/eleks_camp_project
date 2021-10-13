@@ -7,6 +7,7 @@
 #include <QVector>
 #include <QSharedPointer>
 #include <QJsonObject>
+#include <QDebug>
 
 #include "recipe.h"
 #include "../server/responses/include/responses.h"
