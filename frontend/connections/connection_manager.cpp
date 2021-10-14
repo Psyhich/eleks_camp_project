@@ -20,7 +20,7 @@ void ConnectionManager::toggleToLocal() {
 }
 
 void ConnectionManager::toggleToRemote(QString address, quint16 port) {
-	if(!remoteConnection.isNull()){
+    if(remoteConnection.isNull()){
 		remoteConnection = QSharedPointer<IConnector>(new RemoteConnector(address, port));
 		currentConnection = remoteConnection;
 	}
