@@ -4,6 +4,13 @@
 
 using namespace BaseTypes::Requests;
 
+const int Error::requestTag = 0;
+const int GetInitDataRequest::requestTag = 1;
+const int SearchQuery::requestTag = 2;
+const int AddRecipeRequest::requestTag = 3;
+const int EditRecipeRequest::requestTag = 4;
+const int RemoveRecipeRequest::requestTag = 5;
+
 // Recipe translation functions
 QJsonObject translateRecipToJson(const BaseTypes::Recipe& recipeToTranslate){
 	QJsonObject recipe;
