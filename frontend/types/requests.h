@@ -29,7 +29,7 @@ class SearchQuery : public Request {
 	QList<QString> ingredients;
 	bool searchExclusively;
 
-	static const int requestTag = 2;
+	static const int requestTag;
 public:
 	SearchQuery(QSet<unsigned int> _favoriteIDs, QString _name, QSet<QString> _courses,
 				 QSet<QString> _cuisines, QList<QString> _ingredients, bool _searchExclusively) :
@@ -49,7 +49,7 @@ class AddRecipeRequest : public Request {
 private:
 	QSharedPointer<BaseTypes::Recipe> recipeToAdd;
 
-	static const int requestTag = 3;
+	static const int requestTag;
 public:
 	AddRecipeRequest(QSharedPointer<Recipe> _recipeToAdd) : recipeToAdd(_recipeToAdd) {}
 
@@ -62,7 +62,7 @@ public:
 class EditRecipeRequest : public Request {
 	QSharedPointer<BaseTypes::Recipe> editedRecipe;
 
-	static const int requestTag = 4;
+	static const int requestTag;
   public:
 	EditRecipeRequest(QSharedPointer<Recipe> _editedRecipe) : editedRecipe(_editedRecipe) {}
 
@@ -75,7 +75,7 @@ class EditRecipeRequest : public Request {
 class RemoveRecipeRequest : public Request {
 	unsigned int recipeIDToRemove;
 
-	const static int requestTag = 5;
+	const static int requestTag;
 public:
 	RemoveRecipeRequest(unsigned int _recipeIDToRemove) : recipeIDToRemove(_recipeIDToRemove) {}
 
@@ -86,7 +86,7 @@ public:
 };
 
 class GetInitDataRequest : public Request {
-	static const int requestTag = 1;
+	static const int requestTag;
 public:
 	QJsonObject toJSON() override;
 	server::requests::RequestVar translate() override;
@@ -95,7 +95,7 @@ public:
 };
 
 class Error : public Request {
-	static const int requestTag = 0;
+	static const int requestTag;
 public:
 	QString errorMessage;
 	Error(QString msg="") : errorMessage(msg){ }
