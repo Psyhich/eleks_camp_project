@@ -1,7 +1,7 @@
 #include <QStandardPaths>
 
 #include "connectors.h"
-#include "../server/recipe/include/recipe.h"
+#include "recipe.h"
 
 using namespace Connections;
 

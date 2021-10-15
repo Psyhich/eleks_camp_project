@@ -6,7 +6,7 @@
 #include <QSharedPointer>
 
 #include "search_tab.h"
-#include "types/recipe.h"
+#include "front_recipe.h"
 
 class TabManager : public QTabWidget {
 private:
@@ -20,11 +20,12 @@ signals:
 public slots:
 	void openRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
 	void editRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
+	void queryRecipes();
 
 	void toggleFavoriteRecipe(unsigned int recipeToFavorite);
+	void closeTab(QWidget *tabToClose);
 private slots:
 	void closeRecipe(int tabID);
-	void closeTab(QWidget *tabToClose);
 	void saveRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSave);
 	void deleteRecipe(QSharedPointer<BaseTypes::Recipe> recipeToDelete);
 };

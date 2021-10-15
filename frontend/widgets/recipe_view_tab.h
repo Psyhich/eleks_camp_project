@@ -8,7 +8,7 @@
 #include <QSpinBox>
 #include <QTableWidget>
 
-#include "types/recipe.h"
+#include "front_recipe.h"
 
 class RecipeViewTab : public QScrollArea {
 	Q_OBJECT

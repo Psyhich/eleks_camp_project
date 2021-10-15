@@ -1,7 +1,7 @@
 #include <QVBoxLayout>
 
 #include "search_tab.h"
-#include "connections/connection_manager.h"
+#include "connection_manager.h"
 
 
 SearchTab::SearchTab(QWidget *parent) : QWidget(parent) {

@@ -4,9 +4,9 @@
 #include <QList>
 #include <QSharedPointer>
 
-#include "recipe.h"
-#include "types/responses.h"
-#include "types/requests.h"
+#include "front_recipe.h"
+#include "front_responses.h"
+#include "front_requests.h"
 
 namespace Connections {
 	class IConnector {

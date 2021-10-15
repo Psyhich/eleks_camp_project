@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "types/requests.h"
+#include "front_requests.h"
 #include "search_widget.h"
 #include "criteria_widget.h"
 

@@ -169,19 +169,19 @@ void RecipeEditTab::emitRequestCloseTab(){
 }
 
 // TODO maybe think about not passing full Request values
-void RecipeEditTab::populateInputs(BaseTypes::Responses::TagsResponse values) {
+void RecipeEditTab::populateInputs(const BaseTypes::TagsHolder& values) {
 	courseEdit->clear();
-	courseEdit->addItems(values.getCourses()->values());
+	courseEdit->addItems(values.courses.values());
 	if(openedRecipe->courses.values().count() > 0){
 		courseEdit->setCurrentText(openedRecipe->courses.values()[0]);
 	}
 
 	cusineEdit->clear();
-	cusineEdit->addItems(values.getCusines()->values());
+	cusineEdit->addItems(values.cusines.values());
 	if(openedRecipe->cusines.values().count() > 0){
 		cusineEdit->setCurrentText(openedRecipe->cusines.values()[0]);
 	}
 
-	ingredientsEdit->updateIngredientsSet(*values.getIngredients());
-	ingredientsEdit->updateUnitsSet(*values.getUnits());
+	ingredientsEdit->updateIngredientsSet(values.ingredients);
+	ingredientsEdit->updateUnitsSet(values.units);
 }

@@ -9,9 +9,11 @@
 #include <QJsonObject>
 #include <QDebug>
 #include <stdexcept>
+#include <optional>
 
-#include "recipe.h"
-#include "../server/responses/include/responses.h"
+#include "front_recipe.h"
+#include "response_structs.h"
+#include "responses.h"
 
 namespace BaseTypes::Responses {
 
@@ -28,13 +30,12 @@ public:
 	virtual void translate(const server::responses::ResponseVar&& response) = 0;
 	virtual void translateFromJSON(const QJsonObject& json) = 0;
 
-	template<class T> static const T& extractType(server::responses::ResponseVar response){
+	template<class T> static std::optional<T> extractType(server::responses::ResponseVar response){
 		try {
-			T& extracted = std::get<T>(response);
+			T extracted = std::move(std::get<T>(response));
 			return extracted;
-		}  catch (const std::bad_variant_access& ex()) {
-			qDebug() << "Tried to reach wrong variant(" << typeid(T).name() << ")\n";
-			throw std::runtime_error("Tried to reach wrong variant");
+		}  catch (const std::bad_variant_access&) {
+			return std::nullopt;
 		}
 	}
 
@@ -58,18 +59,13 @@ public:
 class TagsResponse : public Response {
 private:
 	static const int responseTag = 1;
+	TagsHolder tags;
+
 	// I use pointers here to easily move values and not copy them
-	QSharedPointer<QSet<QString>> courses;
-	QSharedPointer<QSet<QString>> cusines;
-	QSharedPointer<QSet<QString>> ingredients;
-	QSharedPointer<QSet<QString>> units;
 public:
 	TagsResponse(unsigned int clientID);
 
-	QSharedPointer<QSet<QString>> getCourses();
-	QSharedPointer<QSet<QString>> getCusines();
-	QSharedPointer<QSet<QString>> getIngredients();
-	QSharedPointer<QSet<QString>> getUnits();
+	TagsHolder&& getTags();
 
 	void translate(const server::responses::ResponseVar&&) override;
 	void translateFromJSON(const QJsonObject& json) override;

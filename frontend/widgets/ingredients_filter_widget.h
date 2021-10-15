@@ -13,21 +13,21 @@ class IngredientRowFilter : public RowDisplay {
 private:
 	QComboBox *ingredientFilter;
 public:
-	void updateVariants(QSharedPointer<QSet<QString>> newVariants);
+	void updateVariants(const QSet<QString>& newVariants);
 	QVector<QString> getStrings() override;
-	IngredientRowFilter(QSharedPointer<QSet<QString>> variants, QWidget *parrent=nullptr);
+	IngredientRowFilter(const QSet<QString>& variants, QWidget *parrent=nullptr);
 signals:
 };
 
 class IngredientsFilterWidget : public RowHolder {
 Q_OBJECT
 private:
-	QSharedPointer<QSet<QString>> filterVariants;
+	QSet<QString> filterVariants;
 public slots:
-	void updateFilters(QSharedPointer<QSet<QString>> newVariants);
+	void updateFilters(const QSet<QString>& newVariants);
 
 public:
-	IngredientsFilterWidget(QSharedPointer<QSet<QString>> variants, QWidget *parrent = nullptr);
+	IngredientsFilterWidget(const QSet<QString>& variants, QWidget *parrent = nullptr);
 
 	RowDisplay *createRow() override;
 

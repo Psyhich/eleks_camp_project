@@ -1,6 +1,6 @@
 #include <QJsonArray>
 
-#include "requests.h"
+#include "front_requests.h"
 
 using namespace BaseTypes::Requests;
 
@@ -87,17 +87,17 @@ QJsonObject SearchQuery::toJSON() {
 		}
 		criteria["favoriteIDs"] = favoriteIDs;
 
-		criteria["nameSubstring"] = searchSubtring;
-		criteria["course"] = courses.values()[0];
-		criteria["cuisine"] = cusines.values()[0];
+		criteria["nameSubstring"] = searchCriteria.searchSubtring;
+		criteria["course"] = searchCriteria.courses.values()[0];
+		criteria["cuisine"] = searchCriteria.cusines.values()[0];
 
 		QJsonArray ingredientsSubset;
-		for(auto ingredient : ingredients) {
+		for(auto ingredient : searchCriteria.ingredients) {
 		  ingredientsSubset.append(ingredient);
 		}
 		criteria["ingredientsSubset"] = ingredientsSubset;
 
-		criteria["exclusiveIngredients"] = searchExclusively;
+		criteria["exclusiveIngredients"] = searchCriteria.searchExclusively;
 
 	request["searchCriteria"] = criteria;
 
@@ -106,30 +106,30 @@ QJsonObject SearchQuery::toJSON() {
 
 server::requests::RequestVar SearchQuery::translate() {
 	std::set<unsigned int> favoriteIDs;
-	for(auto id : this->favoriteIDs){
+	for(auto id : favoriteIDs){
 	  favoriteIDs.insert(id);
 	}
 
 	std::string course;
-	if(courses.size() > 0) {
-	  course = courses.values()[0].toLower().toStdString();
+	if(searchCriteria.courses.size() > 0) {
+	  course = searchCriteria.courses.values()[0].toLower().toStdString();
 	}
 	std::string cusine;
-	if(cusines.size() > 0) {
-	  cusine = cusines.values()[0].toLower().toStdString();
+	if(searchCriteria.cusines.size() > 0) {
+	  cusine = searchCriteria.cusines.values()[0].toLower().toStdString();
 	}
 	std::set<std::string> ingredients;
-	for(auto ingredient : this->ingredients){
+	for(auto ingredient : searchCriteria.ingredients){
 		ingredients.insert(ingredient.toLower().toStdString());
 	}
 
 	return server::requests::Find(server::searcher::Criteria(
 					favoriteIDs,
-					searchSubtring.toLower().toStdString(),
+					searchCriteria.searchSubtring.toLower().toStdString(),
 					course,
 					cusine,
 					ingredients,
-					searchExclusively
+					searchCriteria.searchExclusively
 				), 1);
 }
 

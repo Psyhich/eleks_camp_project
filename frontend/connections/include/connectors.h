@@ -2,8 +2,8 @@
 #define CONNECTORS_H
 
 #include "i_connector.h"
-#include "../server/server_keeper/include/local_server_keeper.h"
-#include "../server/local_exchange/include/i_frontend_exchange.h"
+#include "local_server_keeper.h"
+#include "i_frontend_exchange.h"
 
 namespace Connections {
 class LocalConnector : public Connections::IConnector {

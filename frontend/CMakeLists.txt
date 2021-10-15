@@ -19,6 +19,9 @@ find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR}Network REQUIRED)
 
+add_subdirectory(types/)
+add_subdirectory(connections/)
+
 set(PROJECT_SOURCES
         # Project sources
 	main.cpp
@@ -64,28 +67,12 @@ set(PROJECT_SOURCES
 	widgets/row_holder.h
 	widgets/row_holder.cpp
 	# Base data types
-	types/recipe.h
-	types/recipe.cpp
-
-	types/requests.h
-	types/requests.cpp
-
-	types/responses.h
-	types/responses.cpp
 
 	types/favorites_manager.h
 	types/favorites_manager.cpp
 	# Connection and network
-	connections/connection_manager.h
-	connections/connection_manager.cpp
-
-	connections/i_connector.h
-
-	connections/connectors.h
-	connections/local_connector.cpp
-	connections/remote_connector.cpp
 	# Resources
-	icon_favorite.qrc
+	resources.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -105,7 +92,9 @@ else()
     endif()
 endif()
 
-target_include_directories(project-front-desktop PUBLIC ${SERVER_KEEPER_INCLUDE_DIRECTORIES})
+target_link_libraries(project-front-desktop PUBLIC types)
+target_link_libraries(project-front-desktop PUBLIC connections)
+
 target_link_libraries(project-front-desktop PUBLIC server_keeper)
 
 target_link_libraries(project-front-desktop PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)

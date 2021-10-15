@@ -5,7 +5,8 @@
 #include <QCheckBox>
 #include <QComboBox>
 
-#include "types/responses.h"
+#include "response_structs.h"
+#include "request_structs.h"
 #include "ingredients_filter_widget.h"
 
 class CriteriaWidget : public QWidget {
@@ -29,12 +30,12 @@ public:
 
 	CriteriaWidget(QWidget *parent = nullptr);
 
-	NotFullRequest getNotFullRequest();
+	bool partlyPopulateQuery(BaseTypes::Query &queryToPopulate);
 
 signals:
 
 public slots:
-	void updateTags(BaseTypes::Responses::TagsResponse tagsToUpdate);
+	void updateTags(const BaseTypes::TagsHolder& tagsToUpdate);
 };
 
 #endif // CRITERIA_WIDGET_H

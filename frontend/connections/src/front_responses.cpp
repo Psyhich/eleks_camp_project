@@ -1,8 +1,8 @@
 #include <QVector>
 #include <QJsonArray>
 
-#include "responses.h"
-#include "../server/recipe/include/recipe.h"
+#include "front_responses.h"
+#include "recipe.h"
 
 using namespace BaseTypes::Responses;
 
@@ -72,10 +72,12 @@ Response::~Response(){ }
 
 // ErrorResponse class
 void ErrorResponse::translate(const server::responses::ResponseVar&& response) {
-	auto err = Response::extractType<server::responses::Error>(response);
-	setClientID(err.getClientID());
-	this->message = QString::fromStdString(err.getMessage());
+	if(auto err = Response::extractType<server::responses::Error>(response)){
+		setClientID(err->getClientID());
+		message = QString::fromStdString(err->getMessage());
+	}
 }
+
 void ErrorResponse::translateFromJSON(const QJsonObject& json) {
   if(json["responseTag"] != responseTag) {
 	return;
@@ -84,28 +86,24 @@ void ErrorResponse::translateFromJSON(const QJsonObject& json) {
 }
 
 // TagsResponse class
-TagsResponse::TagsResponse(unsigned int clientID):
-  Response(clientID), courses{new QSet<QString>()}, cusines{new QSet<QString>()},
-  ingredients{new QSet<QString>()}, units{new QSet<QString>()}{ }
-QSharedPointer<QSet<QString>> TagsResponse::getCourses() { return courses; }
-QSharedPointer<QSet<QString>> TagsResponse::getCusines() { return cusines; }
-QSharedPointer<QSet<QString>> TagsResponse::getIngredients() { return ingredients; }
-QSharedPointer<QSet<QString>> TagsResponse::getUnits() { return units; }
+TagsResponse::TagsResponse(unsigned int clientID) : Response(clientID){ }
+BaseTypes::TagsHolder&& TagsResponse::getTags() { return std::move(tags); }
 
 void TagsResponse::translate(const server::responses::ResponseVar&& response) {
-	auto tags = Response::extractType<server::responses::GetInitDataResult>(response);
-	setClientID(tags.getClientID());
-	for(auto course : tags.getInitData().getFullCourseSet()){
-	  courses->insert(QString::fromStdString(course));
-	}
-	for(auto cusine : tags.getInitData().getFullCuisineSet()){
-	  cusines->insert(QString::fromStdString(cusine));
-	}
-	for(auto ingredient : tags.getInitData().getFullIngredientSet()){
-	  ingredients->insert(QString::fromStdString(ingredient));
-	}
-	for(auto unit : tags.getInitData().getFullUnitSet()){
-	  units->insert(QString::fromStdString(unit));
+	if(auto tags = Response::extractType<server::responses::GetInitDataResult>(response)){
+		setClientID(tags->getClientID());
+		for(auto course : tags->getInitData().getFullCourseSet()){
+		  this->tags.courses.insert(QString::fromStdString(course));
+		}
+		for(auto cusine : tags->getInitData().getFullCuisineSet()){
+		  this->tags.cusines.insert(QString::fromStdString(cusine));
+		}
+		for(auto ingredient : tags->getInitData().getFullIngredientSet()){
+		  this->tags.ingredients.insert(QString::fromStdString(ingredient));
+		}
+		for(auto unit : tags->getInitData().getFullUnitSet()){
+		  this->tags.units.insert(QString::fromStdString(unit));
+		}
 	}
 }
 void TagsResponse::translateFromJSON(const QJsonObject& json) {
@@ -114,22 +112,22 @@ void TagsResponse::translateFromJSON(const QJsonObject& json) {
   }
   QJsonArray currentArray = json["initData"]["fullCourseSet"].toArray();
   for(auto course : currentArray){
-	courses->insert(course.toString());
+	tags.courses.insert(course.toString());
   }
 
   currentArray = json["initData"]["fullCuisineSet"].toArray();
   for(auto cusine : currentArray){
-	cusines->insert(cusine.toString());
+	tags.cusines.insert(cusine.toString());
   }
 
   currentArray = json["initData"]["fullUnitSet"].toArray();
   for(auto unit : currentArray){
-	units->insert(unit.toString());
+	tags.units.insert(unit.toString());
   }
 
   currentArray = json["initData"]["fullIngredientSet"].toArray();
   for(auto ingredient : currentArray){
-	ingredients->insert(ingredient.toString());
+	tags.ingredients.insert(ingredient.toString());
   }
   setClientID(1); // Setting new client id to show that request is succesfull
 
@@ -142,16 +140,17 @@ SearchResponse::SearchResponse(unsigned int clientID) : Response(clientID),
 QSharedPointer<QVector<QSharedPointer<BaseTypes::Recipe>>> SearchResponse::getRecipes() { return foundRecipes; }
 
 void SearchResponse::translate(const server::responses::ResponseVar&& responseToTranslate){
-	auto searchResult = Response::extractType<server::responses::FindResult>(responseToTranslate);
-	setClientID(searchResult.getClientID());
+	if(auto searchResult = Response::extractType<server::responses::FindResult>(responseToTranslate)){
+		setClientID(searchResult->getClientID());
 
-	QSharedPointer<Recipe> currentRecipe;
-	for(auto recipe : searchResult.getResults().getFoundRecipes()){
-	  currentRecipe = QSharedPointer<BaseTypes::Recipe>(translateRecipeFromServer(recipe));
-	  foundRecipes->append(currentRecipe);
+		QSharedPointer<Recipe> currentRecipe;
+		for(auto recipe : searchResult->getResults().getFoundRecipes()){
+		  currentRecipe = QSharedPointer<BaseTypes::Recipe>(translateRecipeFromServer(recipe));
+		  foundRecipes->append(currentRecipe);
+		}
+		// Shrinking recipes because we wont add more
+		foundRecipes->shrink_to_fit();
 	}
-	// Shrinking recipes because we wont add more
-	foundRecipes->shrink_to_fit();
 }
 void SearchResponse::translateFromJSON(const QJsonObject& json) {
   if(json["responseTag"].toInt() != responseTag) {
@@ -170,9 +169,10 @@ void SearchResponse::translateFromJSON(const QJsonObject& json) {
 // AddResponse class
 AddResponse::AddResponse(unsigned int clientID, unsigned newRecipeID) : Response(clientID), settedID(newRecipeID){}
 void AddResponse::translate(const server::responses::ResponseVar&& responseToTranslate) {
-	auto addResp = Response::extractType<server::responses::AddSuccess>(responseToTranslate);
-	setClientID(addResp.getClientID());
-	settedID = addResp.getRecipeID();
+	if(auto addResp = Response::extractType<server::responses::AddSuccess>(responseToTranslate)) {
+		setClientID(addResp->getClientID());
+		settedID = addResp->getRecipeID();
+	}
 }
 void AddResponse::translateFromJSON(const QJsonObject& json) {
   if(json["responseTag"].toInt() != responseTag) {
@@ -185,8 +185,9 @@ void AddResponse::translateFromJSON(const QJsonObject& json) {
 EditResponse::EditResponse(unsigned int clientID) : Response(clientID) {}
 
 void EditResponse::translate(const server::responses::ResponseVar&& responseToTranslate) {
-	auto addResp = Response::extractType<server::responses::EditSuccess>(responseToTranslate);
-	setClientID(addResp.getClientID());
+	if(auto addResp = Response::extractType<server::responses::EditSuccess>(responseToTranslate)){
+		setClientID(addResp->getClientID());
+	}
 }
 void EditResponse::translateFromJSON(const QJsonObject& json) {
   if(json["responseTag"].toInt() != responseTag) {
@@ -199,8 +200,9 @@ void EditResponse::translateFromJSON(const QJsonObject& json) {
 RemoveResponse::RemoveResponse(unsigned int clientID) : Response(clientID) {}
 
 void RemoveResponse::translate(const server::responses::ResponseVar&& responseToTranslate) {
-	auto addResp = Response::extractType<server::responses::RemoveSuccess>(responseToTranslate);
-	setClientID(addResp.getClientID());
+	if(auto addResp = Response::extractType<server::responses::RemoveSuccess>(responseToTranslate)) {
+	  setClientID(addResp->getClientID());
+	}
 }
 void RemoveResponse::translateFromJSON(const QJsonObject& json) {
   if(json["responseTag"].toInt() != responseTag) {

@@ -4,7 +4,7 @@
 #include "recipe_edit_tab.h"
 
 #include "types/favorites_manager.h"
-#include "connections/connection_manager.h"
+#include "connection_manager.h"
 
 TabManager::TabManager(QWidget* parrent) : QTabWidget(parrent) {
 	searchTab = new SearchTab();
@@ -24,7 +24,8 @@ TabManager::TabManager(QWidget* parrent) : QTabWidget(parrent) {
 
 void TabManager::openRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen){
   RecipeViewTab *recipeTab = new RecipeViewTab(recipeToOpen);
-  addTab(recipeTab, recipeToOpen->name);
+  setCurrentIndex(addTab(recipeTab, recipeToOpen->name));
+
 }
 
 void TabManager::closeRecipe(int tabID){
@@ -46,8 +47,8 @@ void TabManager::editRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen){
   QObject::connect(editTab, &RecipeEditTab::requestDeleteRecipe, this, &TabManager::deleteRecipe);
   QObject::connect(editTab, &RecipeEditTab::requestCloseTab, this, &TabManager::closeTab);
 
-  addTab(editTab, recipeToOpen.isNull() ? "New Recipe" : recipeToOpen->name);
-  editTab->populateInputs(Connections::ConnectionManager::getManager().getTags());
+  setCurrentIndex(addTab(editTab, recipeToOpen.isNull() ? "New Recipe" : recipeToOpen->name));
+  editTab->populateInputs(Connections::ConnectionManager::getManager().getTags().getTags());
 }
 
 void TabManager::saveRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSave){

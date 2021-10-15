@@ -4,7 +4,7 @@
 #include <QSharedPointer>
 #include <QFrame>
 
-#include "types/responses.h"
+#include "front_recipe.h"
 
 // Class that represents single row view for one recipe
 class RecipeRowView : public QFrame {

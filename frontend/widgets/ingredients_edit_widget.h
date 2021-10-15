@@ -8,7 +8,7 @@
 #include <QDoubleSpinBox>
 
 #include "row_holder.h"
-#include "types/recipe.h"
+#include "front_recipe.h"
 
 class IngredientEditRow : public RowDisplay {
 private:

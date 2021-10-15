@@ -7,8 +7,9 @@
 #include <QSharedPointer>
 #include <QJsonObject>
 
-#include "../server/requests/include/requests.h"
-#include "recipe.h"
+#include "requests.h"
+#include "front_recipe.h"
+#include "request_structs.h"
 
 
 namespace BaseTypes::Requests {
@@ -22,21 +23,11 @@ public:
 };
 
 class SearchQuery : public Request {
-	QSet<unsigned int> favoriteIDs;
-	QString searchSubtring;
-	QSet<QString> courses;
-	QSet<QString> cusines;
-	QList<QString> ingredients;
-	bool searchExclusively;
+	Query searchCriteria;
 
 	static const int requestTag = 2;
 public:
-	SearchQuery(QSet<unsigned int> _favoriteIDs, QString _name, QSet<QString> _courses,
-				 QSet<QString> _cuisines, QList<QString> _ingredients, bool _searchExclusively) :
-	  favoriteIDs(_favoriteIDs), searchSubtring(_name),
-	  courses(_courses), cusines(_cuisines),
-	  ingredients(_ingredients), searchExclusively(_searchExclusively) {
-	}
+	SearchQuery(Query&& criteria) : searchCriteria{std::move(criteria)} {}
 
 	QJsonObject toJSON() override;
 	server::requests::RequestVar translate() override;

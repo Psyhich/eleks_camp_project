@@ -3,7 +3,7 @@
 
 #include "search_filters.h"
 #include "types/favorites_manager.h"
-#include "connections/connection_manager.h"
+#include "connection_manager.h"
 
 SearchFilters::SearchFilters(QWidget *parent) : QWidget(parent) {
 	QVBoxLayout* vLayout = new QVBoxLayout(this);
@@ -24,28 +24,22 @@ SearchFilters::SearchFilters(QWidget *parent) : QWidget(parent) {
 }
 
 QSharedPointer<BaseTypes::Requests::SearchQuery> SearchFilters::getFilters(){
-	CriteriaWidget::NotFullRequest notFull = searchCriterias->getNotFullRequest();
+	BaseTypes::Query criterias;
+	bool shouldUseFavorites = searchCriterias->partlyPopulateQuery(criterias);
 	QString searchSubstring = searchBar->getSearchSubstring();
 	QSet<unsigned int> favoriteIDs;
-	if(notFull.searchByFavorites){
+	if(shouldUseFavorites){
 		for(unsigned int id : FavoritesManager::getManager().getFavorites()){
 		  favoriteIDs.insert(id);
 		}
 	}
 
 	return QSharedPointer<BaseTypes::Requests::SearchQuery>(
-		  new BaseTypes::Requests::SearchQuery(
-			favoriteIDs,
-			searchSubstring,
-			{notFull.course},
-			{notFull.cusine},
-			notFull.ingredients.values(),
-			notFull.serchExact
-			));
+		  new BaseTypes::Requests::SearchQuery(std::move(criterias)));
 }
 
 void SearchFilters::fetchUpdates(){
 	auto response = Connections::ConnectionManager::getManager().getTags();
-	searchCriterias->updateTags(response);
+	searchCriterias->updateTags(response.getTags());
 
 }

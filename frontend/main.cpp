@@ -1,5 +1,5 @@
 #include "widgets/mainwindow.h"
-#include "connections/connection_manager.h"
+#include "connection_manager.h"
 
 #include <QApplication>
 #include <QString>

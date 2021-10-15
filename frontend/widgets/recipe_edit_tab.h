@@ -8,8 +8,8 @@
 #include <QDoubleSpinBox>
 #include <QPushButton>
 
-#include "types/recipe.h"
-#include "types/responses.h"
+#include "recipe.h"
+#include "response_structs.h"
 
 #include "ingredients_edit_widget.h"
 
@@ -55,7 +55,7 @@ public:
 	RecipeEditTab(QSharedPointer<BaseTypes::Recipe> recipeToOpen=nullptr,
 				  QWidget *parent = nullptr);
 
-	void populateInputs(BaseTypes::Responses::TagsResponse);
+	void populateInputs(const BaseTypes::TagsHolder& tagsForUpdate);
 
 signals:
 	void requestSaveRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSave);

@@ -5,11 +5,11 @@
 
 
 IngredientRowFilter::IngredientRowFilter(
-	QSharedPointer<QSet<QString>> variants, QWidget *parrent) : RowDisplay(parrent) {
+	const QSet<QString>& variants, QWidget *parrent) : RowDisplay(parrent) {
 	QHBoxLayout *rowLayout = new QHBoxLayout(this);
 
 	ingredientFilter = new QComboBox(this);
-	ingredientFilter->addItems(variants->values());
+	ingredientFilter->addItems(variants.values());
 	rowLayout->addWidget(ingredientFilter, 1);
 
 	QPushButton *closeButton = new QPushButton(this);
@@ -19,21 +19,20 @@ IngredientRowFilter::IngredientRowFilter(
 	setLayout(rowLayout);
 }
 
-void IngredientRowFilter::updateVariants(
-	QSharedPointer<QSet<QString>> newVariants){
+void IngredientRowFilter::updateVariants(const QSet<QString>& newVariants) {
 	ingredientFilter->clear();
-	ingredientFilter->addItems(newVariants->values());
+	ingredientFilter->addItems(newVariants.values());
 }
 
 
 QVector<QString> IngredientRowFilter::getStrings(){
 	return {ingredientFilter->currentText()};
 }
-IngredientsFilterWidget::IngredientsFilterWidget(QSharedPointer<QSet<QString>> variants, QWidget *parrent) : RowHolder(parrent) {
+IngredientsFilterWidget::IngredientsFilterWidget(const QSet<QString>& variants, QWidget *parrent) : RowHolder(parrent) {
 	filterVariants = variants;
 }
 
-void IngredientsFilterWidget::updateFilters(QSharedPointer<QSet<QString>> newVariants){
+void IngredientsFilterWidget::updateFilters(const QSet<QString>& newVariants) {
 	filterVariants = newVariants;
 
 	for(auto child : getRows()){

@@ -34,7 +34,7 @@ CriteriaWidget::CriteriaWidget(QWidget *parent) : QWidget(parent) {
 
 	currentLayout->addLayout(gridLayout);
 
-	ingredientFilters = new IngredientsFilterWidget(QSharedPointer<QSet<QString>>(new QSet<QString>()), this);
+	ingredientFilters = new IngredientsFilterWidget(QSet<QString>(), this);
 	ingredientFilters->setHidden(true);
 	currentLayout->addWidget(ingredientFilters);
 
@@ -44,30 +44,27 @@ CriteriaWidget::CriteriaWidget(QWidget *parent) : QWidget(parent) {
 	setLayout(currentLayout);
 }
 
-CriteriaWidget::NotFullRequest CriteriaWidget::getNotFullRequest(){
-	NotFullRequest requestToReturn;
-	requestToReturn.course = courseSetter->currentText();
-	requestToReturn.cusine = cusineSetter->currentText();
+bool CriteriaWidget::partlyPopulateQuery(BaseTypes::Query &queryToPopulate){
+	queryToPopulate.courses = {courseSetter->currentText()};
+	queryToPopulate.cusines = {cusineSetter->currentText()};
 	if(searchWithIngredients->isChecked()){
-		requestToReturn.ingredients = ingredientFilters->getIngredientFilter();
-		requestToReturn.serchExact = searchExact->isChecked();
+		queryToPopulate.ingredients = ingredientFilters->getIngredientFilter().values();
+		queryToPopulate.searchExclusively = searchExact->isChecked();
 	}
-	requestToReturn.searchByFavorites = searchByFavorites->isChecked();
-	return requestToReturn;
+	return searchByFavorites->isChecked();
 }
 
-void CriteriaWidget::updateTags(BaseTypes::Responses::TagsResponse tagsToUpdate){
+void CriteriaWidget::updateTags(const BaseTypes::TagsHolder& tagsToUpdate){
 
 	courseSetter->clear();
-	QList<QString> courseValues = tagsToUpdate.getCourses()->values();
+	QList<QString> courseValues = tagsToUpdate.courses.values();
 	courseValues.push_front("");
 	courseSetter->insertItems(0, courseValues);
 
 	cusineSetter->clear();
-	QList<QString> cusineValues = tagsToUpdate.getCusines()->values();
+	QList<QString> cusineValues = tagsToUpdate.cusines.values();
 	cusineValues.push_front("");
 	cusineSetter->insertItems(0, cusineValues);
 
-	ingredientFilters->updateFilters(tagsToUpdate.getIngredients());
-
+	ingredientFilters->updateFilters(tagsToUpdate.ingredients);
 }
