@@ -14,58 +14,55 @@ ConnectionManager::ConnectionManager() {
 }
 
 void ConnectionManager::toggleToLocal() {
-	if(!localConnection.isNull()){
-		currentConnection = localConnection;
-	}
+	// We shouldn't check if it's nullptr, because we initialize localConnector from the start
+	currentConnection = localConnection;
 }
 
 void ConnectionManager::toggleToRemote(QString address, quint16 port) {
-    if(remoteConnection.isNull()){
-		remoteConnection = QSharedPointer<IConnector>(new RemoteConnector(address, port));
-		currentConnection = remoteConnection;
-	}
+	remoteConnection = QSharedPointer<IConnector>(new RemoteConnector(address, port));
+	currentConnection = remoteConnection;
 }
 
-unsigned int ConnectionManager::sendRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSend){
-  if(auto connection = currentConnection.lock()){
-	QSharedPointer<BaseTypes::Requests::AddRecipeRequest>
-		request(new BaseTypes::Requests::AddRecipeRequest(recipeToSend));
-	return connection->postRecipe(request).getSettedID();
-  }
-  return 0;
-}
-
-QSharedPointer<QVector<QSharedPointer<BaseTypes::Recipe>>> ConnectionManager::runSearch(QSharedPointer<BaseTypes::Requests::SearchQuery> query){
-	if(auto connection = currentConnection.lock()){
-		return connection->runSearch(query).getRecipes();
-	}
-	return {};
-}
-
-
+// Search bound funcs
 BaseTypes::Responses::TagsResponse ConnectionManager::getTags(){
   if(auto connection = currentConnection.lock()){
-	QSharedPointer<BaseTypes::Requests::GetInitDataRequest>
-		request(new BaseTypes::Requests::GetInitDataRequest());
-	return connection->getTags(request);
+	BaseTypes::Requests::GetInitDataRequest	request;
+	return connection->getTags(std::move(request));
   }
-  return false;
+  return BaseTypes::Responses::TagsResponse();
 }
-bool ConnectionManager::removeRecipe(unsigned int recipeID){
-  if(auto connection = currentConnection.lock()){
-	QSharedPointer<BaseTypes::Requests::RemoveRecipeRequest>
-		request(new BaseTypes::Requests::RemoveRecipeRequest(recipeID));
-	return connection->removeRecipe(request).isSuccessfull();
-  }
-  return false;
+
+BaseTypes::Responses::SearchResponse ConnectionManager::runSearch(BaseTypes::Query&& query){
+	if(auto connection = currentConnection.lock()){
+		BaseTypes::Requests::SearchQuery request(std::move(query));
+		return connection->runSearch(std::move(request));
+	}
+	return BaseTypes::Responses::SearchResponse();
 }
-bool ConnectionManager::editRecipe(QSharedPointer<BaseTypes::Recipe> editedRecipe){
+
+// Recipe bound funcs
+BaseTypes::Responses::AddResponse ConnectionManager::sendRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSend){
   if(auto connection = currentConnection.lock()){
-	QSharedPointer<BaseTypes::Requests::EditRecipeRequest>
-		request(new BaseTypes::Requests::EditRecipeRequest(editedRecipe));
-	return connection->editRecipe(request).isSuccessfull();
+	BaseTypes::Requests::AddRecipeRequest request(recipeToSend);
+	return std::move(connection->postRecipe(std::move(request)));
   }
-  return false;
+  return BaseTypes::Responses::AddResponse();
+}
+
+BaseTypes::Responses::RemoveResponse ConnectionManager::removeRecipe(unsigned int recipeID){
+  if(auto connection = currentConnection.lock()){
+	BaseTypes::Requests::RemoveRecipeRequest request(recipeID);
+	return connection->removeRecipe(std::move(request));
+  }
+  return BaseTypes::Responses::RemoveResponse();
+}
+
+BaseTypes::Responses::EditResponse ConnectionManager::editRecipe(QSharedPointer<BaseTypes::Recipe> editedRecipe){
+  if(auto connection = currentConnection.lock()){
+	BaseTypes::Requests::EditRecipeRequest request(editedRecipe);
+	return connection->editRecipe(std::move(request));
+  }
+  return BaseTypes::Responses::EditResponse();
 }
 
 

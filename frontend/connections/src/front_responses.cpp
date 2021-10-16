@@ -40,7 +40,6 @@ BaseTypes::Recipe* translateToRecipeFromJson(const QJsonObject &json){
 
 	return recipe;
 }
-
 BaseTypes::Recipe* translateRecipeFromServer(const server::recipe::Recipe &response){
 	BaseTypes::Recipe *recipe = new BaseTypes::Recipe(response.getId());
 	recipe->name = QString::fromStdString(response.getName());
@@ -73,25 +72,24 @@ Response::~Response(){ }
 // ErrorResponse class
 void ErrorResponse::translate(const server::responses::ResponseVar&& response) {
 	if(auto err = Response::extractType<server::responses::Error>(response)){
-		setClientID(err->getClientID());
+		setSuccesfull(true);
 		message = QString::fromStdString(err->getMessage());
 	}
 }
-
 void ErrorResponse::translateFromJSON(const QJsonObject& json) {
   if(json["responseTag"] != responseTag) {
 	return;
   }
-  setClientID(1); // Setting new client id to show that request is succesfull
+  setSuccesfull(true);
 }
 
 // TagsResponse class
-TagsResponse::TagsResponse(unsigned int clientID) : Response(clientID){ }
+TagsResponse::TagsResponse() { }
 BaseTypes::TagsHolder&& TagsResponse::getTags() { return std::move(tags); }
 
 void TagsResponse::translate(const server::responses::ResponseVar&& response) {
 	if(auto tags = Response::extractType<server::responses::GetInitDataResult>(response)){
-		setClientID(tags->getClientID());
+		setSuccesfull(true);
 		for(auto course : tags->getInitData().getFullCourseSet()){
 		  this->tags.courses.insert(QString::fromStdString(course));
 		}
@@ -129,27 +127,26 @@ void TagsResponse::translateFromJSON(const QJsonObject& json) {
   for(auto ingredient : currentArray){
 	tags.ingredients.insert(ingredient.toString());
   }
-  setClientID(1); // Setting new client id to show that request is succesfull
+  setSuccesfull(true);
 
 }
 
 // SearchResponse class
-SearchResponse::SearchResponse(unsigned int clientID) : Response(clientID),
-  foundRecipes(new QVector<QSharedPointer<BaseTypes::Recipe>>()) {}
+SearchResponse::SearchResponse() {}
 
-QSharedPointer<QVector<QSharedPointer<BaseTypes::Recipe>>> SearchResponse::getRecipes() { return foundRecipes; }
+QVector<QSharedPointer<BaseTypes::Recipe>>&& SearchResponse::getRecipes() { return std::move(foundRecipes); }
 
 void SearchResponse::translate(const server::responses::ResponseVar&& responseToTranslate){
 	if(auto searchResult = Response::extractType<server::responses::FindResult>(responseToTranslate)){
-		setClientID(searchResult->getClientID());
+		setSuccesfull(true);
 
 		QSharedPointer<Recipe> currentRecipe;
 		for(auto recipe : searchResult->getResults().getFoundRecipes()){
 		  currentRecipe = QSharedPointer<BaseTypes::Recipe>(translateRecipeFromServer(recipe));
-		  foundRecipes->append(currentRecipe);
+		  foundRecipes.append(currentRecipe);
 		}
 		// Shrinking recipes because we wont add more
-		foundRecipes->shrink_to_fit();
+		foundRecipes.shrink_to_fit();
 	}
 }
 void SearchResponse::translateFromJSON(const QJsonObject& json) {
@@ -159,18 +156,18 @@ void SearchResponse::translateFromJSON(const QJsonObject& json) {
   QJsonArray recipesArray = json["searchResults"]["foundRecipeArray"].toArray();
 
   for(auto recipe : recipesArray){
-	foundRecipes->append(
+	foundRecipes.append(
 		  QSharedPointer<BaseTypes::Recipe>(translateToRecipeFromJson(recipe.toObject())));
   }
-  foundRecipes->shrink_to_fit();
-  setClientID(1); // Setting new client id to show that request is succesfull
+  foundRecipes.shrink_to_fit();
+  setSuccesfull(true);
 }
 
 // AddResponse class
-AddResponse::AddResponse(unsigned int clientID, unsigned newRecipeID) : Response(clientID), settedID(newRecipeID){}
+AddResponse::AddResponse(unsigned newRecipeID) : settedID(newRecipeID) {}
 void AddResponse::translate(const server::responses::ResponseVar&& responseToTranslate) {
 	if(auto addResp = Response::extractType<server::responses::AddSuccess>(responseToTranslate)) {
-		setClientID(addResp->getClientID());
+		setSuccesfull(true);
 		settedID = addResp->getRecipeID();
 	}
 }
@@ -178,35 +175,35 @@ void AddResponse::translateFromJSON(const QJsonObject& json) {
   if(json["responseTag"].toInt() != responseTag) {
 	return;
   }
-  setClientID(1); // Setting new client id to show that request is succesfull
+  setSuccesfull(true);
 }
 
 // EditResponse class
-EditResponse::EditResponse(unsigned int clientID) : Response(clientID) {}
+EditResponse::EditResponse() {}
 
 void EditResponse::translate(const server::responses::ResponseVar&& responseToTranslate) {
 	if(auto addResp = Response::extractType<server::responses::EditSuccess>(responseToTranslate)){
-		setClientID(addResp->getClientID());
+		setSuccesfull(true);
 	}
 }
 void EditResponse::translateFromJSON(const QJsonObject& json) {
   if(json["responseTag"].toInt() != responseTag) {
 	return;
   }
-  setClientID(1); // Setting new client id to show that request is succesfull
+  setSuccesfull(true);
 }
 
 // RemoveResponse class
-RemoveResponse::RemoveResponse(unsigned int clientID) : Response(clientID) {}
+RemoveResponse::RemoveResponse() {}
 
 void RemoveResponse::translate(const server::responses::ResponseVar&& responseToTranslate) {
 	if(auto addResp = Response::extractType<server::responses::RemoveSuccess>(responseToTranslate)) {
-	  setClientID(addResp->getClientID());
+	  setSuccesfull(true);
 	}
 }
 void RemoveResponse::translateFromJSON(const QJsonObject& json) {
   if(json["responseTag"].toInt() != responseTag) {
 	return;
   }
-  setClientID(1); // Setting new client id to show that request is succesfull
+  setSuccesfull(true);
 }

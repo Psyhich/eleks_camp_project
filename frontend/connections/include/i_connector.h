@@ -14,15 +14,15 @@ namespace Connections {
 		virtual void openConnection() = 0;
 		virtual void closeConnection() = 0;
 
-		virtual BaseTypes::Responses::SearchResponse runSearch(QSharedPointer<BaseTypes::Requests::SearchQuery> query) = 0;
+		virtual BaseTypes::Responses::SearchResponse runSearch(BaseTypes::Requests::SearchQuery&& query) = 0;
 
-		virtual BaseTypes::Responses::TagsResponse getTags(QSharedPointer<BaseTypes::Requests::GetInitDataRequest> tagRequest) = 0;
+		virtual BaseTypes::Responses::TagsResponse getTags(BaseTypes::Requests::GetInitDataRequest&& tagRequest) = 0;
 
-		virtual BaseTypes::Responses::RemoveResponse removeRecipe(QSharedPointer<BaseTypes::Requests::RemoveRecipeRequest> removeRequest) = 0;
-		virtual BaseTypes::Responses::AddResponse postRecipe(QSharedPointer<BaseTypes::Requests::AddRecipeRequest> addRequest) = 0;
-		virtual BaseTypes::Responses::EditResponse editRecipe(QSharedPointer<BaseTypes::Requests::EditRecipeRequest> editRequest) = 0;
+		virtual BaseTypes::Responses::RemoveResponse removeRecipe(BaseTypes::Requests::RemoveRecipeRequest&& removeRequest) = 0;
+		virtual BaseTypes::Responses::AddResponse postRecipe(BaseTypes::Requests::AddRecipeRequest&& addRequest) = 0;
+		virtual BaseTypes::Responses::EditResponse editRecipe(BaseTypes::Requests::EditRecipeRequest&& editRequest) = 0;
 
-		virtual BaseTypes::Responses::ErrorResponse sendError(QSharedPointer<BaseTypes::Requests::Error> error) = 0;
+		virtual BaseTypes::Responses::ErrorResponse sendError(BaseTypes::Requests::Error&& error) = 0;
 
 		virtual ~IConnector(){}
 	};

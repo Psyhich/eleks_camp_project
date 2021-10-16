@@ -1,5 +1,6 @@
 #include <QJsonDocument>
 #include <QTcpSocket>
+#include <utility>
 
 #include "connectors.h"
 
@@ -21,7 +22,6 @@ QJsonObject RemoteConnector::postJson(const QJsonObject& json){
   QTcpSocket socket;
   socket.connectToHost(address, port);
 
-  SearchResponse response(0);
   if(!socket.waitForConnected(-1)){}
   socket.write(parsedJSON);
 
@@ -42,56 +42,53 @@ RemoteConnector::RemoteConnector(QString remoteAdress, quint16 _port) :
 void RemoteConnector::openConnection(){}
 void RemoteConnector::closeConnection(){}
 
-SearchResponse RemoteConnector::runSearch(QSharedPointer<SearchQuery> filter){
-	SearchResponse response(0);
+SearchResponse RemoteConnector::runSearch(SearchQuery&& filter){
+	SearchResponse response;
 
-	response.translateFromJSON(postJson(filter->toJSON()));
+	response.translateFromJSON(postJson(filter.toJSON()));
 
 	return response;
 }
 
-TagsResponse RemoteConnector::getTags(QSharedPointer<GetInitDataRequest> request){
-  TagsResponse response(0);
+TagsResponse RemoteConnector::getTags(GetInitDataRequest&& request){
+  TagsResponse response;
 
-  response.translateFromJSON(postJson(request->toJSON()));
+  response.translateFromJSON(postJson(request.toJSON()));
 
   return response;
 
 }
 
-RemoveResponse RemoteConnector::removeRecipe(QSharedPointer<RemoveRecipeRequest> request){
-  RemoveResponse response(0);
+RemoveResponse RemoteConnector::removeRecipe(RemoveRecipeRequest&& request){
+  RemoveResponse response;
 
-  response.translateFromJSON(postJson(request->toJSON()));
-
-  return response;
-}
-
-AddResponse RemoteConnector::postRecipe(QSharedPointer<AddRecipeRequest> request){
-  AddResponse response(0, 0);
-
-  response.translateFromJSON(postJson(request->toJSON()));
+  response.translateFromJSON(postJson(request.toJSON()));
 
   return response;
 }
 
-EditResponse RemoteConnector::editRecipe(QSharedPointer<EditRecipeRequest> request){
-  EditResponse response(0);
+AddResponse RemoteConnector::postRecipe(AddRecipeRequest&& request){
+  AddResponse response;
 
-  response.translateFromJSON(postJson(request->toJSON()));
+  response.translateFromJSON(postJson(request.toJSON()));
 
   return response;
 }
 
-ErrorResponse RemoteConnector::sendError(QSharedPointer<Error> error){
-  ErrorResponse response(0);
+EditResponse RemoteConnector::editRecipe(EditRecipeRequest&& request){
+  EditResponse response;
 
-  response.translateFromJSON(postJson(error->toJSON()));
+  response.translateFromJSON(postJson(request.toJSON()));
+
+  return response;
+}
+
+ErrorResponse RemoteConnector::sendError(Error&& error){
+  ErrorResponse response;
+
+  response.translateFromJSON(postJson(error.toJSON()));
 
   return response;
 }
 
 RemoteConnector::~RemoteConnector(){}
-
-
-

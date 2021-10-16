@@ -16,15 +16,15 @@ public:
 	void openConnection() override;
 	void closeConnection() override;
 
-	BaseTypes::Responses::SearchResponse runSearch(QSharedPointer<BaseTypes::Requests::SearchQuery> filter) override;
+	BaseTypes::Responses::SearchResponse runSearch(BaseTypes::Requests::SearchQuery&& filter) override;
 
-	BaseTypes::Responses::TagsResponse getTags(QSharedPointer<BaseTypes::Requests::GetInitDataRequest> tagRequest) override;
+	BaseTypes::Responses::TagsResponse getTags(BaseTypes::Requests::GetInitDataRequest&& tagRequest) override;
 
-	virtual BaseTypes::Responses::RemoveResponse removeRecipe(QSharedPointer<BaseTypes::Requests::RemoveRecipeRequest> removeRequest) override;
-	virtual BaseTypes::Responses::AddResponse postRecipe(QSharedPointer<BaseTypes::Requests::AddRecipeRequest> arrRequest) override;
-	virtual BaseTypes::Responses::EditResponse editRecipe(QSharedPointer<BaseTypes::Requests::EditRecipeRequest> editRequest) override;
+	BaseTypes::Responses::RemoveResponse removeRecipe(BaseTypes::Requests::RemoveRecipeRequest&& removeRequest) override;
+	BaseTypes::Responses::AddResponse postRecipe(BaseTypes::Requests::AddRecipeRequest&& arrRequest) override;
+	BaseTypes::Responses::EditResponse editRecipe(BaseTypes::Requests::EditRecipeRequest&& editRequest) override;
 
-	virtual BaseTypes::Responses::ErrorResponse sendError(QSharedPointer<BaseTypes::Requests::Error> error) override;
+	BaseTypes::Responses::ErrorResponse sendError(BaseTypes::Requests::Error&& error) override;
 
 	~LocalConnector() override;
 };
@@ -40,15 +40,15 @@ public:
 	void openConnection() override;
 	void closeConnection() override;
 
-	BaseTypes::Responses::SearchResponse runSearch(QSharedPointer<BaseTypes::Requests::SearchQuery> filter) override;
+	BaseTypes::Responses::SearchResponse runSearch(BaseTypes::Requests::SearchQuery&& filter) override;
 
-	BaseTypes::Responses::TagsResponse getTags(QSharedPointer<BaseTypes::Requests::GetInitDataRequest> tagRequest) override;
+	BaseTypes::Responses::TagsResponse getTags(BaseTypes::Requests::GetInitDataRequest&& tagRequest) override;
 
-	virtual BaseTypes::Responses::RemoveResponse removeRecipe(QSharedPointer<BaseTypes::Requests::RemoveRecipeRequest> removeRequest) override;
-	virtual BaseTypes::Responses::AddResponse postRecipe(QSharedPointer<BaseTypes::Requests::AddRecipeRequest> arrRequest) override;
-	virtual BaseTypes::Responses::EditResponse editRecipe(QSharedPointer<BaseTypes::Requests::EditRecipeRequest> editRequest) override;
+	BaseTypes::Responses::RemoveResponse removeRecipe(BaseTypes::Requests::RemoveRecipeRequest&& removeRequest) override;
+	BaseTypes::Responses::AddResponse postRecipe(BaseTypes::Requests::AddRecipeRequest&& arrRequest) override;
+	BaseTypes::Responses::EditResponse editRecipe(BaseTypes::Requests::EditRecipeRequest&& editRequest) override;
 
-	virtual BaseTypes::Responses::ErrorResponse sendError(QSharedPointer<BaseTypes::Requests::Error> error) override;
+	BaseTypes::Responses::ErrorResponse sendError(BaseTypes::Requests::Error&& error) override;
 
 	~RemoteConnector() override;
 };
