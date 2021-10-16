@@ -14,5 +14,5 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/data/cookbook.db ${PROJECT_BINARY_DIR}/$<${MSVC}:$<CONFIG>>
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/data/cookbook.db $<TARGET_FILE_DIR:${PROJECT_NAME}>
 )
