@@ -89,34 +89,34 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(project-front-desktop
+	qt_add_executable(${PROJECT_NAME}
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
 else()
     if(ANDROID)
-        add_library(project-front-desktop SHARED
+        add_library(${PROJECT_NAME} SHARED
             ${PROJECT_SOURCES}
         )
     else()
-        add_executable(project-front-desktop
+		add_executable(${PROJECT_NAME}
             ${PROJECT_SOURCES}
         )
     endif()
 endif()
 
-target_include_directories(project-front-desktop PUBLIC ${SERVER_KEEPER_INCLUDE_DIRECTORIES})
-target_link_libraries(project-front-desktop PUBLIC server_keeper)
+target_include_directories(${PROJECT_NAME} PUBLIC ${SERVER_KEEPER_INCLUDE_DIRECTORIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC server_keeper)
 
-target_link_libraries(project-front-desktop PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-target_link_libraries(project-front-desktop PRIVATE Qt${QT_VERSION_MAJOR}::Network)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Network)
 
-set_target_properties(project-front-desktop PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(project-front-desktop)
+    qt_finalize_executable(${PROJECT_NAME})
 endif()
