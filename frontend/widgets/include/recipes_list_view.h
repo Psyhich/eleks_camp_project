@@ -16,16 +16,18 @@ private:
 public:
 	RecipesListView(QWidget *parrent=nullptr);
 
+	QVector<QSharedPointer<BaseTypes::Recipe>> getRecipes() const;
+
 signals:
 	void requestOpenRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
 	void requestEditRecipe(QSharedPointer<BaseTypes::Recipe> recipeToEdit);
 	void requestFavoriteRecipe(unsigned int recipeID);
-	void recipeUpdated(unsigned int recipeID);
 
 public slots:
 	void addRecipe(QSharedPointer<BaseTypes::Recipe> recipeToAdd);
 	void removeRecipe(unsigned int recipeID);
 	void clearRecipes();
+	void updateRecipe(QSharedPointer<BaseTypes::Recipe> recipeToUpdate);
 
 };
 

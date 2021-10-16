@@ -83,7 +83,7 @@ public:
 	SearchResponse();
 
 	QVector<QSharedPointer<BaseTypes::Recipe>>&& getRecipes();
-	void translate(const server::responses::ResponseVar&& responseToTranslate);
+	void translate(const server::responses::ResponseVar&& responseToTranslate) override;
 	void translateFromJSON(const QJsonObject& json) override;
 
 	~SearchResponse() override {}

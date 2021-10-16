@@ -1,20 +1,27 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
+#include <QScrollArea>
 #include <QLabel>
 
 #include "recipe_edit_tab.h"
+#include "tab_manager.h"
 
 using BaseTypes::Recipe;
 
-RecipeEditTab::RecipeEditTab(QSharedPointer<BaseTypes::Recipe> recipeToOpen,
-							 QWidget *parent) : QScrollArea(parent) {
+RecipeEditTab::RecipeEditTab(TabManager *parent, QSharedPointer<Recipe> recipeToOpen) :
+  AbstractTab(parent) {
 	// We can get here null value, so we should check if it's OKay, if not this tab is recipe creation tab
 	// TODO to make it more type strong, can create class that inherits this but named RecipeCreationTab
 	openedRecipe = recipeToOpen.isNull() ?
-		  QSharedPointer<BaseTypes::Recipe>(new Recipe(0)) : recipeToOpen;
+		  QSharedPointer<Recipe>(new Recipe(0)) : recipeToOpen;
 
-	setWidgetResizable(true);
-	QWidget *inners = new QWidget(this);
+	QBoxLayout *rootLayout = new QBoxLayout(QBoxLayout::TopToBottom, this);
+
+	QScrollArea *scrollArea = new QScrollArea(this);
+	scrollArea->setWidgetResizable(true);
+
+
+	QWidget *inners = new QWidget();
 	QVBoxLayout *mainLayout = new QVBoxLayout(inners);
 
 	// After setting base values and starting widgets and layout creating all input widgets
@@ -32,7 +39,10 @@ RecipeEditTab::RecipeEditTab(QSharedPointer<BaseTypes::Recipe> recipeToOpen,
 	mainLayout->addLayout(createBottomPanel());
 
 	inners->setLayout(mainLayout);
-	setWidget(inners);
+	scrollArea->setWidget(inners);
+
+	rootLayout->addWidget(scrollArea);
+	setLayout(rootLayout);
 }
 
 // Form for editing name, course, cusine, portions, weight and calories
@@ -168,7 +178,6 @@ void RecipeEditTab::emitRequestCloseTab(){
   emit requestCloseTab(this);
 }
 
-// TODO maybe think about not passing full Request values
 void RecipeEditTab::populateInputs(const BaseTypes::TagsHolder& values) {
 	courseEdit->clear();
 	courseEdit->addItems(values.courses.values());
@@ -184,4 +193,44 @@ void RecipeEditTab::populateInputs(const BaseTypes::TagsHolder& values) {
 
 	ingredientsEdit->updateIngredientsSet(values.ingredients);
 	ingredientsEdit->updateUnitsSet(values.units);
+}
+
+void RecipeEditTab::reopenRecipe(QSharedPointer<BaseTypes::Recipe> recipeToReopen) {
+  openedRecipe = recipeToReopen;
+
+  nameEdit->setText(openedRecipe->name);
+
+  courseEdit->setCurrentText(openedRecipe->courses.values()[0]);
+  cusineEdit->setCurrentText(openedRecipe->cusines.values()[0]);
+
+  caloriesEdit->setValue(openedRecipe->outCalories);
+  weightEdit->setValue(openedRecipe->outWeight);
+  portionsEdit->setValue(openedRecipe->outPortions);
+
+  ingredientsEdit->loadIngredients(openedRecipe->ingredients);
+
+  preparationEdit->setText(openedRecipe->recipeText);
+
+  presentationEdit->setText(openedRecipe->presentationText);
+  presentationEdit->setVisible(!openedRecipe->presentationText.isEmpty());
+
+  remarksEdit->setText(openedRecipe->remarks);
+  remarksEdit->setVisible(!openedRecipe->remarks.isEmpty());
+}
+
+// AbstractTab interface
+void RecipeEditTab::openRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen) {
+  reopenRecipe(recipeToOpen);
+}
+
+void RecipeEditTab::closeRecipe(QSharedPointer<BaseTypes::Recipe>) {
+  parentWidget()->closeAbstractTab(this);
+}
+
+void RecipeEditTab::updateRecipe(QSharedPointer<BaseTypes::Recipe> recipeToUpdate) {
+  reopenRecipe(recipeToUpdate);
+}
+
+QVector<QSharedPointer<BaseTypes::Recipe>> RecipeEditTab::getRecipes() const {
+  return {openedRecipe};
 }

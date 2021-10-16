@@ -1,10 +1,9 @@
 #include <QVBoxLayout>
 
 #include "search_tab.h"
-#include "connection_manager.h"
 
 
-SearchTab::SearchTab(QWidget *parent) : QWidget(parent) {
+SearchTab::SearchTab(TabManager *parent) : AbstractTab(parent) {
 	QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
 	filters = new SearchFilters(this);
@@ -34,9 +33,26 @@ SearchTab::SearchTab(QWidget *parent) : QWidget(parent) {
 
 void SearchTab::runSearch(){
 	auto query = filters->getFilters();
-	auto response = Connections::ConnectionManager::getManager().runSearch(query);
-	recipesView->clearRecipes();
-	for(auto recipe : *response){
-		recipesView->addRecipe(recipe);
-	}
+	emit requestSearch(query);
 }
+
+void SearchTab::closeAll(){
+  recipesView->clearRecipes();
+}
+
+// AbstractTab implementation
+void SearchTab::openRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen) {
+  recipesView->addRecipe(recipeToOpen);
+}
+void SearchTab::closeRecipe(QSharedPointer<BaseTypes::Recipe> recipeToClose) {
+  if(auto id = recipeToClose->getID()){
+	recipesView->removeRecipe(*id);
+  }
+}
+QVector<QSharedPointer<BaseTypes::Recipe> > SearchTab::getRecipes() const {
+  return recipesView->getRecipes();
+}
+void SearchTab::updateRecipe(QSharedPointer<BaseTypes::Recipe> recipeToUpdate) {
+  recipesView->updateRecipe(recipeToUpdate);
+}
+

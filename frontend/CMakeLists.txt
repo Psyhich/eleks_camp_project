@@ -19,60 +19,22 @@ find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR}Network REQUIRED)
 
+add_subdirectory(widgets/)
 add_subdirectory(types/)
 add_subdirectory(connections/)
+add_subdirectory(tabs/)
+add_subdirectory(misc/)
 
 set(PROJECT_SOURCES
         # Project sources
 	main.cpp
-	# Widgets
-	widgets/mainwindow.ui
 
-	widgets/mainwindow.h
-	widgets/mainwindow.cpp
+	mainwindow.h
+	mainwindow.cpp
 
-	widgets/tab_manager.h
-	widgets/tab_manager.cpp
-
-	widgets/recipe_view_tab.h
-	widgets/recipe_view_tab.cpp
-
-	widgets/search_tab.h
-	widgets/search_tab.cpp
-
-	widgets/recipes_list_view.h
-	widgets/recipes_list_view.cpp
-
-	widgets/recipe_row_view.h
-	widgets/recipe_row_view.cpp
-
-	widgets/search_filters.h
-	widgets/search_filters.cpp
-
-	widgets/search_widget.h
-	widgets/search_widget.cpp
-
-	widgets/criteria_widget.h
-	widgets/criteria_widget.cpp
-
-	widgets/ingredients_filter_widget.h
-	widgets/ingredients_filter_widget.cpp
-
-	widgets/recipe_edit_tab.h
-	widgets/recipe_edit_tab.cpp
-
-	widgets/ingredients_edit_widget.h
-	widgets/ingredients_edit_widget.cpp
-
-	widgets/row_holder.h
-	widgets/row_holder.cpp
-	# Base data types
-
-	types/favorites_manager.h
-	types/favorites_manager.cpp
-	# Connection and network
 	# Resources
 	resources.qrc
+	mainwindow.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -92,8 +54,12 @@ else()
     endif()
 endif()
 
-target_link_libraries(project-front-desktop PUBLIC types)
-target_link_libraries(project-front-desktop PUBLIC connections)
+target_link_libraries(project-front-desktop PUBLIC
+    types
+    connections
+    tabs
+    widgets
+)
 
 target_link_libraries(project-front-desktop PUBLIC server_keeper)
 

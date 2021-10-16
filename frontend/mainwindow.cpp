@@ -4,7 +4,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-#include "recipes_list_view.h"
 #include "recipe_view_tab.h"
 
 #include "front_recipe.h"
@@ -16,15 +15,14 @@ MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent), ui(new Ui::MainWindow) {
 	ui->setupUi(this);
 
+	tabManager = new TabManager(ui->centralwidget);
+	ui->centralwidget->layout()->addWidget(tabManager);
 	// Hiding close button for search tab
-	QWidget *tabButton = ui->RecipeTabs->tabBar()->tabButton(0, QTabBar::RightSide);
-	tabButton->resize(0, 0);
-	tabButton->hide();
 
 	// Connecting menu button to tab manager to create new recipes
 	QObject::connect(ui->actionCreate, &QAction::triggered,
 					 [&](){
-	  ui->RecipeTabs->editRecipe(QSharedPointer<BaseTypes::Recipe>());
+	  tabManager->editRecipe(QSharedPointer<BaseTypes::Recipe>());
 	});
 
 	// Connecting other menu buttons to lambdas that will change connection types

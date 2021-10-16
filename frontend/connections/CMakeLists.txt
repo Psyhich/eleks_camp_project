@@ -10,7 +10,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC include/)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE types)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE server_keeper)
+target_link_libraries(${PROJECT_NAME} PUBLIC server_keeper)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Network)

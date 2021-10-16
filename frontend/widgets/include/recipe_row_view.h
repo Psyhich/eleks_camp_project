@@ -3,6 +3,7 @@
 
 #include <QSharedPointer>
 #include <QFrame>
+#include <QLabel>
 
 #include "front_recipe.h"
 
@@ -11,15 +12,21 @@ class RecipeRowView : public QFrame {
   Q_OBJECT
 	QSharedPointer<BaseTypes::Recipe> recipe;
 private:
-  inline void emitFavoriteClicked() { emit favoriteClicked(*recipe->getID()); }
-  inline void emitEditClicked() { emit editClicked(recipe); }
-  inline void emitOpenClicked() { emit openClicked(recipe); }
+	QLabel *nameLabel;
+	QLabel *coursesLabel;
+	QLabel *cusinesLabel;
 
+	inline void emitFavoriteClicked() { emit favoriteClicked(*recipe->getID()); }
+	inline void emitEditClicked() { emit editClicked(recipe); }
+	inline void emitOpenClicked() { emit openClicked(recipe); }
 public:
+	RecipeRowView(QSharedPointer<BaseTypes::Recipe> recipe, QWidget *parent);
 
-  RecipeRowView(QSharedPointer<BaseTypes::Recipe> recipe, QWidget *parent);
-  inline unsigned int getId() const { return *recipe->getID(); }
-  signals:
+	QSharedPointer<BaseTypes::Recipe> getRecipe() const;
+
+	void updateRecipe();
+
+signals:
 	void favoriteClicked(unsigned int recipeID);
 	void editClicked(QSharedPointer<BaseTypes::Recipe> recipe);
 	void openClicked(QSharedPointer<BaseTypes::Recipe> recipe);

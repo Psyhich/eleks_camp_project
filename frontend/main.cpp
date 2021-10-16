@@ -1,4 +1,4 @@
-#include "widgets/mainwindow.h"
+#include "mainwindow.h"
 #include "connection_manager.h"
 
 #include <QApplication>

@@ -28,7 +28,7 @@ void RecipesListView::addRecipe(QSharedPointer<BaseTypes::Recipe> recipeToAdd){
 
 void RecipesListView::removeRecipe(unsigned int recipeID){
   for(int index = 0; index < rows.count(); index++){
-	if(rows[index]->getId() == recipeID){
+	if(*rows[index]->getRecipe()->getID() == recipeID){
 	  rows[index]->deleteLater();
 	  rows.removeAt(index);
 	  break;
@@ -42,4 +42,21 @@ void RecipesListView::clearRecipes(){
 	row->deleteLater();
   }
   rows.clear();
+}
+
+QVector<QSharedPointer<BaseTypes::Recipe>> RecipesListView::getRecipes() const {
+  QVector<QSharedPointer<BaseTypes::Recipe>> recipes;
+  for(RecipeRowView* row : rows){
+	recipes.append(row->getRecipe());
+  }
+  return recipes;
+}
+
+void RecipesListView::updateRecipe(QSharedPointer<BaseTypes::Recipe> recipeToUpdate){
+  for(auto row : rows){
+	if(row->getRecipe() == recipeToUpdate){
+	  row->updateRecipe();
+	  break;
+	}
+  }
 }

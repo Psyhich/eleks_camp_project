@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QSharedPointer>
 
+#include "abstract_tab.h"
 #include "search_tab.h"
 #include "front_recipe.h"
 
@@ -12,7 +13,13 @@ class TabManager : public QTabWidget {
 private:
 	SearchTab *searchTab;
 
-	//QMap<unsigned int, QSharedPointer<BaseTypes::Recipe>> openedCache; // TODO implement recipe cache that will update all widgets that contain opened recipes
+	QVector<QSharedPointer<BaseTypes::Recipe>> foundRecipes; // All recipes that can appear in search tab
+	QVector<AbstractTab *> openedTabs;
+
+	// For calling update recipes should have same ID
+	void applyOpenedRecipesUpdate(QSharedPointer<BaseTypes::Recipe> recipeToUpdate);
+	void applyFoundRecipesUpdate(QSharedPointer<BaseTypes::Recipe> recipeToUpdate);
+
 public:
 	TabManager(QWidget *parrent=nullptr);
 signals:
@@ -20,14 +27,14 @@ signals:
 public slots:
 	void openRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
 	void editRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
-	void queryRecipes();
+	void queryRecipes(BaseTypes::Query searchQuery);
 
 	void toggleFavoriteRecipe(unsigned int recipeToFavorite);
-	void closeTab(QWidget *tabToClose);
+	void closeAbstractTab(AbstractTab *tabToClose);
 private slots:
-	void closeRecipe(int tabID);
+	void closeTab(int tabID);
 	void saveRecipe(QSharedPointer<BaseTypes::Recipe> recipeToSave);
 	void deleteRecipe(QSharedPointer<BaseTypes::Recipe> recipeToDelete);
 };
 
-#endif // TABMANAGER_H
+#endif // TAB_MANAGER_H

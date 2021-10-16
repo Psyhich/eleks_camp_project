@@ -1,7 +1,6 @@
 #include <QIcon>
 #include <QHBoxLayout>
 #include <QToolButton>
-#include <QLabel>
 
 #include "recipe_row_view.h"
 
@@ -10,10 +9,10 @@ RecipeRowView::RecipeRowView(QSharedPointer<BaseTypes::Recipe> recipe, QWidget *
 	// Should create name of recipe, and add cusine + course
 	QGridLayout *gridLayout = new QGridLayout(this);
 	gridLayout->setSizeConstraint(QLayout::SizeConstraint::SetMinAndMaxSize);
-	QLabel *nameLabel = new QLabel(recipe->name, this);
+	nameLabel = new QLabel(recipe->name, this);
 
-	QLabel *coursesLabel = new QLabel(recipe->courses.values().join(" "), this);
-	QLabel *cusinesLabel = new QLabel(recipe->cusines.values().join(" "), this);
+	coursesLabel = new QLabel(recipe->courses.values().join(" "), this);
+	cusinesLabel = new QLabel(recipe->cusines.values().join(" "), this);
 
 	//Creating interactive buttons and connecting their events to out own signals
 	QToolButton* favoriteButton = new QToolButton(this);
@@ -37,4 +36,14 @@ RecipeRowView::RecipeRowView(QSharedPointer<BaseTypes::Recipe> recipe, QWidget *
 	gridLayout->addWidget(editButton, 1, 3);
 
 	setLayout(gridLayout);
+}
+
+QSharedPointer<BaseTypes::Recipe> RecipeRowView::getRecipe() const {
+  return recipe;
+}
+
+void RecipeRowView::updateRecipe(){
+  nameLabel->setText(recipe->name);
+  coursesLabel->setText(recipe->courses.values().join(" "));
+  cusinesLabel->setText(recipe->cusines.values().join(" "));
 }

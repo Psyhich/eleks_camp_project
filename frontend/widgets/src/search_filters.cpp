@@ -2,8 +2,7 @@
 #include <QSet>
 
 #include "search_filters.h"
-#include "types/favorites_manager.h"
-#include "connection_manager.h"
+#include "favorites_manager.h"
 
 SearchFilters::SearchFilters(QWidget *parent) : QWidget(parent) {
 	QVBoxLayout* vLayout = new QVBoxLayout(this);
@@ -16,14 +15,14 @@ SearchFilters::SearchFilters(QWidget *parent) : QWidget(parent) {
 	vLayout->addWidget(searchCriterias);
 
 	connect(searchBar, &MySearchWidget::moreButtonClicked, searchCriterias, &QWidget::setVisible);
-	connect(searchBar, &MySearchWidget::moreButtonClicked, this, &SearchFilters::fetchUpdates);
+	//connect(searchBar, &MySearchWidget::moreButtonClicked, this, &SearchFilters::fetchUpdates);
 	connect(searchBar, &MySearchWidget::searchButtonClicked, this, &SearchFilters::searchButtonClicked);
 
 
 	setLayout(vLayout);
 }
 
-QSharedPointer<BaseTypes::Requests::SearchQuery> SearchFilters::getFilters(){
+BaseTypes::Query SearchFilters::getFilters(){
 	BaseTypes::Query criterias;
 	bool shouldUseFavorites = searchCriterias->partlyPopulateQuery(criterias);
 	QString searchSubstring = searchBar->getSearchSubstring();
@@ -34,12 +33,9 @@ QSharedPointer<BaseTypes::Requests::SearchQuery> SearchFilters::getFilters(){
 		}
 	}
 
-	return QSharedPointer<BaseTypes::Requests::SearchQuery>(
-		  new BaseTypes::Requests::SearchQuery(std::move(criterias)));
+	return criterias;
 }
 
-void SearchFilters::fetchUpdates(){
-	auto response = Connections::ConnectionManager::getManager().getTags();
-	searchCriterias->updateTags(response.getTags());
-
+void SearchFilters::updateValues(const BaseTypes::TagsHolder& valuesForUpdate){
+	searchCriterias->updateTags(valuesForUpdate);
 }

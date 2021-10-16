@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "front_requests.h"
+#include "request_structs.h"
 #include "search_widget.h"
 #include "criteria_widget.h"
 
@@ -15,11 +15,11 @@ private:
 public:
 	SearchFilters(QWidget *parent = nullptr);
 
-	QSharedPointer<BaseTypes::Requests::SearchQuery> getFilters();
+	BaseTypes::Query getFilters();
 signals:
 	void searchButtonClicked();
 public slots:
-	void fetchUpdates();
+	void updateValues(const BaseTypes::TagsHolder& valuesForUpdate);
 };
 
 #endif // SEARCHFILTERS_H
