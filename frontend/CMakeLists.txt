@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(project-front-desktop VERSION 0.1 LANGUAGES CXX)
+project(eleks_chef_frontend VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
