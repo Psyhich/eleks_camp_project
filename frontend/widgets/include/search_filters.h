@@ -18,6 +18,7 @@ public:
 	BaseTypes::Query getFilters();
 signals:
 	void searchButtonClicked();
+	void moreButtonClicked();
 public slots:
 	void updateValues(const BaseTypes::TagsHolder& valuesForUpdate);
 };

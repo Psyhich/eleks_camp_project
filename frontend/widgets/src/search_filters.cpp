@@ -15,7 +15,7 @@ SearchFilters::SearchFilters(QWidget *parent) : QWidget(parent) {
 	vLayout->addWidget(searchCriterias);
 
 	connect(searchBar, &MySearchWidget::moreButtonClicked, searchCriterias, &QWidget::setVisible);
-	//connect(searchBar, &MySearchWidget::moreButtonClicked, this, &SearchFilters::fetchUpdates);
+	connect(searchBar, &MySearchWidget::moreButtonClicked, this, &SearchFilters::moreButtonClicked);
 	connect(searchBar, &MySearchWidget::searchButtonClicked, this, &SearchFilters::searchButtonClicked);
 
 
@@ -29,7 +29,7 @@ BaseTypes::Query SearchFilters::getFilters(){
 	QSet<unsigned int> favoriteIDs;
 	if(shouldUseFavorites){
 		for(unsigned int id : FavoritesManager::getManager().getFavorites()){
-		  favoriteIDs.insert(id);
+		  criterias.favoriteIDs.insert(id);
 		}
 	}
 

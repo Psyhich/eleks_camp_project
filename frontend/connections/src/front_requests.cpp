@@ -36,7 +36,7 @@ QJsonObject translateRecipToJson(const BaseTypes::Recipe& recipeToTranslate){
 	  ingredientNameArr.append(key);
 	  BaseTypes::Recipe::IngredientAmount amount = recipeToTranslate.ingredients.value(key);
 	  ingredientCountArr.append(amount.quantity);
-	  ingredientUnitArr.append(amount.quantity);
+	  ingredientUnitArr.append(amount.unit);
 	}
 
 	recipe["ingredients"] = QJsonObject{
@@ -89,8 +89,8 @@ QJsonObject SearchQuery::toJSON() {
 		QJsonObject criteria;
 
 		QJsonArray favoriteIDs;
-		for(auto id : favoriteIDs) {
-		  favoriteIDs.append(id);
+		for(auto id : searchCriteria.favoriteIDs) {
+		  favoriteIDs.append(QJsonValue::fromVariant(id));
 		}
 		criteria["favoriteIDs"] = favoriteIDs;
 
@@ -113,7 +113,7 @@ QJsonObject SearchQuery::toJSON() {
 
 server::requests::RequestVar SearchQuery::translate() {
 	std::set<unsigned int> favoriteIDs;
-	for(auto id : favoriteIDs){
+	for(auto id : searchCriteria.favoriteIDs){
 	  favoriteIDs.insert(id);
 	}
 
@@ -154,7 +154,7 @@ server::requests::RequestVar AddRecipeRequest::translate() {
 // EditRecipeRequest class
 QJsonObject EditRecipeRequest::toJSON() {
   QJsonObject request{{"requestTag", requestTag}};
-  request["newRecipe"] = translateRecipToJson(*editedRecipe);
+  request["changedRecipe"] = translateRecipToJson(*editedRecipe);
   return request;
 }
 

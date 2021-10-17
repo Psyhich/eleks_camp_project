@@ -25,10 +25,17 @@ SearchTab::SearchTab(TabManager *parent) : AbstractTab(parent) {
 
 	QObject::connect(filters, &SearchFilters::searchButtonClicked, this, &SearchTab::runSearch);
 
+	QObject::connect(filters, &SearchFilters::moreButtonClicked, this, &SearchTab::requestFieldsUpdate);
+
 	// Connecting all requests from recipe view to itself
 	QObject::connect(recipesView, &RecipesListView::requestOpenRecipe, this, &SearchTab::requestOpenRecipe);
 	QObject::connect(recipesView, &RecipesListView::requestEditRecipe, this, &SearchTab::requestEditRecipe);
 	QObject::connect(recipesView, &RecipesListView::requestFavoriteRecipe, this, &SearchTab::requestFavoriteRecipe);
+}
+
+
+void SearchTab::updateFields(const BaseTypes::TagsHolder tags){
+  filters->updateValues(tags);
 }
 
 void SearchTab::runSearch(){

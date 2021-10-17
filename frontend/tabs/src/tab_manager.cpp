@@ -28,6 +28,12 @@ TabManager::TabManager(QWidget* parrent) : QTabWidget(parrent) {
 	QObject::connect(searchTab, &SearchTab::requestOpenRecipe, this, &TabManager::openRecipe);
 	QObject::connect(searchTab, &SearchTab::requestEditRecipe, this, &TabManager::editRecipe);
 	QObject::connect(searchTab, &SearchTab::requestSearch, this, &TabManager::queryRecipes);
+	QObject::connect(searchTab, &SearchTab::requestFieldsUpdate, this, [&](){
+	  auto response = Connections::ConnectionManager::getManager().getTags();
+	  if(response.isSuccessfull()){
+		searchTab->updateFields(std::move(response.getTags()));
+	  }
+	});
 	// Connecting add to favorites signal
 	QObject::connect(searchTab, &SearchTab::requestFavoriteRecipe, this, &TabManager::toggleFavoriteRecipe);
 }

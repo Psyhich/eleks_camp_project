@@ -16,12 +16,15 @@ private:
 public:
 	SearchTab(TabManager *parent);
 	void runSearch();
+	void updateFields(const BaseTypes::TagsHolder);
 
 signals:
 	void requestOpenRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen);
 	void requestEditRecipe(QSharedPointer<BaseTypes::Recipe> recipeToEdit);
 	void requestFavoriteRecipe(unsigned int recipeToEdit);
+
 	void requestSearch(BaseTypes::Query queryForSearch);
+	void requestFieldsUpdate();
 public slots:
 	void openRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen) override;
 	void closeRecipe(QSharedPointer<BaseTypes::Recipe> recipeToOpen) override;
