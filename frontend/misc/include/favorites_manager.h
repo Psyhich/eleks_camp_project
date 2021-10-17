@@ -20,6 +20,7 @@ public:
 
 	QSet<unsigned int> getFavorites();
 	void toggleFavorite(unsigned int idToToggle);
+	void removeFromFavorites(unsigned int idToRemove);
 };
 
 #endif // FAVORITESMANAGER_H

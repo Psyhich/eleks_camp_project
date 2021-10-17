@@ -6,6 +6,7 @@
 #include "mainwindow.h"
 #include "connection_manager.h"
 
+
 int main(int argc, char *argv[]) {
 	// Loading default database from resources to default path if it's not set
 	QString path = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)[0] + "/cookbook.db";
@@ -13,6 +14,11 @@ int main(int argc, char *argv[]) {
 	  QFile defaultDB(":/resources/../data/cookbook.db");
 	  defaultDB.copy(path);
 	  defaultDB.close();
+	  QFile copiedDB(path);
+	  copiedDB.setPermissions(QFile::Permission::ReadUser | QFile::Permission::WriteUser |
+							   QFile::Permission::ReadGroup | QFile::Permission::WriteGroup |
+							   QFile::ReadOther);
+	  copiedDB.close();
 	}
 
 	Connections::ConnectionManager::getManager();

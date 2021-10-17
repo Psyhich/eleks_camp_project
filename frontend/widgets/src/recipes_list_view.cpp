@@ -53,10 +53,15 @@ QVector<QSharedPointer<BaseTypes::Recipe>> RecipesListView::getRecipes() const {
 }
 
 void RecipesListView::updateRecipe(QSharedPointer<BaseTypes::Recipe> recipeToUpdate){
+  bool isFound = false;
   for(auto row : rows){
 	if(row->getRecipe() == recipeToUpdate){
 	  row->updateRecipe();
+	  isFound = true;
 	  break;
 	}
+  }
+  if(!isFound){
+	addRecipe(recipeToUpdate);
   }
 }

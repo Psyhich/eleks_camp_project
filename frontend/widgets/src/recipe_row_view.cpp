@@ -16,15 +16,15 @@ RecipeRowView::RecipeRowView(QSharedPointer<BaseTypes::Recipe> recipe, QWidget *
 
 	//Creating interactive buttons and connecting their events to out own signals
 	QToolButton* favoriteButton = new QToolButton(this);
-	favoriteButton->setIcon(QIcon(":/icons/bookmarks.svg"));
+	favoriteButton->setIcon(QIcon(":/icons/bookmark.svg"));
 	QObject::connect(favoriteButton, &QToolButton::clicked, this,  &RecipeRowView::emitFavoriteClicked);
 
 	QToolButton* openButton = new QToolButton(this);
-	openButton->setText("O");
+	openButton->setIcon(QIcon(":/icons/view.svg"));
 	QObject::connect(openButton, &QToolButton::clicked, this, &RecipeRowView::emitOpenClicked);
 
 	QToolButton* editButton = new QToolButton(this);
-	editButton->setText("E");
+	editButton->setIcon(QIcon(":/icons/edit-file.svg"));
 	QObject::connect(editButton, &QToolButton::clicked, this, &RecipeRowView::emitEditClicked);
 
 	gridLayout->addWidget(nameLabel, 0, 0);

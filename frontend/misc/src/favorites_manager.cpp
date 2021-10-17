@@ -35,6 +35,13 @@ QSet<unsigned int> FavoritesManager::readFavoritesArray(){
 	return favoritesArray;
 }
 
+void FavoritesManager::removeFromFavorites(unsigned int idToRemove){
+  auto favorites = readFavoritesArray();
+
+  favorites.remove(idToRemove);
+
+  writeFavoritesArray(favorites);
+}
 
 
 QSet<unsigned int> FavoritesManager::getFavorites(){
