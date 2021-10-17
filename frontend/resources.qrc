@@ -2,5 +2,7 @@
 <RCC version="1.0">
         <qresource>
 	        <file>icons/bookmarks.svg</file>
+		<file>../Assets/icons/icon256.png</file>
+		<file>../data/cookbook.db</file>
 	</qresource>
 </RCC>
