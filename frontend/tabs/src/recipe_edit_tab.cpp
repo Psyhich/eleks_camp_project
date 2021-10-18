@@ -119,6 +119,8 @@ QLayout* RecipeEditTab::createBottomPanel() noexcept {
 					 this, &RecipeEditTab::emitRequestDeleteRecipe);
 	QObject::connect(saveButon, &QPushButton::clicked,
 					 this, &RecipeEditTab::emitRequestSaveRecipe);
+	QObject::connect(discardButon, &QPushButton::clicked,
+					 this, &RecipeEditTab::emitRequestCloseTab);
 
 	return pannelLayout;
 }
