@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/bookmark.svg</file>
+        <file>../Assets/icons/icon256.png</file>
+        <file>../data/cookbook.db</file>
+        <file>icons/edit-file.svg</file>
+        <file>icons/view.svg</file>
+    </qresource>
+</RCC>

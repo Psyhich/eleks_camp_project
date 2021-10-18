@@ -1,13 +1,25 @@
-#include "widgets/mainwindow.h"
-#include "connections/connection_manager.h"
-
 #include <QApplication>
 #include <QString>
+#include <QStandardPaths>
+#include <QFile>
+
+#include "mainwindow.h"
+#include "connection_manager.h"
+
 
 int main(int argc, char *argv[]) {
-	// Registring QList of unsigned int as meta type
-	// To store favorite recipes IDs in favorites manager
-	qRegisterMetaType<QList<unsigned int> >("QList<unsigned int>");
+	// Loading default database from resources to default path if it's not set
+	QString path = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation)[0] + "/cookbook.db";
+	if(!QFile::exists(path)){
+	  QFile defaultDB(":/resources/../data/cookbook.db");
+	  defaultDB.copy(path);
+	  defaultDB.close();
+	  QFile copiedDB(path);
+	  copiedDB.setPermissions(QFile::Permission::ReadUser | QFile::Permission::WriteUser |
+							   QFile::Permission::ReadGroup | QFile::Permission::WriteGroup |
+							   QFile::ReadOther);
+	  copiedDB.close();
+	}
 
 	Connections::ConnectionManager::getManager();
 

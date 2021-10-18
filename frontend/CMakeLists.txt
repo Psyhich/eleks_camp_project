@@ -17,75 +17,24 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
-find_package(Qt5Network REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR}Network REQUIRED)
+
+add_subdirectory(widgets/)
+add_subdirectory(types/)
+add_subdirectory(connections/)
+add_subdirectory(tabs/)
+add_subdirectory(misc/)
 
 set(PROJECT_SOURCES
         # Project sources
 	main.cpp
-	# Widgets
-	widgets/mainwindow.ui
 
-	widgets/mainwindow.h
-	widgets/mainwindow.cpp
+	mainwindow.h
+	mainwindow.cpp
 
-	widgets/tab_manager.h
-	widgets/tab_manager.cpp
-
-	widgets/recipe_view_tab.h
-	widgets/recipe_view_tab.cpp
-
-	widgets/search_tab.h
-	widgets/search_tab.cpp
-
-	widgets/recipes_list_view.h
-	widgets/recipes_list_view.cpp
-
-	widgets/recipe_row_view.h
-	widgets/recipe_row_view.cpp
-
-	widgets/search_filters.h
-	widgets/search_filters.cpp
-
-	widgets/search_widget.h
-	widgets/search_widget.cpp
-
-	widgets/criteria_widget.h
-	widgets/criteria_widget.cpp
-
-	widgets/ingredients_filter_widget.h
-	widgets/ingredients_filter_widget.cpp
-
-	widgets/recipe_edit_tab.h
-	widgets/recipe_edit_tab.cpp
-
-	widgets/ingredients_edit_widget.h
-	widgets/ingredients_edit_widget.cpp
-
-	widgets/row_holder.h
-	widgets/row_holder.cpp
-	# Base data types
-	types/recipe.h
-	types/recipe.cpp
-
-	types/requests.h
-	types/requests.cpp
-
-	types/responses.h
-	types/responses.cpp
-
-	types/favorites_manager.h
-	types/favorites_manager.cpp
-	# Connection and network
-	connections/connection_manager.h
-	connections/connection_manager.cpp
-
-	connections/i_connector.h
-
-	connections/connectors.h
-	connections/local_connector.cpp
-	connections/remote_connector.cpp
 	# Resources
-	icon_favorite.qrc
+	resources.qrc
+	mainwindow.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -105,8 +54,14 @@ else()
     endif()
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${SERVER_KEEPER_INCLUDE_DIRECTORIES})
 target_link_libraries(${PROJECT_NAME} PUBLIC server_keeper)
+target_link_libraries(${PROJECT_NAME} PUBLIC
+    types
+    connections
+    tabs
+    widgets
+)
+
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Network)
