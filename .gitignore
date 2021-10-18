@@ -28,6 +28,7 @@
 
 # Executables
 *.exe
+!release/*.exe
 *.out
 *.app
 
