@@ -1,8 +1,8 @@
 #include "tcp_transfer.h"
 
 #include <algorithm>
-#include <chrono>
 #include <utility>
+#include <iostream>
 
 namespace server {
 namespace transfer {
@@ -256,8 +256,6 @@ void TCPTransfer::Client::onMessageWritten(const asio::error_code& ec, size_t by
         handleError(ec);
     }
     transfer.logInfo("Bytes written to client "+ std::to_string(id)+": "+std::to_string(bytesWritten)); // temporary
-    using namespace std::chrono_literals;
-    std::this_thread::sleep_for(100ms);
     finish();
 }
 

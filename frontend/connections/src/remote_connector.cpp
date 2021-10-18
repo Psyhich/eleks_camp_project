@@ -20,15 +20,20 @@ QJsonObject RemoteConnector::postJson(const QJsonObject& json){
   parsedJSON.push_back('\0');
 
   QTcpSocket socket;
+  socket.setReadBufferSize(0);
   socket.connectToHost(address, port);
 
   if(!socket.waitForConnected(-1)){}
   socket.write(parsedJSON);
 
   if(!socket.waitForBytesWritten(-1)){}
-  if(!socket.waitForReadyRead(-1)){}
 
-  QByteArray byteResponse = socket.readAll();
+  QByteArray byteResponse;
+  // Waiting till all packets arived
+  do{
+	if(!socket.waitForReadyRead(-1)){}
+	byteResponse.append(socket.readAll());
+  } while(byteResponse[byteResponse.count() - 1] != '\0');
   // Removing last \0 character
   byteResponse.remove(byteResponse.count() - 1, 1);
 
